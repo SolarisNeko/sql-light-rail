@@ -116,7 +116,7 @@ public class SelectSqlBuilder extends SqlBuilder {
         if (pageSize == null) {
             return this;
         }
-        sql.setLimit(" LIMIT " + pageNum * pageSize + ", " + pageSize + " ");
+        sql.setLimit(" LIMIT " + pageNum * pageSize + ", " + (pageNum * pageSize + pageSize) + " ");
         return this;
     }
 

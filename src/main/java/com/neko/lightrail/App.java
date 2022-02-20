@@ -11,9 +11,10 @@ public class App {
 
     public static void main(String[] args) {
 //        selectSqlTest();
+        selectSqlByPageTest();
 //        deleteSqlTest();
 //        updateSqlTest();
-        insertSqlTest();
+//        insertSqlTest();
 //        insertRecursiveSqlTest();
     }
 
@@ -79,6 +80,23 @@ public class App {
 //                .lessThan("age", 32)
 //                .greaterThanOrEquals("age", 25)
 //                .lessThanOrEquals("age", 32)
+            ).orderBy(
+                Conditions.orderBy()
+                    .orderByAsc("a", "b")
+            ).groupBy(
+                Conditions.groupByWithHaving(Conditions.having().equalsTo("id", 1))
+                    .groupBy("id", "name")
+            ).limit(0, 10)
+            .build();
+        System.out.println(selectSql);
+    }
+
+    private static void selectSqlByPageTest() {
+        // Table <- columns, condition
+        String selectSql = SqlBuilders.selectBuilder("user")
+            .select("id")
+            .where(Conditions.where()
+                    .like("id", 1)
             ).orderBy(
                 Conditions.orderBy()
                     .orderByAsc("a", "b")
