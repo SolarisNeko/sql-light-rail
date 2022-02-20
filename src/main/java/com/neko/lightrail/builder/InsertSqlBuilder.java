@@ -1,5 +1,7 @@
 package com.neko.lightrail.builder;
 
+import com.neko.lightrail.condition.Condition;
+import com.neko.lightrail.condition.Conditions;
 import com.neko.lightrail.exception.SqlLightRailException;
 import com.neko.lightrail.util.ReflectUtil;
 import org.apache.commons.collections4.CollectionUtils;
@@ -33,6 +35,11 @@ public class InsertSqlBuilder extends SqlBuilder {
         return this;
     }
 
+    public InsertSqlBuilder values(String valueString) {
+        sql.getValues().add(valueString);
+        return this;
+    }
+
     public InsertSqlBuilder values(List<Object> valueList) {
         List<String> insertColumns = sql.getColumns();
         if (CollectionUtils.isEmpty(insertColumns)) {
@@ -44,8 +51,8 @@ public class InsertSqlBuilder extends SqlBuilder {
                 StringBuilder valuesBuilder = new StringBuilder();
                 valuesBuilder.append("( ");
                 for (String insertColumn : insertColumns) {
-                    Object fieldValue = ReflectUtil.getFieldByName(object, insertColumn);
-                    valuesBuilder.append(fieldValue).append(", ");
+                    Object fieldValue = ReflectUtil.getFieldValueByNameShortly(object, insertColumn);
+                    valuesBuilder.append(Condition.toSqlValueByType(fieldValue)).append(", ");
                 }
                 valuesBuilder.deleteCharAt(valuesBuilder.length() - 2);
                 valuesBuilder.append(")");

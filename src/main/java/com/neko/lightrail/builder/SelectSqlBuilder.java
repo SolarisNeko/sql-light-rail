@@ -53,8 +53,8 @@ public class SelectSqlBuilder extends SqlBuilder {
         }
     }
 
-    public SelectSqlBuilder select(String columns) {
-        sql.setSelect(columns);
+    public SelectSqlBuilder select(String... columns) {
+        sql.setSelect(String.join(", ", columns));
         return this;
     }
 

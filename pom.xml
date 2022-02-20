@@ -11,8 +11,8 @@
 	<groupId>com.neko</groupId>
 	<artifactId>sqlChain</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>sql_chain_builder</name>
-	<description>sql_chain_builder</description>
+	<name>sql_light_rail</name>
+	<description>Java SQL 链式写法工具, 代替重量的 ORM 框架。</description>
 	<properties>
 		<java.version>8</java.version>
 	</properties>
@@ -27,6 +27,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- DAO Layer -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.25</version>
 		</dependency>
 
 		<!-- Util -->

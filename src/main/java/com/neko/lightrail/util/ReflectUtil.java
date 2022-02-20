@@ -11,7 +11,13 @@ import java.lang.reflect.Field;
 @Logger
 public class ReflectUtil {
 
-    public static Object getFieldByName(Object object, String insertColumn) {
+    /**
+     * 就近原则获取 field value By FieldName
+     * @param object
+     * @param insertColumn
+     * @return
+     */
+    public static Object getFieldValueByNameShortly(Object object, String insertColumn) {
         Field field;
         Field parentField = null;
         Field childField = null;
