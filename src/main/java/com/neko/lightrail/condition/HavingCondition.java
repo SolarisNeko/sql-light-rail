@@ -1,4 +1,4 @@
-package com.neko.sqlchain.condition;
+package com.neko.lightrail.condition;
 
 import java.util.List;
 
@@ -6,74 +6,75 @@ import java.util.List;
  * @author SolarisNeko
  * @date 2022-02-20
  */
-public class WhereCondition {
+public class HavingCondition implements Condition {
 
-    private StringBuilder whereSqlBuilder = new StringBuilder("WHERE 1 = 1");
+    private StringBuilder havingSqlBuilder = new StringBuilder("HAVING 1 = 1");
 
-    private WhereCondition() {
+    private HavingCondition() {
     }
 
-    public static WhereCondition builder() {
-        return new WhereCondition();
+    public static HavingCondition builder() {
+        return new HavingCondition();
     }
 
-    public WhereCondition equalsTo(String columnName, Object value) {
+    @Override
+    public String build() {
+        return havingSqlBuilder.toString();
+    }
+
+    public HavingCondition equalsTo(String columnName, Object value) {
         // TODO value 还需要判断类型
-        whereSqlBuilder.append(" and ")
+        havingSqlBuilder.append(" and ")
             .append(columnName)
             .append(" = ")
             .append(value);
         return this;
     }
 
-    public WhereCondition in(String columnName, List<Object> valueList) {
-        whereSqlBuilder.append(" and ")
+    public HavingCondition in(String columnName, List<Object> valueList) {
+        havingSqlBuilder.append(" and ")
             .append(columnName)
             .append(" in ( ");
         appendForEach(valueList);
-        whereSqlBuilder.deleteCharAt(whereSqlBuilder.length() - 1);
-        whereSqlBuilder.append(" )");
+        havingSqlBuilder.deleteCharAt(havingSqlBuilder.length() - 1);
+        havingSqlBuilder.append(" )");
         return this;
     }
 
     private void appendForEach(List<Object> valueList) {
         for (Object value : valueList) {
             // TODO value 还需要判断类型 String/Number
-            whereSqlBuilder.append(value);
-            whereSqlBuilder.append(",");
+            havingSqlBuilder.append(value);
+            havingSqlBuilder.append(",");
         }
     }
 
-    public WhereCondition notIn(String columnName, List<Object> valueList) {
-        whereSqlBuilder.append(" and ")
+    public HavingCondition notIn(String columnName, List<Object> valueList) {
+        havingSqlBuilder.append(" and ")
             .append(columnName)
             .append(" not in ( ");
         appendForEach(valueList);
-        whereSqlBuilder.deleteCharAt(whereSqlBuilder.length() - 1);
-        whereSqlBuilder.append(" )");
+        havingSqlBuilder.deleteCharAt(havingSqlBuilder.length() - 1);
+        havingSqlBuilder.append(" )");
         return this;
     }
 
-    public String build() {
-        return whereSqlBuilder.toString();
-    }
-
-    public WhereCondition isNull(String columnName) {
-        whereSqlBuilder.append(" and ")
+    public HavingCondition isNull(String columnName) {
+        havingSqlBuilder.append(" and ")
             .append(columnName)
             .append(" is null");
         return this;
     }
 
-    public WhereCondition isNotNull(String columnName) {
-        whereSqlBuilder.append(" and ")
+    public HavingCondition isNotNull(String columnName) {
+        havingSqlBuilder.append(" and ")
             .append(columnName)
             .append(" is not null");
         return this;
     }
 
-    public WhereCondition between(String columnName, Object startValue, Object endValue) {
-        whereSqlBuilder.append(" and ")
+    public HavingCondition between(String columnName, Object startValue, Object endValue) {
+        havingSqlBuilder.append(" and ")
             .append(columnName)
             .append(" between(")
             .append(startValue)
@@ -83,8 +84,8 @@ public class WhereCondition {
         return this;
     }
 
-    public WhereCondition like(String columnName, Object value) {
-        whereSqlBuilder.append(" and ")
+    public HavingCondition like(String columnName, Object value) {
+        havingSqlBuilder.append(" and ")
             .append(columnName)
             .append(" like ")
             .append(toSqlValueByType(value));
@@ -104,36 +105,38 @@ public class WhereCondition {
     /**
      * TODO value 如果是 String, 应该给一个 Log WARN
      */
-    public WhereCondition greaterThan(String columnName, Object value) {
-        whereSqlBuilder.append(" and ")
+    public HavingCondition greaterThan(String columnName, Object value) {
+        havingSqlBuilder.append(" and ")
             .append(columnName)
             .append(" > ")
             .append(toSqlValueByType(value));
         return this;
     }
 
-    public WhereCondition greaterThanOrEquals(String columnName, Object value) {
-        whereSqlBuilder.append(" and ")
+    public HavingCondition greaterThanOrEquals(String columnName, Object value) {
+        havingSqlBuilder.append(" and ")
             .append(columnName)
             .append(" >= ")
             .append(toSqlValueByType(value));
         return this;
     }
 
-    public WhereCondition lessThan(String columnName, Object value) {
-        whereSqlBuilder.append(" and ")
+    public HavingCondition lessThan(String columnName, Object value) {
+        havingSqlBuilder.append(" and ")
             .append(columnName)
             .append(" < ")
             .append(toSqlValueByType(value));
         return this;
     }
 
-    public WhereCondition lessThanOrEquals(String columnName, Object value) {
-        whereSqlBuilder.append(" and ")
+    public HavingCondition lessThanOrEquals(String columnName, Object value) {
+        havingSqlBuilder.append(" and ")
             .append(columnName)
             .append(" <= ")
             .append(toSqlValueByType(value));
         return this;
     }
+
+
 
 }

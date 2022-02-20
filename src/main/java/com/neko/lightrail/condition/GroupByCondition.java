@@ -1,12 +1,10 @@
-package com.neko.sqlchain.condition;
-
-import java.util.Optional;
+package com.neko.lightrail.condition;
 
 /**
  * @author SolarisNeko
  * @date 2022-02-20
  */
-public class GroupByCondition {
+public class GroupByCondition implements Condition {
 
     private HavingCondition havingCondition = null;
 
@@ -30,11 +28,12 @@ public class GroupByCondition {
         return this;
     }
 
+    @Override
     public String build() {
         if (havingCondition == null) {
             return groupBySqlBuilder.substring(0, groupBySqlBuilder.length() - 2);
         }
-        return groupBySqlBuilder.substring(0, groupBySqlBuilder.length() - 2)
+        return groupBySqlBuilder.substring(0, groupBySqlBuilder.length() - 2) + " "
             + havingCondition.build();
     }
 

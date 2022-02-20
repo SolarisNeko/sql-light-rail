@@ -1,4 +1,4 @@
-package com.neko.sqlchain.condition;
+package com.neko.lightrail.condition;
 
 /**
  * @author SolarisNeko
@@ -28,4 +28,7 @@ public class Conditions {
         return HavingCondition.builder();
     }
 
+    public static SetCondition set() {
+        return SetCondition.builder();
+    }
 }

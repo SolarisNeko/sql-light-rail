@@ -1,9 +1,12 @@
-package com.neko.sqlchain.pojo;
+package com.neko.lightrail.builder;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author SolarisNeko
@@ -13,15 +16,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SqlString {
+public class Sql {
 
     String select = null;
-    String columns = null;
     String table = null;
-    // select, update 使用
+
+    // Select, Update 使用
     String where = null;
     String orderBy = null;
     String groupBy = null;
     String limit = null;
+
+    // Update
+    String set = null;
+
+    // Insert
+    List<String> columns = new ArrayList<>();
+    List<String> values = new ArrayList<>();
 
 }
