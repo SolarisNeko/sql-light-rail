@@ -36,8 +36,8 @@ public class SelectSqlBuilder extends SqlBuilder {
         return "SELECT " + sqlString.getSelect()
             + " FROM " + sqlString.getTable() + " "
             + Optional.ofNullable(sqlString.getWhere()).orElse("") + " "
-            + Optional.ofNullable(sqlString.getOrderBy()).orElse("") + " "
             + Optional.ofNullable(sqlString.getGroupBy()).orElse("") + " "
+            + Optional.ofNullable(sqlString.getOrderBy()).orElse("") + " "
             ;
     }
 
