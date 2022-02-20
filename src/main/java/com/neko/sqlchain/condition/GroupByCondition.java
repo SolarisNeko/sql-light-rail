@@ -34,7 +34,7 @@ public class GroupByCondition {
         if (havingCondition == null) {
             return groupBySqlBuilder.substring(0, groupBySqlBuilder.length() - 2);
         }
-        return groupBySqlBuilder.substring(0, groupBySqlBuilder.length() - 2)
+        return groupBySqlBuilder.substring(0, groupBySqlBuilder.length() - 2) + " "
             + havingCondition.build();
     }
 
