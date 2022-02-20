@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class OrderByCondition {
 
-    private StringBuilder orderBySqlBuilder = new StringBuilder(" ORDER BY ");
+    private StringBuilder orderBySqlBuilder = new StringBuilder("ORDER BY ");
 
     private OrderByCondition() {
 
