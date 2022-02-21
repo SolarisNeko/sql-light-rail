@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author SolarisNeko
@@ -18,8 +20,12 @@ import java.util.List;
 @Builder
 public class Sql {
 
-    String select = null;
-    String table = null;
+    List<String> select = new ArrayList<>();
+    List<String> tableList = new ArrayList<>();
+
+    // select
+    String join = null;
+    Map<String, String> aliasMap = new HashMap<>();
 
     // Select, Update 使用
     String where = null;

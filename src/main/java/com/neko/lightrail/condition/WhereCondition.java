@@ -1,5 +1,7 @@
 package com.neko.lightrail.condition;
 
+import jdk.nashorn.internal.objects.annotations.Where;
+
 import java.util.List;
 
 /**
@@ -23,17 +25,20 @@ public class WhereCondition implements Condition {
         return whereSqlBuilder.toString();
     }
 
+    public WhereCondition equalsTo(String tableAlias, String columnName, Object value) {
+        isFirstParams();
+        whereSqlBuilder.append(tableAlias.trim()).append(".").append(columnName.trim()).append(" = ").append(Condition.toSqlValueByType(value));
+        return this;
+    }
+
     public WhereCondition equalsTo(String columnName, Object value) {
         isFirstParams();
-        whereSqlBuilder
-            .append(columnName)
-            .append(" = ")
-            .append(Condition.toSqlValueByType(value));
+        whereSqlBuilder.append(columnName.trim()).append(" = ").append(Condition.toSqlValueByType(value));
         return this;
     }
 
     private void isFirstParams() {
-        if (whereSqlBuilder.length() == EXISTS_STRING_NUMBER) {
+        if (whereSqlBuilder.length() <= EXISTS_STRING_NUMBER) {
             return;
         }
         whereSqlBuilder.append(" and ");
@@ -41,7 +46,15 @@ public class WhereCondition implements Condition {
 
     public WhereCondition in(String columnName, List<Object> valueList) {
         isFirstParams();
-        whereSqlBuilder.append(columnName).append(" in ( ");
+        whereSqlBuilder.append(columnName.trim()).append(" in ( ");
+        appendForEach(valueList);
+        whereSqlBuilder.append(" )");
+        return this;
+    }
+
+    public WhereCondition in(String tableAlias, String columnName, List<Object> valueList) {
+        isFirstParams();
+        whereSqlBuilder.append(tableAlias.trim()).append(".").append(columnName.trim()).append(" in ( ");
         appendForEach(valueList);
         whereSqlBuilder.append(" )");
         return this;
@@ -57,7 +70,15 @@ public class WhereCondition implements Condition {
 
     public WhereCondition notIn(String columnName, List<Object> valueList) {
         isFirstParams();
-        whereSqlBuilder.append(columnName).append(" not in ( ");
+        whereSqlBuilder.append(columnName.trim()).append(" not in ( ");
+        appendForEach(valueList);
+        whereSqlBuilder.append(" )");
+        return this;
+    }
+
+    public WhereCondition notIn(String tableAlias, String columnName, List<Object> valueList) {
+        isFirstParams();
+        whereSqlBuilder.append(tableAlias.trim()).append(".").append(columnName.trim()).append(" not in ( ");
         appendForEach(valueList);
         whereSqlBuilder.append(" )");
         return this;
@@ -65,30 +86,49 @@ public class WhereCondition implements Condition {
 
     public WhereCondition isNull(String columnName) {
         isFirstParams();
-        whereSqlBuilder.append(columnName).append(" is null");
+        whereSqlBuilder.append(columnName.trim()).append(" is null");
+        return this;
+    }
+
+    public WhereCondition isNull(String tableAlias, String columnName) {
+        isFirstParams();
+        whereSqlBuilder.append(tableAlias.trim()).append(".").append(columnName.trim()).append(" is null");
         return this;
     }
 
     public WhereCondition isNotNull(String columnName) {
         isFirstParams();
-        whereSqlBuilder.append(columnName).append(" is not null");
+        whereSqlBuilder.append(columnName.trim()).append(" is not null");
+        return this;
+    }
+
+    public WhereCondition isNotNull(String tableAlias, String columnName) {
+        isFirstParams();
+        whereSqlBuilder.append(tableAlias.trim()).append(".").append(columnName.trim()).append(" is not null");
         return this;
     }
 
     public WhereCondition between(String columnName, Object startValue, Object endValue) {
         isFirstParams();
-        whereSqlBuilder.append(columnName)
-            .append(" between(")
-            .append(startValue)
-            .append(",")
-            .append(endValue)
-            .append(")");
+        whereSqlBuilder.append(columnName.trim()).append(" between(").append(startValue).append(",").append(endValue).append(")");
+        return this;
+    }
+
+    public WhereCondition between(String tableAlias, String columnName, Object startValue, Object endValue) {
+        isFirstParams();
+        whereSqlBuilder.append(tableAlias.trim()).append(".").append(columnName.trim()).append(" between(").append(startValue).append(",").append(endValue).append(")");
         return this;
     }
 
     public WhereCondition like(String columnName, Object value) {
         isFirstParams();
-        whereSqlBuilder.append(columnName).append(" like ").append(Condition.toSqlValueByType(value));
+        whereSqlBuilder.append(columnName.trim()).append(" like ").append(Condition.toSqlValueByType(value));
+        return this;
+    }
+
+    public WhereCondition like(String tableAlias, String columnName, Object value) {
+        isFirstParams();
+        whereSqlBuilder.append(tableAlias.trim()).append(".").append(columnName.trim()).append(" like ").append(Condition.toSqlValueByType(value));
         return this;
     }
 
@@ -97,25 +137,49 @@ public class WhereCondition implements Condition {
      */
     public WhereCondition greaterThan(String columnName, Object value) {
         isFirstParams();
-        whereSqlBuilder.append(columnName).append(" > ").append(Condition.toSqlValueByType(value));
+        whereSqlBuilder.append(columnName.trim()).append(" > ").append(Condition.toSqlValueByType(value));
+        return this;
+    }
+
+    public WhereCondition greaterThan(String tableAlias, String columnName, Object value) {
+        isFirstParams();
+        whereSqlBuilder.append(tableAlias.trim()).append(".").append(columnName.trim()).append(" > ").append(Condition.toSqlValueByType(value));
         return this;
     }
 
     public WhereCondition greaterThanOrEquals(String columnName, Object value) {
         isFirstParams();
-        whereSqlBuilder.append(columnName).append(" >= ").append(Condition.toSqlValueByType(value));
+        whereSqlBuilder.append(columnName.trim()).append(" >= ").append(Condition.toSqlValueByType(value));
+        return this;
+    }
+
+    public WhereCondition greaterThanOrEquals(String tableAlias, String columnName, Object value) {
+        isFirstParams();
+        whereSqlBuilder.append(tableAlias.trim()).append(".").append(columnName.trim()).append(" >= ").append(Condition.toSqlValueByType(value));
         return this;
     }
 
     public WhereCondition lessThan(String columnName, Object value) {
         isFirstParams();
-        whereSqlBuilder.append(columnName).append(" < ").append(Condition.toSqlValueByType(value));
+        whereSqlBuilder.append(columnName.trim()).append(" < ").append(Condition.toSqlValueByType(value));
+        return this;
+    }
+
+    public WhereCondition lessThan(String tableAlias, String columnName, Object value) {
+        isFirstParams();
+        whereSqlBuilder.append(tableAlias.trim()).append(".").append(columnName.trim()).append(" < ").append(Condition.toSqlValueByType(value));
         return this;
     }
 
     public WhereCondition lessThanOrEquals(String columnName, Object value) {
         isFirstParams();
-        whereSqlBuilder.append(columnName).append(" <= ").append(Condition.toSqlValueByType(value));
+        whereSqlBuilder.append(columnName.trim()).append(" <= ").append(Condition.toSqlValueByType(value));
+        return this;
+    }
+
+    public WhereCondition lessThanOrEquals(String tableAlias, String columnName, Object value) {
+        isFirstParams();
+        whereSqlBuilder.append(tableAlias.trim()).append(".").append(columnName.trim()).append(" <= ").append(Condition.toSqlValueByType(value));
         return this;
     }
 

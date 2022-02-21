@@ -1,7 +1,6 @@
 package com.neko.lightrail.builder;
 
 import com.neko.lightrail.condition.Condition;
-import com.neko.lightrail.condition.Conditions;
 import com.neko.lightrail.exception.SqlLightRailException;
 import com.neko.lightrail.util.ReflectUtil;
 import org.apache.commons.collections4.CollectionUtils;
@@ -23,7 +22,7 @@ public class InsertSqlBuilder extends SqlBuilder {
 
     @Override
     public String build() {
-        return "INSERT INTO " + sql.getTable() + "("
+        return "INSERT INTO " + sql.getTableList().get(0) + "("
             + String.join(", ", sql.getColumns()) + ") Values "
             + String.join(", ", sql.getValues())
             ;

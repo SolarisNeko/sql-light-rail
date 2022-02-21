@@ -20,7 +20,7 @@ public class DeleteSqlBuilder extends SqlBuilder {
     }
 
     private String buildDeleteSql() {
-        return "Delete From " + sql.getTable() + " "
+        return "Delete From " + sql.getTableList().get(0) + " "
             + Optional.ofNullable(sql.getWhere()).orElse("") + " "
             ;
     }

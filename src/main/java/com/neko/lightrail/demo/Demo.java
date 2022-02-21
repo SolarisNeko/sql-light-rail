@@ -1,6 +1,6 @@
-package com.neko.lightrail;
+package com.neko.lightrail.demo;
 
-import com.neko.lightrail.builder.SqlBuilders;
+import com.neko.lightrail.SqlLightRail;
 import com.neko.lightrail.condition.Conditions;
 import com.neko.lightrail.condition.WhereCondition;
 
@@ -12,7 +12,7 @@ import java.util.Arrays;
  *
  * @author SolarisNeko
  */
-public class App {
+public class Demo {
 
     public static void main(String[] args) {
         selectSmallDemo();
@@ -21,7 +21,7 @@ public class App {
 
     private static void selectSmallDemo() {
         // 最常见的 demo
-        String build = SqlBuilders.selectBuilder("user")
+        String build = SqlLightRail.selectBuilder("user")
             .select("id", "name")
             .where(
                 WhereCondition.builder()
@@ -37,7 +37,7 @@ public class App {
      */
     private static void selectAllUseTest() {
         // Table <- columns, condition
-        String selectSql = SqlBuilders.selectBuilder("user")
+        String selectSql = SqlLightRail.selectBuilder("user")
             .select("id")
             .where(Conditions.where()
                 .equalsTo("id", 1)

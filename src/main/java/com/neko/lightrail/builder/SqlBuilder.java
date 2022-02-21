@@ -1,5 +1,8 @@
 package com.neko.lightrail.builder;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  *
  *
@@ -11,7 +14,11 @@ public abstract class SqlBuilder {
     protected Sql sql = new Sql();
 
     public SqlBuilder(String tableName) {
-        sql.setTable(tableName);
+        sql.setTableList(Collections.singletonList(tableName));
+    }
+
+    public SqlBuilder(List<String> tableNameList) {
+        sql.setTableList(tableNameList);
     }
 
     /**

@@ -1,13 +1,24 @@
 package com.neko.lightrail.builder;
 
+import com.neko.lightrail.condition.Condition;
 import com.neko.lightrail.condition.GroupByCondition;
+import com.neko.lightrail.condition.JoinCondition;
 import com.neko.lightrail.condition.OrderByCondition;
 import com.neko.lightrail.condition.WhereCondition;
 import com.neko.lightrail.exception.SqlLightRailException;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author SolarisNeko
@@ -20,6 +31,14 @@ public class SelectSqlBuilder extends SqlBuilder {
         super(tableName);
     }
 
+    public SelectSqlBuilder(String... tables) {
+        super(Arrays.stream(tables).map(String::trim).collect(toList()));
+    }
+
+    public SelectSqlBuilder(List<String> tableNameList) {
+        super(tableNameList);
+    }
+
     /**
      * TODO 应该指定一个可大小写的选择参数
      *
@@ -28,33 +47,38 @@ public class SelectSqlBuilder extends SqlBuilder {
     @Override
     public String build() {
         checkSelectNecessaryParams(sql);
-        return buildSelectSql();
-    }
-
-    private String buildSelectSql() {
-        return "SELECT " + sql.getSelect()
-            + " FROM " + sql.getTable() + " "
-            + Optional.ofNullable(sql.getWhere()).orElse("")
-            + Optional.ofNullable(sql.getOrderBy()).orElse("")
-            + Optional.ofNullable(sql.getGroupBy()).orElse("")
-            + Optional.ofNullable(sql.getLimit()).orElse("")
-            ;
+        List<String> selectList = sql.getSelect().stream()
+                .filter(Objects::nonNull)
+                .map(t -> {
+                    String alias = sql.getAliasMap().get(t);
+                    if (alias == null) {
+                        return t;
+                    }
+                    return t + " as " + Condition.toSqlValueByType(alias);
+                })
+                .collect(toList());
+        return "SELECT " + String.join(", ", selectList)
+                + " FROM " + String.join(",", sql.getTableList()) + " "
+                + Optional.ofNullable(sql.getWhere()).orElse("")
+                + Optional.ofNullable(sql.getOrderBy()).orElse("")
+                + Optional.ofNullable(sql.getGroupBy()).orElse("")
+                + Optional.ofNullable(sql.getLimit()).orElse("")
+                + Optional.ofNullable(sql.getJoin()).orElse("")
+                ;
     }
 
     private static void checkSelectNecessaryParams(Sql sql) {
-        String select = sql.getSelect();
-        String table = sql.getTable();
+        List<String> selectList = sql.getSelect().stream()
+                .filter(StringUtils::isNotBlank)
+                .collect(toList());
+        if (CollectionUtils.isEmpty(selectList)) {
+            throw new SqlLightRailException("Must set 'select' in SQL");
+        }
 
-        if (StringUtils.isEmpty(select)) {
-            throw new SqlLightRailException("SelectSqlBuilder can't get select columns... | select = " + select);
-        }
-        if (StringUtils.isEmpty(table)) {
-            throw new SqlLightRailException("SelectSqlBuilder can't get select columns... | table = " + table);
-        }
     }
 
     public SelectSqlBuilder select(String... columns) {
-        sql.setSelect(String.join(", ", columns));
+        sql.setSelect(Arrays.asList(columns));
         return this;
     }
 
@@ -105,6 +129,7 @@ public class SelectSqlBuilder extends SqlBuilder {
 
     /**
      * pageNum 从 0 开始
+     *
      * @param pageNum
      * @param pageSize
      * @return
@@ -121,4 +146,18 @@ public class SelectSqlBuilder extends SqlBuilder {
     }
 
 
+    public SelectSqlBuilder join(JoinCondition join) {
+        sql.setJoin(join.build());
+        return this;
+    }
+
+    public SelectSqlBuilder join(String join) {
+        sql.setJoin(join);
+        return this;
+    }
+
+    public SelectSqlBuilder alias(Map<String, String> aliasMap) {
+        sql.getAliasMap().putAll(aliasMap);
+        return this;
+    }
 }
