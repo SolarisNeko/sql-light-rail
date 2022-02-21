@@ -34,10 +34,10 @@ public class SelectSqlBuilder extends SqlBuilder {
     private String buildSelectSql() {
         return "SELECT " + sql.getSelect()
             + " FROM " + sql.getTable() + " "
-            + Optional.ofNullable(sql.getWhere()).orElse("") + " "
-            + Optional.ofNullable(sql.getOrderBy()).orElse("") + " "
-            + Optional.ofNullable(sql.getGroupBy()).orElse("") + " "
-            + Optional.ofNullable(sql.getLimit()).orElse("") + " "
+            + Optional.ofNullable(sql.getWhere()).orElse("")
+            + Optional.ofNullable(sql.getOrderBy()).orElse("")
+            + Optional.ofNullable(sql.getGroupBy()).orElse("")
+            + Optional.ofNullable(sql.getLimit()).orElse("")
             ;
     }
 

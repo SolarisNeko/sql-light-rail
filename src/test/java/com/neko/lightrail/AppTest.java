@@ -1,9 +1,12 @@
 package com.neko.lightrail;
 
+import com.neko.lightrail.builder.SelectSqlBuilder;
 import com.neko.lightrail.builder.SqlBuilders;
 import com.neko.lightrail.condition.Conditions;
+import com.neko.lightrail.condition.WhereCondition;
 import com.neko.lightrail.pojo.User;
 import com.neko.lightrail.pojo.UserExt;
+import jdk.nashorn.internal.objects.annotations.Where;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,6 +17,20 @@ import java.util.Arrays;
  * @date 2022-02-21
  */
 public class AppTest {
+
+    @Test
+    public void innerSelectSqlTest() {
+        SelectSqlBuilder innerBuilder = SqlBuilders.selectBuilder("inner_demo")
+                .select("id", "name")
+                .where(WhereCondition.builder()
+                        .equalsTo("id", 1)
+                );
+        String select = SqlBuilders.innerSelectBuilder(innerBuilder)
+                .select("id", "name")
+                .build();
+        String target = "SELECT id, name FROM  ( SELECT id, name FROM inner_demo WHERE id = 1 )  ";
+        Assert.assertEquals(target, select);
+    }
 
     /**
      * Entity 是单个对象
@@ -96,7 +113,7 @@ public class AppTest {
                     .groupBy("id", "name")
             ).limit(0, 10)
             .build();
-        String target = "SELECT id FROM user WHERE id = 1  ORDER BY a ASC, b ASC GROUP BY id, name HAVING 1 = 1 and id = 1  LIMIT 0, 10  ";
+        String target = "SELECT id FROM user WHERE id = 1 ORDER BY a ASC, b ASC GROUP BY id, name HAVING 1 = 1 and id = 1 LIMIT 0, 10 ";
         Assert.assertEquals(target, selectSql);
     }
 
@@ -115,7 +132,7 @@ public class AppTest {
                     .groupBy("id", "name")
             ).limitByPage(1, 10)
             .build();
-        String target = "SELECT id, name FROM user WHERE id like 1  ORDER BY a ASC, b ASC GROUP BY id, name HAVING 1 = 1 and id = 1  LIMIT 10, 20  ";
+        String target = "SELECT id, name FROM user WHERE id like 1 ORDER BY a ASC, b ASC GROUP BY id, name HAVING 1 = 1 and id = 1 LIMIT 10, 20 ";
         Assert.assertEquals(target, selectSql);
     }
 

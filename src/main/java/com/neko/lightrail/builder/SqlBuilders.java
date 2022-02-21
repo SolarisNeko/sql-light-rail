@@ -24,4 +24,11 @@ public class SqlBuilders {
         return new SelectSqlBuilder(tableName);
     }
 
+    /**
+     * 子查询
+     */
+    public static SelectSqlBuilder innerSelectBuilder(SelectSqlBuilder innerSelectBuilder) {
+        return new SelectSqlBuilder(" ( " + innerSelectBuilder.build() + " ) ");
+    }
+
 }
