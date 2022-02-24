@@ -2,20 +2,53 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.6.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.neko</groupId>
 	<artifactId>sql-light-rail</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>sql_light_rail</name>
-	<description>Java SQL 链式写法工具, 代替重量的 ORM 框架。</description>
+	<contributors>
+		<contributor>
+			<name>SolarisNeko</name>
+			<url>https://github.com/SolarisNeko</url>
+		</contributor>
+		<contributor>
+			<name>Emmett Woo</name>
+			<url>https://github.com/Emmettwoo</url>
+		</contributor>
+	</contributors>
+
+	<description>
+		SQL Light Rail (SQL 轻轨)
+		> 轻轨: 有多节车厢, 如同本框架设计的 Chain Builder 思想。
+		这是一款【约定大于配置】的 Java SQL Flux 框架, 用于快速构建大量 SQL, 辅助 DAO 操作/复用 SQL。
+
+		设计原因:
+		因部分公司有大量历史代码, MyBatis 入侵性过强, 迁移的工作量巨大, 并不能友好地支持快速开发.
+		其次, MyBatis Generator 生成无意义的代码过多, 文件过多, 项目结构庞大, 不够轻量化。
+		MyBatis 并不能支持部分公司对 DAO 操作的抽象封装, 如果以 Plugin 形式, 还得迭代版本/可改动有限。
+
+		用于代替重量级的 ORM 框架。将 xml 的 if 判断, 转换为 Java 的 Optional / if / stream..
+		因 SolarisNeko 热衷于 Flux/Stream 编程, 且喜欢动态, 因此开发出该框架。
+
+		约定:
+		1. Pojo 遵循驼峰命名。SQL Table 命名遵循大驼峰命名。这样能够帮助你快速生成大量SQL。
+		2. 采用 Flux/Stream 写法。
+
+		本架构 License 为 Apache2.0
+	</description>
+
 	<properties>
 		<java.version>8</java.version>
 	</properties>
+
 	<dependencies>
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
