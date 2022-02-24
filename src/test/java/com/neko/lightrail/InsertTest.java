@@ -18,7 +18,7 @@ public class InsertTest {
      */
     @Test
     public void insertSqlTest() {
-        String insertSql = SqlLightRail.insertBuilder("user")
+        String insertSql = SqlLightRail.insertTable("user")
                 .insertColumns("id", "name")
                 .values(Arrays.asList(
                         new User(10, "demo1"),
@@ -33,7 +33,7 @@ public class InsertTest {
      */
     @Test
     public void insertRecursiveSqlTest() {
-        String insertSql = SqlLightRail.insertBuilder("user")
+        String insertSql = SqlLightRail.insertTable("user")
                 .insertColumns("id", "name", "age")
                 .values(Arrays.asList(
                         new UserExt(10, "demo1", 18),

@@ -1,7 +1,10 @@
 # SQL Light Rail
 
 ## 发展状态
-目前 Light Rail 还处于 Bike 状态。
+目前 Light Rail 还处于 Cycle 等级。
+
+发展等级：
+Material -> Cycle -> Car -> Subway -> LightRail
 
 # 完成进度
 ## 1、基本进度
@@ -11,7 +14,7 @@
 ## 2、细进度
 1. Select
    1. [x] select
-   2. [ ] alias Map
+   2. [x] alias Map
    3. [x] from
    4. [x] where
    5. [x] order by

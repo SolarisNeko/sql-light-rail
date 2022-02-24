@@ -2,13 +2,17 @@ package com.neko.lightrail;
 
 import com.neko.lightrail.builder.SelectSqlBuilder;
 import com.neko.lightrail.condition.Conditions;
+import com.neko.lightrail.condition.GroupByCondition;
 import com.neko.lightrail.condition.JoinCondition;
 import com.neko.lightrail.condition.OnCondition;
+import com.neko.lightrail.condition.SelectCondition;
 import com.neko.lightrail.condition.WhereCondition;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashMap;
+
+import static com.neko.lightrail.condition.Condition.PLACEHOLDER;
 
 /**
  * @author SolarisNeko
@@ -16,14 +20,66 @@ import java.util.HashMap;
  **/
 public class SelectTest {
 
+    /**
+     * 模拟复杂业务场景，动态维度 SQL
+     */
+    @Test
+    public void businessSelectDynamicDimension() {
+        boolean isGroupByPackageId = true;
+        // 1 Base SQL
+        SelectCondition selectCondition = SelectCondition.builder()
+                .column("app_id")
+                .column("channel_id")
+                .column("sum(pay_money)", "sum_money")
+                .column("register_time")
+                .column("pay_time");
+        WhereCondition whereCondition = WhereCondition.builder()
+                .equalsTo("app_id", PLACEHOLDER)
+                .equalsTo("channel_id", "-1")
+                .equalsTo("package_id", "-1")
+                .lessThanOrEquals("register_time", PLACEHOLDER)
+                .lessThanOrEquals("register_time", PLACEHOLDER);
+        GroupByCondition groupByCondition = GroupByCondition.builder()
+                .groupBy("register_time", "pay_time", "channel_id");
+        // 2 [Business Rule] dynamic sql add by batch
+        if (isGroupByPackageId) {
+            selectCondition.column("package_id");
+            groupByCondition.groupBy("package_id");
+        }
+        // 3 build SQL
+        String select = SqlLightRail.selectTable("new_traffic_ltv_sum_daily")
+                .select(selectCondition.build())
+                .where(whereCondition.build())
+                .groupBy(groupByCondition)
+                .build();
+        // 4 execute
+        System.out.println(select);
+        String target = "SELECT app_id, channel_id, sum(pay_money) as 'sum_money', register_time, pay_time, package_id FROM new_traffic_ltv_sum_daily  WHERE app_id = ? and channel_id = '-1' and package_id = '-1' and register_time <= ? and register_time <= ? GROUP BY register_time, pay_time, channel_id, package_id";
+        Assert.assertEquals(target, select);
+    }
+
+    @Test
+    public void generatePlaceHolder() {
+        SelectSqlBuilder innerBuilder = SqlLightRail.selectTable("inner_demo")
+                .select("id", "name")
+                .where(WhereCondition.builder()
+                        .equalsTo("id", PLACEHOLDER)
+                );
+        String select = SqlLightRail.selectSubTable(innerBuilder)
+                .select("id", "name")
+                .build();
+        String target = "SELECT id, name FROM  ( SELECT id, name FROM inner_demo WHERE id = ? )  ";
+        Assert.assertEquals(target, select);
+    }
+
     @Test
     public void innerSelectSqlTest() {
-        SelectSqlBuilder innerBuilder = SqlLightRail.selectBuilder("inner_demo")
+        SelectSqlBuilder innerBuilder = SqlLightRail.selectTable("inner_demo")
                 .select("id", "name")
                 .where(WhereCondition.builder()
                         .equalsTo("id", 1)
                 );
-        String select = SqlLightRail.innerSelectBuilder(innerBuilder)
+        String select = SqlLightRail.selectSubTable(innerBuilder)
                 .select("id", "name")
                 .build();
         String target = "SELECT id, name FROM  ( SELECT id, name FROM inner_demo WHERE id = 1 )  ";
@@ -33,7 +89,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectBuilder("user")
+        String selectSql = SqlLightRail.selectTable("user")
                 .select("id")
                 .where(Conditions.where()
                         .equalsTo("id", 1)
@@ -52,7 +108,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest_limitByPage() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectBuilder("user")
+        String selectSql = SqlLightRail.selectTable("user")
                 .select("id", "name")
                 .where(Conditions.where()
                         .like("id", 1)
@@ -71,7 +127,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest_multiTables() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectBuilder("user a", "user_role b")
+        String selectSql = SqlLightRail.selectTable("user a", "user_role b")
                 .select("b.id", "a.name")
                 .where(Conditions.where()
                         .equalsTo("b.id", 1)
@@ -85,7 +141,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest_joinOn_base() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectBuilder("user a")
+        String selectSql = SqlLightRail.selectTable("user a")
                 .select("a.id", "a.name")
                 .join(JoinCondition.builder()
                         .join("user_role b")
@@ -99,7 +155,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest_joinOn_advanced_1() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectBuilder("user a")
+        String selectSql = SqlLightRail.selectTable("user a")
                 .select("a.id", "a.name")
                 .alias(new HashMap<String, String>() {{
                     put("a.id", "编号");

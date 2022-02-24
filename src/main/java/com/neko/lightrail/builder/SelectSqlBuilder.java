@@ -10,13 +10,11 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -26,6 +24,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class SelectSqlBuilder extends SqlBuilder {
 
+    private static final String WHERE_PREFIX = "where";
 
     public SelectSqlBuilder(String tableName) {
         super(tableName);
@@ -88,16 +87,21 @@ public class SelectSqlBuilder extends SqlBuilder {
     }
 
     public SelectSqlBuilder where(String whereSql) {
-        if (!whereSql.toLowerCase(Locale.ROOT).trim().startsWith("where")) {
-            sql.setWhere(" where " + whereSql);
+        if (!whereSql.toLowerCase(Locale.ROOT).trim().startsWith(WHERE_PREFIX)) {
+            sql.setWhere(" " + WHERE_PREFIX + " " + whereSql);
         } else {
             sql.setWhere(" " + whereSql);
         }
         return this;
     }
 
-    public SelectSqlBuilder groupBy(String columns) {
-        sql.setGroupBy(columns);
+    public SelectSqlBuilder groupBy(String... columns) {
+        sql.setGroupBy(" Group By " + String.join(", ", columns));
+        return this;
+    }
+
+    public SelectSqlBuilder groupBy(String column) {
+        sql.setGroupBy(" Group By " + column);
         return this;
     }
 

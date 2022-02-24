@@ -12,7 +12,7 @@ public class UpdateTest {
 
     @Test
     public void updateSqlTest() {
-        String updateSql = SqlLightRail.updateBuilder("user")
+        String updateSql = SqlLightRail.updateTable("user")
                 .set(Conditions.set()
                         .equalsTo("name", "neko")
                 )

@@ -12,7 +12,7 @@ public class DeleteTest {
 
     @Test
     public void deleteSqlTest() {
-        String deleteSql = SqlLightRail.deleteBuilder("user")
+        String deleteSql = SqlLightRail.deleteTable("user")
                 .where(Conditions.where()
                         .equalsTo("id", 1)
                 )
@@ -23,7 +23,7 @@ public class DeleteTest {
 
     @Test
     public void deleteSqlByStringTest() {
-        String deleteSql = SqlLightRail.deleteBuilder("user")
+        String deleteSql = SqlLightRail.deleteTable("user")
                 .where(Conditions.where()
                         .equalsTo("name", "neko")
                 )

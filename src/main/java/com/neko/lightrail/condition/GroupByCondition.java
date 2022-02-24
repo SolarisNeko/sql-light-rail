@@ -8,7 +8,7 @@ public class GroupByCondition implements Condition {
 
     private HavingCondition havingCondition = null;
 
-    private StringBuilder groupBySqlBuilder = new StringBuilder("GROUP BY ");
+    private StringBuilder groupBySqlBuilder = new StringBuilder(" GROUP BY ");
 
     private GroupByCondition() {
     }
