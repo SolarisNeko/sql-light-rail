@@ -25,6 +25,10 @@ public class SqlLightRail {
         return new UpdateSqlBuilder(tableName.trim());
     }
 
+    public static SelectSqlBuilder selectBuilder(String schemaName, String tableName) {
+        return new SelectSqlBuilder(schemaName.trim() + "." + tableName.trim());
+    }
+
     public static SelectSqlBuilder selectBuilder(String tableName) {
         return new SelectSqlBuilder(tableName.trim());
     }

@@ -12,7 +12,7 @@ import java.util.Arrays;
  *
  * @author SolarisNeko
  */
-public class Demo {
+public class SqlLightRailDemo {
 
     public static void main(String[] args) {
         selectSmallDemo();

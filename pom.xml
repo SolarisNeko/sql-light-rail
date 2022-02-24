@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.neko</groupId>
-	<artifactId>sqlChain</artifactId>
+	<artifactId>sql-light-rail</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>sql_light_rail</name>
 	<description>Java SQL 链式写法工具, 代替重量的 ORM 框架。</description>
@@ -32,6 +32,7 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.25</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- Util -->
@@ -50,6 +51,11 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 			<version>4.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.4</version>
 		</dependency>
 
 		<!-- Test -->

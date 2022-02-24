@@ -2,13 +2,17 @@ package com.neko.lightrail.builder;
 
 import com.neko.lightrail.condition.Condition;
 import com.neko.lightrail.exception.SqlLightRailException;
+import com.neko.lightrail.util.CamelCaseUtil;
 import com.neko.lightrail.util.ReflectUtil;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author SolarisNeko
@@ -39,28 +43,36 @@ public class InsertSqlBuilder extends SqlBuilder {
         return this;
     }
 
-    public InsertSqlBuilder values(List<Object> valueList) {
-        List<String> insertColumns = sql.getColumns();
-        if (CollectionUtils.isEmpty(insertColumns)) {
-            throw new SqlLightRailException("Must set columns which you insert before inserting into table by valueList ! ");
+    public <T> InsertSqlBuilder values(List<T> valueList) {
+        if (CollectionUtils.isEmpty(valueList)) {
+            throw new SqlLightRailException("Must set values! ");
+        }
+        T t = valueList.get(0);
+        List<String> fieldNames = ReflectUtil.getFieldNames(t);
+
+        if (CollectionUtils.isEmpty(sql.getColumns())) {
+            // db.column
+            List<String> columnNames = fieldNames.stream().map(CamelCaseUtil::toBigCamelLowerName).collect(toList());
+            sql.setColumns(columnNames);
         }
 
         List<String> valueSqlList = valueList.stream()
             .map(object -> {
-                StringBuilder valuesBuilder = new StringBuilder();
-                valuesBuilder.append("( ");
-                for (String insertColumn : insertColumns) {
+                StringBuilder valueSql = new StringBuilder();
+                valueSql.append("(");
+                for (String insertColumn : fieldNames) {
                     Object fieldValue = ReflectUtil.getFieldValueByNameShortly(object, insertColumn);
-                    valuesBuilder.append(Condition.toSqlValueByType(fieldValue)).append(", ");
+                    valueSql.append(Condition.toSqlValueByType(fieldValue)).append(", ");
                 }
-                valuesBuilder.deleteCharAt(valuesBuilder.length() - 2);
-                valuesBuilder.append(")");
-                return valuesBuilder.toString();
+                valueSql.delete(valueSql.length() - 2, valueSql.length());
+                valueSql.append(")");
+                return valueSql.toString();
             })
             .filter(StringUtils::isNotBlank)
-            .collect(Collectors.toList());
+            .collect(toList());
+
         // 一次 API 生成一次局部 SQL
-        sql.getValues().add(String.join(",", valueSqlList));
+        sql.getValues().add(String.join(", ", valueSqlList));
         return this;
     }
 }
