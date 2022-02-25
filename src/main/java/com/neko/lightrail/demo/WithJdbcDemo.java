@@ -21,10 +21,36 @@ import java.util.ArrayList;
 public class WithJdbcDemo {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
 
+        getMetadata();
+
 //       selectUserDemo();
 //        insertUserDemo();
         insertUserDemo2();
 
+    }
+
+    private static void getMetadata() throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sql_light_rail?", "root", "root");
+        DatabaseMetaData metaData = connection.getMetaData();
+
+        String build = SqlLightRail.selectTable("information_schema", "COLUMNS")
+                .select("column_name, ordinal_position, column_type")
+                .where(WhereCondition.builder()
+                        .equalsTo("table_name", "user")
+                        .equalsTo("TABLE_SCHEMA", "sql_light_rail")
+                )
+                .build();
+
+        PreparedStatement ps = connection.prepareStatement(build);
+        ResultSet resultSet = ps.executeQuery();
+
+        while (resultSet.next()) {
+            String c1 = resultSet.getString(1);
+            String c2 = resultSet.getString(2);
+            String c3 = resultSet.getString(3);
+            System.out.println(c1 + " : " + c2 + " : " + c3);
+        }
     }
 
     private static void insertUserDemo2() throws ClassNotFoundException, SQLException {
@@ -38,7 +64,7 @@ public class WithJdbcDemo {
             add(LoginSumDaily.builder().userSum(30).roleSum(30).deviceSum(30).build());
         }};
 
-        InsertSqlBuilder builder = SqlLightRail.insertBuilder("login_sum_daily")
+        InsertSqlBuilder builder = SqlLightRail.insertTable("login_sum_daily")
             .values(dataList);
 
 
@@ -61,7 +87,7 @@ public class WithJdbcDemo {
             add(User.builder().name("insert-3").build());
         }};
 
-        InsertSqlBuilder builder = SqlLightRail.insertBuilder("user")
+        InsertSqlBuilder builder = SqlLightRail.insertTable("user")
             .values(users);
 
 
@@ -78,7 +104,7 @@ public class WithJdbcDemo {
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sql_light_rail?", "root", "root");
         DatabaseMetaData metaData = connection.getMetaData();
 
-        String build = SqlLightRail.selectBuilder("user")
+        String build = SqlLightRail.selectTable("user")
             .select("id", "name")
             .where(WhereCondition.builder()
                 .equalsTo("name", "neko")

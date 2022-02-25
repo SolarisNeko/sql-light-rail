@@ -50,7 +50,7 @@ public class SelectTest {
         }
 
         // 3 build SQL
-        String select = SqlLightRail.selectBuilder("new_traffic_ltv_sum_daily")
+        String select = SqlLightRail.selectTable("new_traffic_ltv_sum_daily")
                 .select(selectCondition.build())
                 .where(whereCondition.build())
                 .groupBy(groupByCondition)
@@ -63,7 +63,7 @@ public class SelectTest {
 
     @Test
     public void generatePlaceHolder() {
-        SelectSqlBuilder innerBuilder = SqlLightRail.selectBuilder("inner_demo")
+        SelectSqlBuilder innerBuilder = SqlLightRail.selectTable("inner_demo")
                 .select("id", "name")
                 .where(WhereCondition.builder()
                         .equalsTo("id", PLACEHOLDER)
@@ -77,7 +77,7 @@ public class SelectTest {
 
     @Test
     public void innerSelectSqlTest() {
-        SelectSqlBuilder innerBuilder = SqlLightRail.selectBuilder("inner_demo")
+        SelectSqlBuilder innerBuilder = SqlLightRail.selectTable("inner_demo")
                 .select("id", "name")
                 .where(WhereCondition.builder()
                         .equalsTo("id", 1)
@@ -92,7 +92,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectBuilder("user")
+        String selectSql = SqlLightRail.selectTable("user")
                 .select("id")
                 .where(Conditions.where()
                         .equalsTo("id", 1)
@@ -111,7 +111,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest_limitByPage() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectBuilder("user")
+        String selectSql = SqlLightRail.selectTable("user")
                 .select("id", "name")
                 .where(Conditions.where()
                         .like("id", 1)
@@ -130,7 +130,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest_multiTables() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectBuilder("user a", "user_role b")
+        String selectSql = SqlLightRail.selectTable("user a", "user_role b")
                 .select("b.id", "a.name")
                 .where(Conditions.where()
                         .equalsTo("b.id", 1)
@@ -144,7 +144,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest_joinOn_base() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectBuilder("user a")
+        String selectSql = SqlLightRail.selectTable("user a")
                 .select("a.id", "a.name")
                 .join(JoinCondition.builder()
                         .join("user_role b")
@@ -158,7 +158,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest_joinOn_advanced_1() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectBuilder("user a")
+        String selectSql = SqlLightRail.selectTable("user a")
                 .select("a.id", "a.name")
                 .alias(new HashMap<String, String>() {{
                     put("a.id", "编号");

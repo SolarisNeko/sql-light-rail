@@ -13,15 +13,15 @@ import com.neko.lightrail.builder.UpdateSqlBuilder;
  */
 public class SqlLightRail {
 
-    public static InsertSqlBuilder insertBuilder(String tableName) {
+    public static InsertSqlBuilder insertTable(String tableName) {
         return new InsertSqlBuilder(tableName);
     }
 
-    public static DeleteSqlBuilder deleteBuilder(String tableName) {
+    public static DeleteSqlBuilder deleteTable(String tableName) {
         return new DeleteSqlBuilder(tableName.trim());
     }
 
-    public static UpdateSqlBuilder updateBuilder(String tableName) {
+    public static UpdateSqlBuilder updateTable(String tableName) {
         return new UpdateSqlBuilder(tableName.trim());
     }
 
@@ -29,14 +29,14 @@ public class SqlLightRail {
 //        return new SelectSqlBuilder(schemaName.trim() + "." + tableName.trim());
 //    }
 
-    public static SelectSqlBuilder selectBuilder(String tableName) {
+    public static SelectSqlBuilder selectTable(String tableName) {
         return new SelectSqlBuilder(tableName.trim());
     }
 
     /**
      * 需要手动指定 table 别名
      */
-    public static SelectSqlBuilder selectBuilder(String... tableName) {
+    public static SelectSqlBuilder selectTable(String... tableName) {
         return new SelectSqlBuilder(tableName);
     }
 
