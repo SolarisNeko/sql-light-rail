@@ -3,6 +3,10 @@ package com.neko.lightrail.util;
 import jdk.nashorn.internal.runtime.logging.Logger;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author SolarisNeko
@@ -10,6 +14,8 @@ import java.lang.reflect.Field;
  */
 @Logger
 public class ReflectUtil {
+
+    public static final String SUPER_CLASS_SIMPLE_NAME = "Object";
 
     /**
      * 就近原则获取 field value By FieldName
@@ -60,4 +66,16 @@ public class ReflectUtil {
         return parentField;
     }
 
+    public static <T> List<String> getFieldNames(T t) {
+        ArrayList<String> columns = new ArrayList<>();
+        Class<?> aClass = t.getClass();
+        while (!SUPER_CLASS_SIMPLE_NAME.equals(aClass.getSimpleName())) {
+            List<String> collect = Arrays.stream(aClass.getDeclaredFields())
+                .map(Field::getName)
+                .collect(Collectors.toList());
+            columns.addAll(collect);
+            aClass = aClass.getSuperclass();
+        }
+        return columns;
+    }
 }
