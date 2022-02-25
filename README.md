@@ -1,10 +1,10 @@
 # SQL Light Rail
 
-## 发展状态
-目前 Light Rail 还处于 Cycle 等级。
+## LICENSE
+LICENSE Apache 2.0
 
-发展等级：
-Material -> Cycle -> Car -> Subway -> LightRail
+## 发展状态
+还未成熟，但基本功能 CRUD 已完成。
 
 # 完成进度
 ## 1、基本进度
