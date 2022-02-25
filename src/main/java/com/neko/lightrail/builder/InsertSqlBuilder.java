@@ -4,13 +4,11 @@ import com.neko.lightrail.condition.Condition;
 import com.neko.lightrail.exception.SqlLightRailException;
 import com.neko.lightrail.util.CamelCaseUtil;
 import com.neko.lightrail.util.ReflectUtil;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -27,9 +25,9 @@ public class InsertSqlBuilder extends SqlBuilder {
     @Override
     public String build() {
         return "INSERT INTO " + sql.getTableList().get(0) + "("
-            + String.join(", ", sql.getColumns()) + ") Values "
-            + String.join(", ", sql.getValues())
-            ;
+                + String.join(", ", sql.getColumns()) + ") Values "
+                + String.join(", ", sql.getValues())
+                ;
     }
 
 
@@ -47,29 +45,30 @@ public class InsertSqlBuilder extends SqlBuilder {
         if (CollectionUtils.isEmpty(valueList)) {
             throw new SqlLightRailException("Must set values! ");
         }
-        T t = valueList.get(0);
-        List<String> fieldNames = ReflectUtil.getFieldNames(t);
+        T data = valueList.get(0);
+        List<String> fieldNames = ReflectUtil.getFieldNames(data);
 
         if (CollectionUtils.isEmpty(sql.getColumns())) {
             // db.column
-            List<String> columnNames = fieldNames.stream().map(CamelCaseUtil::toBigCamelLowerName).collect(toList());
-            sql.setColumns(columnNames);
+            for (String fieldName : fieldNames) {
+                sql.getColumns().add(CamelCaseUtil.toBigCamelLowerName(fieldName));
+            }
         }
 
         List<String> valueSqlList = valueList.stream()
-            .map(object -> {
-                StringBuilder valueSql = new StringBuilder();
-                valueSql.append("(");
-                for (String insertColumn : fieldNames) {
-                    Object fieldValue = ReflectUtil.getFieldValueByNameShortly(object, insertColumn);
-                    valueSql.append(Condition.toSqlValueByType(fieldValue)).append(", ");
-                }
-                valueSql.delete(valueSql.length() - 2, valueSql.length());
-                valueSql.append(")");
-                return valueSql.toString();
-            })
-            .filter(StringUtils::isNotBlank)
-            .collect(toList());
+                .map(object -> {
+                    StringBuilder valueSql = new StringBuilder();
+                    valueSql.append("(");
+                    for (String insertColumn : fieldNames) {
+                        Object fieldValue = ReflectUtil.getFieldValueByNameShortly(object, insertColumn);
+                        valueSql.append(Condition.toSqlValueByType(fieldValue)).append(", ");
+                    }
+                    valueSql.delete(valueSql.length() - 2, valueSql.length());
+                    valueSql.append(")");
+                    return valueSql.toString();
+                })
+                .filter(StringUtils::isNotBlank)
+                .collect(toList());
 
         // 一次 API 生成一次局部 SQL
         sql.getValues().add(String.join(", ", valueSqlList));

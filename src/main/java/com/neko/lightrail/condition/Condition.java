@@ -11,12 +11,18 @@ public interface Condition {
      */
     String build();
 
+
+    String PLACEHOLDER = "?";
+
     /**
      * 根据 value 的类型, 返回 SQL 中的 value 如何呈现
      */
     public static String toSqlValueByType(Object value) {
         if (value == null) {
             return "null";
+        }
+        if (String.valueOf(value).equals(PLACEHOLDER)) {
+            return "?";
         }
         if (value instanceof CharSequence) {
             return "'" + value + "'";

@@ -18,13 +18,13 @@ public class InsertTest {
      */
     @Test
     public void insertSqlTest() {
-        String insertSql = SqlLightRail.insertTable("user")
+        String insertSql = SqlLightRail.insertBuilder("user")
                 .insertColumns("id", "name")
                 .values(Arrays.asList(
                         new User(10, "demo1"),
                         new User(20, "demo2")
                 )).build();
-        String target = "INSERT INTO user(id, name) Values ( 10, 'demo1' ),( 20, 'demo2' )";
+        String target = "INSERT INTO user(id, name) Values (10, 'demo1'), (20, 'demo2')";
         Assert.assertEquals(target, insertSql);
     }
 
@@ -33,13 +33,13 @@ public class InsertTest {
      */
     @Test
     public void insertRecursiveSqlTest() {
-        String insertSql = SqlLightRail.insertTable("user")
-                .insertColumns("id", "name", "age")
+        String insertSql = SqlLightRail.insertBuilder("user")
+//                .insertColumns("id", "name", "age")
                 .values(Arrays.asList(
                         new UserExt(10, "demo1", 18),
                         new UserExt(20, "demo2", 30)
                 )).build();
-        String target = "INSERT INTO user(id, name, age) Values ( 10, 'demo1', 18 ),( 20, 'demo2', 30 )";
+        String target = "INSERT INTO user(age, id, name) Values (18, 10, 'demo1'), (30, 20, 'demo2')";
         Assert.assertEquals(target, insertSql);
     }
 

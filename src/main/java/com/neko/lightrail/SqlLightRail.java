@@ -25,9 +25,9 @@ public class SqlLightRail {
         return new UpdateSqlBuilder(tableName.trim());
     }
 
-    public static SelectSqlBuilder selectBuilder(String schemaName, String tableName) {
-        return new SelectSqlBuilder(schemaName.trim() + "." + tableName.trim());
-    }
+//    public static SelectSqlBuilder selectBuilder(String schemaName, String tableName) {
+//        return new SelectSqlBuilder(schemaName.trim() + "." + tableName.trim());
+//    }
 
     public static SelectSqlBuilder selectBuilder(String tableName) {
         return new SelectSqlBuilder(tableName.trim());
@@ -43,7 +43,7 @@ public class SqlLightRail {
     /**
      * 子查询
      */
-    public static SelectSqlBuilder innerSelectBuilder(SelectSqlBuilder innerSelectBuilder) {
+    public static SelectSqlBuilder selectSubTable(SelectSqlBuilder innerSelectBuilder) {
         return new SelectSqlBuilder(" ( " + innerSelectBuilder.build() + " ) ");
     }
 

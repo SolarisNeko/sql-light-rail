@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * @author SolarisNeko
  * @date 2022-02-20
@@ -67,7 +69,7 @@ public class ReflectUtil {
     }
 
     public static <T> List<String> getFieldNames(T t) {
-        ArrayList<String> columns = new ArrayList<>();
+        List<String> columns = new ArrayList<>();
         Class<?> aClass = t.getClass();
         while (!SUPER_CLASS_SIMPLE_NAME.equals(aClass.getSimpleName())) {
             List<String> collect = Arrays.stream(aClass.getDeclaredFields())
@@ -76,6 +78,6 @@ public class ReflectUtil {
             columns.addAll(collect);
             aClass = aClass.getSuperclass();
         }
-        return columns;
+        return columns.stream().sorted().collect(toList());
     }
 }

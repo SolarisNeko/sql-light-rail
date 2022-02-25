@@ -21,7 +21,7 @@ public class SqlLightRailDemo {
 
     private static void selectSmallDemo() {
         // 最常见的 demo
-        String build = SqlLightRail.selectTable("user")
+        String build = SqlLightRail.selectBuilder("user")
             .select("id", "name")
             .where(
                 WhereCondition.builder()
@@ -37,7 +37,7 @@ public class SqlLightRailDemo {
      */
     private static void selectAllUseTest() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectTable("user")
+        String selectSql = SqlLightRail.selectBuilder("user")
             .select("id")
             .where(Conditions.where()
                 .equalsTo("id", 1)
