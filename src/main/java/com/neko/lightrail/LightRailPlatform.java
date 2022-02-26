@@ -1,6 +1,10 @@
 package com.neko.lightrail;
 
+import com.neko.lightrail.builder.DeleteSqlBuilder;
+import com.neko.lightrail.builder.InsertSqlBuilder;
 import com.neko.lightrail.builder.SelectSqlBuilder;
+import com.neko.lightrail.builder.SqlBuilder;
+import com.neko.lightrail.builder.UpdateSqlBuilder;
 import com.neko.lightrail.domain.ExecuteSqlContext;
 import com.neko.lightrail.orm.ORM;
 import com.neko.lightrail.plugin.LightRailPlugin;
@@ -35,9 +39,6 @@ public final class LightRailPlatform {
 
     private static final List<LightRailPlugin> plugins = new ArrayList<>();
 
-
-
-
     private static final String LOG_PREFIX_TITLE = "[LightRail Platform] ";
 
     private LightRailPlatform() {
@@ -45,7 +46,8 @@ public final class LightRailPlatform {
 
     public synchronized static LightRailPlatform createLightRailPlatform(DataSource dataSource) {
         if (LightRailPlatform.MULTI_DATASOURCE_MAP.size() > 0) {
-            throw new RuntimeException(LOG_PREFIX_TITLE + "You can't create DataSource again.");
+            log.warn(LOG_PREFIX_TITLE + "You can't create DataSource again.");
+            return INSTANCE;
         }
         LightRailPlatform.MULTI_DATASOURCE_MAP.put("default", dataSource);
         return INSTANCE;
@@ -96,11 +98,23 @@ public final class LightRailPlatform {
         return getInstance();
     }
 
+    /**
+     * Select
+     */
+    public static Integer executeUpdate(SqlBuilder sqlBuilder) {
+        return executeUpdate(sqlBuilder.build());
+    }
 
+    /**
+     * Select
+     */
     public static <T> List<T> executeQuery(SelectSqlBuilder sqlBuilder, Class<?> clazz) {
         return executeQuery(sqlBuilder.build(), clazz);
     }
 
+    /**
+     * Select ORM to List<Class object>
+     */
     public static <T> List<T> executeQuery(String sql, Class<?> clazz) {
         checkDataSource();
         ExecuteSqlContext context = null;
@@ -127,10 +141,31 @@ public final class LightRailPlatform {
     }
 
     /**
+     * Insert
+     */
+    public static Integer executeUpdate(InsertSqlBuilder builder) {
+        return executeUpdate(builder.build());
+    }
+
+    /**
+     * Update
+     */
+    public static Integer executeUpdate(UpdateSqlBuilder builder) {
+        return executeUpdate(builder.build());
+    }
+
+    /**
+     * Delete
+     */
+    public static Integer executeUpdate(DeleteSqlBuilder builder) {
+        return executeUpdate(builder.build());
+    }
+
+    /**
      * 执行更新
      * @return 修改行数
      */
-    public static Integer executeUpdate(String sql, Class<?> clazz) {
+    public static Integer executeUpdate(String sql) {
         checkDataSource();
         ExecuteSqlContext context = null;
         try {
@@ -157,7 +192,7 @@ public final class LightRailPlatform {
      * 有占位符的 insert/Update SQL
      * @return 更新数量
      */
-    public static Integer executeUpdate(String sql, List<Object[]> valueList, Class<?> clazz) {
+    public static Integer executeUpdate(String sql, List<Object[]> valueList) {
         checkDataSource();
         ExecuteSqlContext context = null;
         try {

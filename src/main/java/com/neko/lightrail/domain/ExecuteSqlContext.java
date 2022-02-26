@@ -46,10 +46,7 @@ public class ExecuteSqlContext {
     }
 
     /**
-     * 链式前置处理
-     *
-     * @param plugins
-     * @param context
+     * 前置处理
      */
     public void notifyPluginsPreExecuteSql() {
         for (LightRailPlugin plugin : plugins) {
@@ -59,8 +56,6 @@ public class ExecuteSqlContext {
 
     /**
      * 调用所有开始阶段
-     *
-     * @param plugins
      */
     public void notifyPluginsBegin() {
         for (LightRailPlugin plugin : plugins) {

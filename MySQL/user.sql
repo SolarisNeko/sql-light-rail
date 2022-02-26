@@ -9,8 +9,8 @@ CREATE TABLE `user`  (
                          `name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '姓名',
                          `age` int(11) NULL DEFAULT NULL COMMENT '年龄',
                          `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '邮箱',
-                         `createTime` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-                         `updateTime` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
+                         `create_time` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                         `update_time` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
                          `deleted` int(1) NULL DEFAULT 0 COMMENT '逻辑删除',
                          `version` int(255) UNSIGNED NULL DEFAULT 0 COMMENT '0',
                          PRIMARY KEY (`id`) USING BTREE

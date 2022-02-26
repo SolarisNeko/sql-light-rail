@@ -1,5 +1,8 @@
-package com.neko.lightrail;
+package com.neko.lightrail.orm;
 
+import com.neko.lightrail.LightRailPlatform;
+import com.neko.lightrail.LightRailPlatformFactory;
+import com.neko.lightrail.SqlLightRail;
 import com.neko.lightrail.plugin.SlowSqlPlugin;
 import com.neko.lightrail.pojo.UserWithEmail;
 import com.neko.lightrail.util.MyDataSource;

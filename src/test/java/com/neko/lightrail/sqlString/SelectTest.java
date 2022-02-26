@@ -1,5 +1,6 @@
-package com.neko.lightrail;
+package com.neko.lightrail.sqlString;
 
+import com.neko.lightrail.SqlLightRail;
 import com.neko.lightrail.builder.SelectSqlBuilder;
 import com.neko.lightrail.condition.Conditions;
 import com.neko.lightrail.condition.GroupByCondition;

@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * @author SolarisNeko
  * @date 2022-02-26
@@ -20,6 +22,8 @@ public class UserWithEmail {
     private String name;
 
     private String email;
+
+    private Date createTime;
 
 }
 
