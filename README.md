@@ -65,7 +65,7 @@ Assert.assertEquals(target, selectSql);
 // if Web send you some data
 String name = "root";
 
-// 新手不要学, 某些公司会存在这种莫名其妙的判断逻辑, 分在不同的 SQL 里, 但是如果在 Java 里汇总起来, 也总比看 2 个莫名其妙的 SQL 方便
+// 新手不要学，纯粹演示用
 SelectSqlBuilder sqlBuilder = SqlLightRail.selectTable(User.class);
 if ("root".equals(name)) {
     sqlBuilder.where(WhereCondition.builder()
