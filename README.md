@@ -12,7 +12,15 @@ Material -> Cycle -> Car -> Subway -> LightRail
 2. [ ] Select 的字段别名, 希望加入 alias Map 支持自定义映射规则
 
 ## 2、细进度
-1. Select
+
+### 1、Insert
+11. [x] insert into ...
+12. [x] table(col1, col2)
+13. [x] values auto generate by valueList
+14. [x] values by "SQL String"
+
+### 2. Select
+基本功能 :
    1. [x] select
    2. [x] alias Map
    3. [x] from
@@ -23,18 +31,26 @@ Material -> Cycle -> Car -> Subway -> LightRail
    8. [x] limit by pageNum, pageSize
    9. [x] inner Select 
    10. [x] join ... on ... 
-2. Insert
-   1. [x] insert into ...
-   2. [x] table(col1, col2)
-   3. [x] values auto generate by valueList
-   4. [x] values by "SQL String"
-3. Delete
-   1. [x] Delete From table
-   2. [x] where ...
-4. Update
-   1. [x] Update table
-   2. [x] set col1 = ?, col2 = ?
-   3. [x] Where col3 = ? and col4 = ?
+
+高级功能:
+1. ORM 查询, 默认查询所有字段
+```java
+// User 对象只有 id, name 两个 fields
+String selectAllSql = SqlLightRail.selectTable(User.class).build();
+String target = "SELECT id, name FROM user ";
+```
+2. 
+
+
+### 3、Update
+       1. [x] Update table
+       2. [x] set col1 = ?, col2 = ?
+       3. [x] Where col3 = ? and col4 = ?
+
+### 4、Delete
+       1. [x] Delete From table
+       2. [x] where ...
+
 
 
 

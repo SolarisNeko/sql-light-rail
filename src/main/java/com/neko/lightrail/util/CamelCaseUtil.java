@@ -13,7 +13,7 @@ public class CamelCaseUtil {
      * 转换成 Big Camel（大驼峰）的 Upper Case 版本!
      * 例如: SystemUser -> SYSTEM_USER
      */
-    public static String toBigCamelUpperName(String name) {
+    public static String getBigCamelUpperName(String name) {
         StringBuilder sb = new StringBuilder();
         char[] chars = name.toCharArray();
         if (chars.length != 0) {
@@ -43,7 +43,7 @@ public class CamelCaseUtil {
      * 转换成 Big Camel（大驼峰）的 lower case 版本!
      * 例如: SystemUser -> system_user
      */
-    public static String toBigCamelLowerName(String name) {
+    public static String getBigCamelLowerName(String name) {
         StringBuilder sb = new StringBuilder();
         // 转化成 char[] 流
         char[] chars = name.toCharArray();

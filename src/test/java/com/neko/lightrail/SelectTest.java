@@ -7,6 +7,8 @@ import com.neko.lightrail.condition.JoinCondition;
 import com.neko.lightrail.condition.OnCondition;
 import com.neko.lightrail.condition.SelectCondition;
 import com.neko.lightrail.condition.WhereCondition;
+import com.neko.lightrail.pojo.User;
+import com.neko.lightrail.pojo.UserExt;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -59,6 +61,20 @@ public class SelectTest {
         System.out.println(select);
         String target = "SELECT app_id, channel_id, sum(pay_money) as 'sum_money', register_time, pay_time, package_id FROM new_traffic_ltv_sum_daily  WHERE app_id = ? and channel_id = '-1' and package_id = '-1' and register_time <= ? and register_time <= ? GROUP BY register_time, pay_time, channel_id, package_id";
         Assert.assertEquals(target, select);
+    }
+
+    @Test
+    public void selectByORM() {
+        String selectAllSql = SqlLightRail.selectTable(User.class).build();
+        String target = "SELECT id, name FROM user ";
+        Assert.assertEquals(target, selectAllSql);
+    }
+
+    @Test
+    public void selectByORM_ExtentPojo() {
+        String selectAllSql = SqlLightRail.selectTable(UserExt.class).build();
+        String target = "SELECT age, id, name FROM user_ext ";
+        Assert.assertEquals(target, selectAllSql);
     }
 
     @Test

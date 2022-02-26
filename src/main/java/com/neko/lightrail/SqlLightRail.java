@@ -29,6 +29,11 @@ public class SqlLightRail {
 //        return new SelectSqlBuilder(schemaName.trim() + "." + tableName.trim());
 //    }
 
+    public static SelectSqlBuilder selectTable(Class tablePojo) {
+        return new SelectSqlBuilder(tablePojo);
+    }
+
+
     public static SelectSqlBuilder selectTable(String tableName) {
         return new SelectSqlBuilder(tableName.trim());
     }

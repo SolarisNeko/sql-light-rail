@@ -51,7 +51,7 @@ public class InsertSqlBuilder extends SqlBuilder {
         if (CollectionUtils.isEmpty(sql.getColumns())) {
             // db.column
             for (String fieldName : fieldNames) {
-                sql.getColumns().add(CamelCaseUtil.toBigCamelLowerName(fieldName));
+                sql.getColumns().add(CamelCaseUtil.getBigCamelLowerName(fieldName));
             }
         }
 

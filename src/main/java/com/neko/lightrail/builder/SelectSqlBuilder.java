@@ -6,6 +6,8 @@ import com.neko.lightrail.condition.JoinCondition;
 import com.neko.lightrail.condition.OrderByCondition;
 import com.neko.lightrail.condition.WhereCondition;
 import com.neko.lightrail.exception.SqlLightRailException;
+import com.neko.lightrail.util.CamelCaseUtil;
+import com.neko.lightrail.util.ReflectUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,6 +27,12 @@ import static java.util.stream.Collectors.toList;
 public class SelectSqlBuilder extends SqlBuilder {
 
     private static final String WHERE_PREFIX = "where";
+
+    public SelectSqlBuilder(Class tablePojo) {
+        super(CamelCaseUtil.getBigCamelLowerName(tablePojo.getSimpleName()));
+        List<String> fieldNames = ReflectUtil.getFieldNames(tablePojo);
+        sql.setSelect(fieldNames);
+    }
 
     public SelectSqlBuilder(String tableName) {
         super(tableName);

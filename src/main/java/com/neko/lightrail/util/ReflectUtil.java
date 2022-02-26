@@ -18,6 +18,7 @@ import static java.util.stream.Collectors.toList;
 public class ReflectUtil {
 
     public static final String SUPER_CLASS_SIMPLE_NAME = "Object";
+    public static final Class SUPER_CLASS = Object.class;
 
     /**
      * 就近原则获取 field value By FieldName
@@ -68,14 +69,27 @@ public class ReflectUtil {
         return parentField;
     }
 
-    public static <T> List<String> getFieldNames(T t) {
+    public static List<String> getFieldNames(Class aClass) {
         List<String> columns = new ArrayList<>();
-        Class<?> aClass = t.getClass();
-        while (!SUPER_CLASS_SIMPLE_NAME.equals(aClass.getSimpleName())) {
-            List<String> collect = Arrays.stream(aClass.getDeclaredFields())
+        while (!(aClass.getSimpleName().equals(SUPER_CLASS_SIMPLE_NAME))) {
+            List<String> currentFields = Arrays.stream(aClass.getDeclaredFields())
                 .map(Field::getName)
                 .collect(Collectors.toList());
-            columns.addAll(collect);
+            columns.addAll(currentFields);
+            aClass = aClass.getSuperclass();
+        }
+        return columns.stream().sorted().collect(toList());
+    }
+
+
+    public static <T> List<String> getFieldNames(T object) {
+        List<String> columns = new ArrayList<>();
+        Class<?> aClass = object.getClass();
+        while (!(aClass.getSimpleName().equals(SUPER_CLASS_SIMPLE_NAME))) {
+            List<String> currentFields = Arrays.stream(aClass.getDeclaredFields())
+                .map(Field::getName)
+                .collect(Collectors.toList());
+            columns.addAll(currentFields);
             aClass = aClass.getSuperclass();
         }
         return columns.stream().sorted().collect(toList());
