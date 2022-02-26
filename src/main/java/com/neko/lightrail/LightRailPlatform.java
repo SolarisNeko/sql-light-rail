@@ -6,7 +6,7 @@ import com.neko.lightrail.builder.SelectSqlBuilder;
 import com.neko.lightrail.builder.SqlBuilder;
 import com.neko.lightrail.builder.UpdateSqlBuilder;
 import com.neko.lightrail.domain.ExecuteSqlContext;
-import com.neko.lightrail.orm.ORM;
+import com.neko.lightrail.orm.LightRailOrm;
 import com.neko.lightrail.plugin.LightRailPlugin;
 import lombok.extern.slf4j.Slf4j;
 
@@ -137,7 +137,7 @@ public final class LightRailPlatform {
         }
         ResultSet rs = Optional.ofNullable(Objects.requireNonNull(context).getResultSet())
             .orElseThrow(() -> new RuntimeException(LOG_PREFIX_TITLE + "execute query error."));
-        return ORM.mapping(rs, clazz);
+        return LightRailOrm.mapping(rs, clazz);
     }
 
     /**
