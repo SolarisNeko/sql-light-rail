@@ -1,5 +1,9 @@
-
-driver
-url
-username
-password
+lightrail:
+  slowSQL:
+    # Enable this function
+    enable: true
+    # Timeout in seconds
+    timeout: 10
+    # prefix for logging output
+    log-prefix: "LOG-"
+test: ["YES", "NO"]
