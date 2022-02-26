@@ -1,17 +1,10 @@
 package com.neko.lightrail.orm;
 
-import com.neko.lightrail.SqlLightRail;
-import com.neko.lightrail.condition.WhereCondition;
-import com.neko.lightrail.pojo.User;
-import com.neko.lightrail.pojo.UserWithEmail;
 import com.neko.lightrail.util.CamelCaseUtil;
 import com.neko.lightrail.util.ReflectUtil;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,6 +18,7 @@ import static java.util.stream.Collectors.toMap;
  * @date 2022-02-26
  */
 public class ORM {
+
 
     /**
      * ORM convert
