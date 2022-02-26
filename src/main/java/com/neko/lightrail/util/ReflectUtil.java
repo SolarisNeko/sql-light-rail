@@ -81,6 +81,17 @@ public class ReflectUtil {
         return columns.stream().sorted().collect(toList());
     }
 
+    public static List<Field> getAllFields(Class aClass) {
+        List<Field> columns = new ArrayList<>();
+        while (!(aClass.getSimpleName().equals(SUPER_CLASS_SIMPLE_NAME))) {
+            List<Field> currentFields = Arrays.stream(aClass.getDeclaredFields())
+                .collect(Collectors.toList());
+            columns.addAll(currentFields);
+            aClass = aClass.getSuperclass();
+        }
+        return columns.stream().collect(toList());
+    }
+
 
     public static <T> List<String> getFieldNames(T object) {
         List<String> columns = new ArrayList<>();

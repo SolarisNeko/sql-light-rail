@@ -25,12 +25,18 @@ public class SqlLightRail {
         return new UpdateSqlBuilder(tableName.trim());
     }
 
-//    public static SelectSqlBuilder selectBuilder(String schemaName, String tableName) {
-//        return new SelectSqlBuilder(schemaName.trim() + "." + tableName.trim());
-//    }
-
+    /**
+     * 将 Class 进行 ORM 转换成 Select SQL.
+     * ps: ClassName, FieldNames 需要遵守 CamelCase(驼峰命名法) 这个约定。
+     * @param tablePojo
+     * @return
+     */
     public static SelectSqlBuilder selectTable(Class tablePojo) {
         return new SelectSqlBuilder(tablePojo);
+    }
+
+    public static SelectSqlBuilder selectTable(String tableName, Class tablePojo) {
+        return new SelectSqlBuilder(tableName, tablePojo);
     }
 
 

@@ -28,11 +28,20 @@ public class SelectSqlBuilder extends SqlBuilder {
 
     private static final String WHERE_PREFIX = "where";
 
+    /**
+     * 如果没有传 tableName, 默认使用 Class 的 Lower CamelCase 小驼峰。
+     * @param tablePojo
+     */
     public SelectSqlBuilder(Class tablePojo) {
-        super(CamelCaseUtil.getBigCamelLowerName(tablePojo.getSimpleName()));
+        this(CamelCaseUtil.getBigCamelLowerName(tablePojo.getSimpleName()), tablePojo);
+    }
+
+    public SelectSqlBuilder(String tableName, Class tablePojo) {
+        super(tableName);
         List<String> fieldNames = ReflectUtil.getFieldNames(tablePojo);
         sql.setSelect(fieldNames);
     }
+
 
     public SelectSqlBuilder(String tableName) {
         super(tableName);
