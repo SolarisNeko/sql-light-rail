@@ -51,6 +51,8 @@ String target = "SELECT id, name FROM user ";
        1. [x] Delete From table
        2. [x] where ...
 
+# LightRailPlatform - DAO 方案
+## 
 
 
 

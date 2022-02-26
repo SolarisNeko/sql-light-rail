@@ -27,7 +27,7 @@ public class ORM {
      * @param <T> 范型
      * @return SQL ResultSet 通过 ORM 映射后的 Java DataList
      */
-    public static <T> List<T> convert(ResultSet rs, Class clazz) {
+    public static <T> List<T> mapping(ResultSet rs, Class clazz) {
         List<Field> fieldList = ReflectUtil.getAllFields(clazz);
         Map<String, String> fieldColumnMap = fieldList.stream()
             .collect(toMap(
