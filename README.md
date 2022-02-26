@@ -7,6 +7,10 @@
 
 同时，将 SQL 难以编写的复杂语法，转移到 Java 层面处理，实在是非常的爽！
 
+## Download URL
+https://github.com/SolarisNeko/sql-light-rail/tags
+
+
 ## 初衷 / 痛点
 1. 大部分公司很多 SQL 还是 SQL String, MyBatis 迁移的工作量巨大，实际提升并不明显。
 2. MyBatis 并没有足够好到让我替换他，入侵性过强，较为重量。
