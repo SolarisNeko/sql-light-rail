@@ -44,7 +44,46 @@ Aha~ We're glad to you use our Architecture to avoid Write SQL in XML / String.
 
 yml config 
 
-...
+
+# 代码 Demo
+Select
+```java
+String selectSql = SqlLightRail.selectTable("user a")
+        .select("a.id", "a.name")
+        .join(JoinCondition.builder()
+                .join("user_role b")
+                .on("a.id = b.id")
+        )
+        .build();
+String target = "SELECT a.id, a.name FROM user a JOIN user_role b ON a.id = b.id ";
+Assert.assertEquals(target, selectSql);
+```
+
+应对复杂业务的情况
+```java
+// 1 Base SQL
+// if Web send you some data
+String name = "root";
+
+// 新手不要学, 某些公司会存在这种莫名其妙的判断逻辑, 分在不同的 SQL 里, 但是如果在 Java 里汇总起来, 也总比看 2 个莫名其妙的 SQL 方便
+SelectSqlBuilder sqlBuilder = SqlLightRail.selectTable(User.class);
+if ("root".equals(name)) {
+    sqlBuilder.where(WhereCondition.builder()
+        .equalsTo("deleted", "0")
+        .lessThanOrEquals("create_time", new Date())
+    );
+}
+if ("sb".equals(name)) {
+    sqlBuilder.where(WhereCondition.builder()
+        .equalsTo("name", "root")
+        .equalsTo("1", "1")
+    );
+}
+
+String selectSql = sqlBuilder.build();
+String target = "SELECT id, name FROM user WHERE deleted = '0' and create_time <= '2022-02-27 12:04:58'";
+Assert.assertEquals(target, selectSql);
+```
 
 # 完成进度
 ## 1、基本进度
@@ -52,7 +91,6 @@ yml config
 2. [ ] Select 的字段别名, 希望加入 alias Map 支持自定义映射规则
 
 ## 2、细进度
-
 ### 1、Insert
 Base Function
 1. [x] insert into ...
