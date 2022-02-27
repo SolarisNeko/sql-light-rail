@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2022-02-26
  */
 @Slf4j
-public class SlowSqlPlugin extends AbstractPlugin {
+public class SlowSqlPlugin extends Plugin {
 
     public static final String LOG_PREFIX_TITLE = "[Slow-SQL] ";
     private static final Long THRESHOLD_SLOW_SQL_IN_MS = 1000L;

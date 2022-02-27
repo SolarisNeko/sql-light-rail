@@ -7,7 +7,7 @@ import com.neko.lightrail.builder.SqlBuilder;
 import com.neko.lightrail.builder.UpdateSqlBuilder;
 import com.neko.lightrail.domain.ExecuteSqlContext;
 import com.neko.lightrail.orm.LightRailOrm;
-import com.neko.lightrail.plugin.AbstractPlugin;
+import com.neko.lightrail.plugin.Plugin;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -37,7 +37,7 @@ public class RailPlatform {
     private static final String DEFAULT_DATASOURCE_KEY = "default";
     private static final String JOIN_SCHEMA_TABLE_KEY = ">";
 
-    private static final List<AbstractPlugin> plugins = new ArrayList<>();
+    private static final List<Plugin> PLUGINS = new ArrayList<>();
 
     private static final String LOG_PREFIX_TITLE = "[LightRail Platform] ";
 
@@ -93,8 +93,8 @@ public class RailPlatform {
      * @param plugin
      * @return
      */
-    public RailPlatform registerPlugin(AbstractPlugin plugin) {
-        plugins.add(plugin);
+    public RailPlatform registerPlugin(Plugin plugin) {
+        PLUGINS.add(plugin);
         plugin.initPlugin();
         return getInstance();
     }
@@ -123,7 +123,7 @@ public class RailPlatform {
             context = ExecuteSqlContext.builder()
                 .sql(sql)
                 .isProcessDefault(true)
-                .plugins(plugins)
+                .plugins(PLUGINS)
                 .build();
             Connection conn = getDefaultDataSource().getConnection();
             context.setConnection(conn);
@@ -179,7 +179,7 @@ public class RailPlatform {
             context = ExecuteSqlContext.builder()
                 .sql(sql)
                 .isProcessDefault(true)
-                .plugins(plugins)
+                .plugins(PLUGINS)
                 .build();
             Connection conn = getDefaultDataSource().getConnection();
             context.setConnection(conn);
@@ -210,7 +210,7 @@ public class RailPlatform {
             context = ExecuteSqlContext.builder()
                 .sql(sql)
                 .valueList(valueList)
-                .plugins(plugins)
+                .plugins(PLUGINS)
                 .build();
             Connection conn = getDefaultDataSource().getConnection();
             context.setConnection(conn);

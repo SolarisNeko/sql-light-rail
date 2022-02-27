@@ -1,6 +1,6 @@
 package com.neko.lightrail.domain;
 
-import com.neko.lightrail.plugin.AbstractPlugin;
+import com.neko.lightrail.plugin.Plugin;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,7 +33,7 @@ public class ExecuteSqlContext<T> {
     private Connection connection;
     private PreparedStatement preparedStatement;
     // 插件
-    private List<AbstractPlugin> plugins;
+    private List<Plugin> plugins;
     // 是否使用默认执行的 JDBC, 如果为 false 需要提供 dataList 操作结果。
     private Boolean isProcessDefault;
     // 处理结果
@@ -52,7 +52,7 @@ public class ExecuteSqlContext<T> {
      * 前置处理
      */
     public void notifyPluginsPreExecuteSql() {
-        for (AbstractPlugin plugin : plugins) {
+        for (Plugin plugin : plugins) {
             plugin.preExecuteSql(this);
         }
     }
@@ -61,7 +61,7 @@ public class ExecuteSqlContext<T> {
      * 调用所有开始阶段
      */
     public void notifyPluginsBegin() {
-        for (AbstractPlugin plugin : plugins) {
+        for (Plugin plugin : plugins) {
             plugin.begin();
         }
     }
@@ -71,13 +71,13 @@ public class ExecuteSqlContext<T> {
      * 执行查询, 插件处理结果集
      */
     public void notifyPluginsPostExecuteSql() throws SQLException {
-        for (AbstractPlugin plugin : plugins) {
+        for (Plugin plugin : plugins) {
             plugin.postExecuteSql(this);
         }
     }
 
     public void notifyPluginsEnd() {
-        for (AbstractPlugin plugin : plugins) {
+        for (Plugin plugin : plugins) {
             plugin.end();
         }
     }
