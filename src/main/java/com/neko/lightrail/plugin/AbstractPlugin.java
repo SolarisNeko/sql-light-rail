@@ -6,11 +6,11 @@ import com.neko.lightrail.domain.ExecuteSqlContext;
  * @author SolarisNeko
  * @date 2022-02-26
  */
-public abstract class LightRailPlugin {
+public abstract class AbstractPlugin {
 
     private String pluginName;
 
-    public LightRailPlugin(String pluginName) {
+    public AbstractPlugin(String pluginName) {
         this.pluginName = pluginName;
     }
 
@@ -46,7 +46,7 @@ public abstract class LightRailPlugin {
     /**
      * 完成时
      */
-    public void finish() {
+    public void end() {
 
     }
 

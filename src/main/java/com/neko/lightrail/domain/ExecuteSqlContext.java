@@ -1,6 +1,6 @@
 package com.neko.lightrail.domain;
 
-import com.neko.lightrail.plugin.LightRailPlugin;
+import com.neko.lightrail.plugin.AbstractPlugin;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +25,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ExecuteSqlContext {
+public class ExecuteSqlContext<T> {
 
     private String sql;
     // prepareStatement 的占位符值
@@ -33,10 +33,13 @@ public class ExecuteSqlContext {
     private Connection connection;
     private PreparedStatement preparedStatement;
     // 插件
-    private List<LightRailPlugin> plugins;
+    private List<AbstractPlugin> plugins;
+    // 是否使用默认执行的 JDBC, 如果为 false 需要提供 dataList 操作结果。
+    private Boolean isProcessDefault;
     // 处理结果
     private ResultSet resultSet;
     private Integer updateCount;
+    private List<T> dataList;
 
 
     public ResultSet executeQuery() throws SQLException {
@@ -49,7 +52,7 @@ public class ExecuteSqlContext {
      * 前置处理
      */
     public void notifyPluginsPreExecuteSql() {
-        for (LightRailPlugin plugin : plugins) {
+        for (AbstractPlugin plugin : plugins) {
             plugin.preExecuteSql(this);
         }
     }
@@ -58,7 +61,7 @@ public class ExecuteSqlContext {
      * 调用所有开始阶段
      */
     public void notifyPluginsBegin() {
-        for (LightRailPlugin plugin : plugins) {
+        for (AbstractPlugin plugin : plugins) {
             plugin.begin();
         }
     }
@@ -68,14 +71,14 @@ public class ExecuteSqlContext {
      * 执行查询, 插件处理结果集
      */
     public void notifyPluginsPostExecuteSql() throws SQLException {
-        for (LightRailPlugin plugin : plugins) {
+        for (AbstractPlugin plugin : plugins) {
             plugin.postExecuteSql(this);
         }
     }
 
-    public void notifyPluginsFinish() {
-        for (LightRailPlugin plugin : plugins) {
-            plugin.finish();
+    public void notifyPluginsEnd() {
+        for (AbstractPlugin plugin : plugins) {
+            plugin.end();
         }
     }
 

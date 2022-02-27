@@ -7,7 +7,7 @@ import com.neko.lightrail.builder.SqlBuilder;
 import com.neko.lightrail.builder.UpdateSqlBuilder;
 import com.neko.lightrail.domain.ExecuteSqlContext;
 import com.neko.lightrail.orm.LightRailOrm;
-import com.neko.lightrail.plugin.LightRailPlugin;
+import com.neko.lightrail.plugin.AbstractPlugin;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -37,7 +37,7 @@ public class RailPlatform {
     private static final String DEFAULT_DATASOURCE_KEY = "default";
     private static final String JOIN_SCHEMA_TABLE_KEY = ">";
 
-    private static final List<LightRailPlugin> plugins = new ArrayList<>();
+    private static final List<AbstractPlugin> plugins = new ArrayList<>();
 
     private static final String LOG_PREFIX_TITLE = "[LightRail Platform] ";
 
@@ -89,10 +89,11 @@ public class RailPlatform {
 
     /**
      * 注册插件
+     *
      * @param plugin
      * @return
      */
-    public RailPlatform registerPlugin(LightRailPlugin plugin) {
+    public RailPlatform registerPlugin(AbstractPlugin plugin) {
         plugins.add(plugin);
         plugin.initPlugin();
         return getInstance();
@@ -121,23 +122,28 @@ public class RailPlatform {
         try {
             context = ExecuteSqlContext.builder()
                 .sql(sql)
+                .isProcessDefault(true)
                 .plugins(plugins)
                 .build();
-            context.notifyPluginsBegin();
             Connection conn = getDefaultDataSource().getConnection();
             context.setConnection(conn);
+            context.notifyPluginsBegin();
             context.setPreparedStatement(conn.prepareStatement(sql));
             context.notifyPluginsPreExecuteSql();
-            // 如有需要, 请在 Plugin 的 Pre / Post 阶段操作。
-            context.executeQuery();
+            if (context.getIsProcessDefault()) {
+                context.executeQuery();
+            }
             context.notifyPluginsPostExecuteSql();
-            context.notifyPluginsFinish();
+            context.notifyPluginsEnd();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        ResultSet rs = Optional.ofNullable(Objects.requireNonNull(context).getResultSet())
-            .orElseThrow(() -> new RuntimeException(LOG_PREFIX_TITLE + "execute query error."));
-        return LightRailOrm.mapping(rs, clazz);
+        if (context.getIsProcessDefault()) {
+            ResultSet rs = Optional.ofNullable(Objects.requireNonNull(context).getResultSet())
+                .orElseThrow(() -> new RuntimeException(LOG_PREFIX_TITLE + "execute query error."));
+            context.setDataList(LightRailOrm.mapping(rs, clazz));
+        }
+        return Optional.ofNullable(context.getDataList()).orElse(new ArrayList<>());
     }
 
     /**
@@ -163,6 +169,7 @@ public class RailPlatform {
 
     /**
      * 执行更新
+     *
      * @return 修改行数
      */
     public Integer executeUpdate(String sql) {
@@ -171,17 +178,20 @@ public class RailPlatform {
         try {
             context = ExecuteSqlContext.builder()
                 .sql(sql)
+                .isProcessDefault(true)
                 .plugins(plugins)
                 .build();
-            context.notifyPluginsBegin();
             Connection conn = getDefaultDataSource().getConnection();
             context.setConnection(conn);
+            context.notifyPluginsBegin();
             context.setPreparedStatement(conn.prepareStatement(sql));
             context.notifyPluginsPreExecuteSql();
             // 如有需要, 请在 Plugin 的 Pre / Post 阶段操作。
-            context.executeUpdate();
+            if (context.getIsProcessDefault()) {
+                context.executeUpdate();
+            }
             context.notifyPluginsPostExecuteSql();
-            context.notifyPluginsFinish();
+            context.notifyPluginsEnd();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -190,6 +200,7 @@ public class RailPlatform {
 
     /**
      * 有占位符的 insert/Update SQL
+     *
      * @return 更新数量
      */
     public Integer executeUpdate(String sql, List<Object[]> valueList) {
@@ -201,15 +212,17 @@ public class RailPlatform {
                 .valueList(valueList)
                 .plugins(plugins)
                 .build();
-            context.notifyPluginsBegin();
             Connection conn = getDefaultDataSource().getConnection();
             context.setConnection(conn);
+            context.notifyPluginsBegin();
             context.setPreparedStatement(conn.prepareStatement(sql));
             context.notifyPluginsPreExecuteSql();
             // 如有需要, 请在 Plugin 的 Pre / Post 阶段操作。
-            context.executeUpdate();
+            if (context.getIsProcessDefault()) {
+                context.executeUpdate();
+            }
             context.notifyPluginsPostExecuteSql();
-            context.notifyPluginsFinish();
+            context.notifyPluginsEnd();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -221,9 +234,6 @@ public class RailPlatform {
             throw new RuntimeException(LOG_PREFIX_TITLE + "Your DataSource is not set!");
         }
     }
-
-
-
 
 
 }
