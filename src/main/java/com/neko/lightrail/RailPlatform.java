@@ -26,9 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2022-02-26
  */
 @Slf4j
-public final class LightRailPlatform {
+public class RailPlatform {
 
-    private static final LightRailPlatform INSTANCE = new LightRailPlatform();
+    private static final RailPlatform INSTANCE = new RailPlatform();
 
     /**
      * 多数据源
@@ -41,37 +41,37 @@ public final class LightRailPlatform {
 
     private static final String LOG_PREFIX_TITLE = "[LightRail Platform] ";
 
-    private LightRailPlatform() {
+    private RailPlatform() {
     }
 
-    public synchronized static LightRailPlatform createLightRailPlatform(DataSource dataSource) {
-        if (LightRailPlatform.MULTI_DATASOURCE_MAP.size() > 0) {
+    public synchronized static RailPlatform createLightRailPlatform(DataSource dataSource) {
+        if (RailPlatform.MULTI_DATASOURCE_MAP.size() > 0) {
             log.warn(LOG_PREFIX_TITLE + "You can't create DataSource again.");
             return INSTANCE;
         }
-        LightRailPlatform.MULTI_DATASOURCE_MAP.put("default", dataSource);
+        RailPlatform.MULTI_DATASOURCE_MAP.put("default", dataSource);
         return INSTANCE;
     }
 
-    public synchronized static LightRailPlatform getInstance() {
+    public synchronized static RailPlatform getInstance() {
         return INSTANCE;
     }
 
-    public static LightRailPlatform addDataSource(String shardingKey, DataSource dataSource) {
+    public static RailPlatform addDataSource(String shardingKey, DataSource dataSource) {
         MULTI_DATASOURCE_MAP.put(shardingKey, dataSource);
         return getInstance();
     }
 
-    public static LightRailPlatform addDataSource(String schema, String table, DataSource dataSource) {
+    public static RailPlatform addDataSource(String schema, String table, DataSource dataSource) {
         return addDataSource(schema + JOIN_SCHEMA_TABLE_KEY + table, dataSource);
     }
 
-    public static LightRailPlatform removeDataSource(String shardingKey) {
+    public static RailPlatform removeDataSource(String shardingKey) {
         MULTI_DATASOURCE_MAP.remove(shardingKey);
         return getInstance();
     }
 
-    public static LightRailPlatform removeDataSource(String schema, String table) {
+    public static RailPlatform removeDataSource(String schema, String table) {
         return removeDataSource(schema + JOIN_SCHEMA_TABLE_KEY + table);
     }
 
@@ -92,7 +92,7 @@ public final class LightRailPlatform {
      * @param plugin
      * @return
      */
-    public LightRailPlatform registerPlugin(LightRailPlugin plugin) {
+    public RailPlatform registerPlugin(LightRailPlugin plugin) {
         plugins.add(plugin);
         plugin.initPlugin();
         return getInstance();
@@ -101,21 +101,21 @@ public final class LightRailPlatform {
     /**
      * Select
      */
-    public static Integer executeUpdate(SqlBuilder sqlBuilder) {
+    public Integer executeUpdate(SqlBuilder sqlBuilder) {
         return executeUpdate(sqlBuilder.build());
     }
 
     /**
      * Select
      */
-    public static <T> List<T> executeQuery(SelectSqlBuilder sqlBuilder, Class<?> clazz) {
+    public <T> List<T> executeQuery(SelectSqlBuilder sqlBuilder, Class<?> clazz) {
         return executeQuery(sqlBuilder.build(), clazz);
     }
 
     /**
      * Select ORM to List<Class object>
      */
-    public static <T> List<T> executeQuery(String sql, Class<?> clazz) {
+    public <T> List<T> executeQuery(String sql, Class<?> clazz) {
         checkDataSource();
         ExecuteSqlContext context = null;
         try {
@@ -143,21 +143,21 @@ public final class LightRailPlatform {
     /**
      * Insert
      */
-    public static Integer executeUpdate(InsertSqlBuilder builder) {
+    public Integer executeUpdate(InsertSqlBuilder builder) {
         return executeUpdate(builder.build());
     }
 
     /**
      * Update
      */
-    public static Integer executeUpdate(UpdateSqlBuilder builder) {
+    public Integer executeUpdate(UpdateSqlBuilder builder) {
         return executeUpdate(builder.build());
     }
 
     /**
      * Delete
      */
-    public static Integer executeUpdate(DeleteSqlBuilder builder) {
+    public Integer executeUpdate(DeleteSqlBuilder builder) {
         return executeUpdate(builder.build());
     }
 
@@ -165,7 +165,7 @@ public final class LightRailPlatform {
      * 执行更新
      * @return 修改行数
      */
-    public static Integer executeUpdate(String sql) {
+    public Integer executeUpdate(String sql) {
         checkDataSource();
         ExecuteSqlContext context = null;
         try {
@@ -192,7 +192,7 @@ public final class LightRailPlatform {
      * 有占位符的 insert/Update SQL
      * @return 更新数量
      */
-    public static Integer executeUpdate(String sql, List<Object[]> valueList) {
+    public Integer executeUpdate(String sql, List<Object[]> valueList) {
         checkDataSource();
         ExecuteSqlContext context = null;
         try {
@@ -216,7 +216,7 @@ public final class LightRailPlatform {
         return context.getUpdateCount();
     }
 
-    private static void checkDataSource() {
+    private void checkDataSource() {
         if (MULTI_DATASOURCE_MAP == null) {
             throw new RuntimeException(LOG_PREFIX_TITLE + "Your DataSource is not set!");
         }

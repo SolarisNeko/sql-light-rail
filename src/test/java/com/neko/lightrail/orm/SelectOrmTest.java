@@ -1,7 +1,7 @@
 package com.neko.lightrail.orm;
 
-import com.neko.lightrail.LightRailPlatform;
-import com.neko.lightrail.LightRailPlatformFactory;
+import com.neko.lightrail.RailPlatform;
+import com.neko.lightrail.RailPlatformFactory;
 import com.neko.lightrail.SqlLightRail;
 import com.neko.lightrail.plugin.SlowSqlPlugin;
 import com.neko.lightrail.pojo.UserWithEmail;
@@ -18,11 +18,11 @@ public class SelectOrmTest {
 
     @Test
     public void selectOrmTest() throws Exception {
-        LightRailPlatform lightRailPlatform = LightRailPlatformFactory.createLightRailPlatform(MyDataSource.getDataSource());
+        RailPlatform railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDataSource());
 
-        lightRailPlatform.registerPlugin(new SlowSqlPlugin());
+        railPlatform.registerPlugin(new SlowSqlPlugin());
 
-        List<UserWithEmail> dataList = lightRailPlatform.executeQuery(
+        List<UserWithEmail> dataList = railPlatform.executeQuery(
             SqlLightRail.selectTable("user", UserWithEmail.class),
             UserWithEmail.class
         );

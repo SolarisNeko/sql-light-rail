@@ -139,15 +139,15 @@ String target = "SELECT id, name FROM user ";
 1. [x] Delete From table
 2. [x] where ...
 
-# LightRailPlatform - Java DAO 统一操作平台
-LightRailPlatform 由 4 部分组合而成:
+# RailPlatform - Java DAO 统一操作平台
+RailPlatform 由 4 部分组合而成:
 1. SqlLightRail : 这是一款轻量级的 Java SQL 编写工具。主要处理各类 Java 缘分
 2. JDBC : 不解释。
 3. LightRailPlugin : 执行 SQL 生命周期的插件。不清楚可以见 SlowSqlPlugin (慢查询统计).
 4. LightRailOrm : 对象映射
 
 ## 入口
-LightRailPlatformFactory
+RailPlatformFactory
 
 你需要自己准备 DataSource (数据源 / 数据库连接池) 给本框架。
 
