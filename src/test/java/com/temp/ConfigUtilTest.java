@@ -15,9 +15,11 @@ public class ConfigUtilTest {
 
     @Test
     public void basicTest() {
-        System.out.println("enable: " + configUtil.getBoolean("lightrail.slowSQL.enable"));
-        System.out.println("timeout: " + configUtil.getInteger("lightrail.slowSQL.timeout"));
-        System.out.println("log-prefix: " + configUtil.getString("lightrail.slowSQL.log-prefix"));
+        System.out.println("lightrail.slowSQL.enable: " + configUtil.getBoolean("lightrail.slowSQL.enable"));
+        System.out.println("lightrail.connection.timeout: " + configUtil.getInteger("lightrail.connection.timeout"));
+        System.out.println("lightrail.connection.driver.name: " + configUtil.getString("lightrail.connection.driver.name"));
+        System.out.println("lightrail.connection.driver.version: " + configUtil.getDouble("lightrail.connection.driver.version"));
+        System.out.println("lightrail.plugins: " + configUtil.getStringList("lightrail.plugins"));
     }
 
     @Test

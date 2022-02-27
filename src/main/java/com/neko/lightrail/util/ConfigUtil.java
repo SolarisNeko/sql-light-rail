@@ -6,6 +6,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class ConfigUtil {
@@ -57,12 +58,25 @@ public class ConfigUtil {
         return Optional.ofNullable(this.getValue(key, String.class)).orElse(defaultValue);
     }
 
+    public List<String> getStringList(String key) {
+        List<Object> valueList = Optional.ofNullable(this.getValue(key, List.class)).orElse(Collections.emptyList());
+        return valueList.stream().map(Object::toString).collect(Collectors.toList());
+    }
+
     public Integer getInteger(String key) {
         return this.getIntegerOrDefault(key, 0);
     }
 
     public Integer getIntegerOrDefault(String key, Integer defaultValue) {
         return Optional.ofNullable(this.getValue(key, Integer.class)).orElse(defaultValue);
+    }
+
+    public Double getDouble(String key) {
+        return this.getDoubleOrDefault(key, 0D);
+    }
+
+    public Double getDoubleOrDefault(String key, Double defaultValue) {
+        return Optional.ofNullable(this.getValue(key, Double.class)).orElse(defaultValue);
     }
 
     public Map<String, String> getAllValue() {
