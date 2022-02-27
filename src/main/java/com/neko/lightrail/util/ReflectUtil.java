@@ -1,6 +1,6 @@
 package com.neko.lightrail.util;
 
-import jdk.nashorn.internal.runtime.logging.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toList;
  * @author SolarisNeko
  * @date 2022-02-20
  */
-@Logger
+@Slf4j
 public class ReflectUtil {
 
     public static final String SUPER_CLASS_SIMPLE_NAME = "Object";
