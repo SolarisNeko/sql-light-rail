@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+<!--	<parent>-->
+<!--		<groupId>org.springframework.boot</groupId>-->
+<!--		<artifactId>spring-boot-starter-parent</artifactId>-->
+<!--		<version>2.6.3</version>-->
+<!--		<relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
+<!--	</parent>-->
+
+	<groupId>com.neko</groupId>
+	<artifactId>sql-light-rail</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>sql_light_rail</name>
+	<contributors>
+		<contributor>
+			<name>SolarisNeko</name>
+			<url>https://github.com/SolarisNeko</url>
+		</contributor>
+		<contributor>
+			<name>Emmett Woo</name>
+			<url>https://github.com/Emmettwoo</url>
+		</contributor>
+	</contributors>
+
+	<description>
+		SQL Light Rail (SQL 轻轨)
+		> 轻轨: 有多节车厢, 如同本框架设计的 Chain Builder 思想。
+		这是一款【约定大于配置】的 Java SQL Flux 框架, 用于快速构建大量 SQL, 辅助 DAO 操作/复用 SQL。
+
+		设计原因:
+		1. 因部分公司有大量历史代码, MyBatis 入侵性过强, 迁移的工作量巨大, 并不能友好地支持快速开发.
+		其次, MyBatis Generator 生成无意义的代码过多, 文件过多, 项目结构庞大, 不够轻量化。
+		MyBatis 并不能很友好的对部分公司对 DAO 操作的抽象封装支持。
+		2. 我希望复杂拼接 SQL 应该在 Java 层, 而不是在 xml .并且配合 IDE 智能提示, 如 IDEA, vscode, 等
+		都有明显的开发速度提升。
+
+		约定 > 配置:
+		1. 如果你的 Pojo 遵循驼峰命名, SQL Table 命名遵循大驼峰命名, 如 class LoginSumDaily == table login_sum_daily 。
+		那么我们会自动帮你将 field 转换为表结构。
+		2. 采用 Flux/Stream 写法。
+
+		本架构 License 为 Apache2.0
+	</description>
+
+	<properties>
+		<java.version>8</java.version>
+		<github.global.server>github</github.global.server>
+	</properties>
+
+	<dependencies>
+
+		<!-- DAO Layer -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.2.8</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.25</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Log -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.32</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.10</version>
+		</dependency>
+
+		<!-- Util -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.22</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.4</version>
+		</dependency>
+
+		<!-- Test -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>2.0.2-beta</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.1</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<!-- 此tag下面的所有plugins都是关于上传jar包的依赖 -->
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.0</version>
+				<configuration>
+					<source>8</source>
+					<target>8</target>
+				</configuration>
+			</plugin>
+
+<!--			<plugin>-->
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-source-plugin</artifactId>-->
+<!--				<version>3.0.1</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<phase>package</phase>-->
+<!--						<goals>-->
+<!--							<goal>jar</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.2</version>
+				<configuration>
+					<!-- 配置本地打包后的本地仓库存储地址，后续上传jar包会从此仓库中去取 -->
+					<altDeploymentRepository>internal.repo::default::file://${project.build.directory}/maven-repository</altDeploymentRepository>
+<!--					<altDeploymentRepository>file://${project.build.directory}/maven-repository</altDeploymentRepository>-->
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.12</version>
+				<configuration>
+					<message>Maven artifacts for ${project.artifactId}-${project.version}</message>
+					<noJekyll>true</noJekyll>
+					<!-- 指定从哪里去取打好的包，并上传至github -->
+					<outputDirectory>${project.build.directory}/maven-repository</outputDirectory>
+					<!--
+						指定要上传的分支, refs/heads 这个不变，后面的分支名可选，可以采取一个jar包使用一个分支的策略。
+						若多个jar包同时发布在同一个分支的话，会覆盖。。。。
+					-->
+					<branch>refs/heads/release-jar</branch>
+					<!-- 包含outputDirectory标签内填的文件夹中的所有内容 -->
+					<includes>
+						<include>**/*</include>
+					</includes>
+					<!-- github远程存储outputDirectory标签内填的文件夹中的内容 -->
+					<repositoryName>sql-light-rail</repositoryName>
+					<!--
+					  github的用户名，注意不是登录的用户名，此项需要登录后，进入https://github.com/settings/profile页面配置Name属性，
+					  否则会报
+					  [ERROR] Failed to execute goal com.github.github:site-maven-plugin:0.12:site
+					  (default) on project rfcore: Error creating commit: Invalid request.
+					  [ERROR] For 'properties/name', nil is not a string.
+					  [ERROR] For 'properties/name', nil is not a string. (422)
+					  [ERROR] -> [Help 1]
+					  的错误
+					-->
+					<repositoryOwner>SolarisNeko</repositoryOwner>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>deploy</phase>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+<!--	<distributionManagement>-->
+<!--		<repository>-->
+<!--			<id>github</id>-->
+<!--			<name>SolarisNeko Apache Maven Packages</name>-->
+<!--			<url>https://maven.pkg.github.com/SolarisNeko/sql-light-rail</url>-->
+<!--		</repository>-->
+<!--	</distributionManagement>-->
+
+</project>
