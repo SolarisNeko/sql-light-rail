@@ -11,7 +11,7 @@
 Maven
 ```xml
 <dependency>
-    <groupId>com.neko</groupId>
+    <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 </dependency>
