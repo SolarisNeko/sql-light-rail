@@ -154,5 +154,12 @@
 <!--	</pluginRepositories>-->
 
 
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>SolarisNeko Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/SolarisNeko/sql-light-rail</url>
+		</repository>
+	</distributionManagement>
 
 </project>
