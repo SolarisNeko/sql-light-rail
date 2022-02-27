@@ -7,22 +7,13 @@
 
 同时，将 SQL 难以编写的复杂语法，转移到 Java 层面处理，实在是非常的爽！
 
-## Use / Download
-Maven
-```xml
-<dependency>
-    <groupId>com.neko233</groupId>
-    <artifactId>sql-light-rail</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-</dependency>
-```
+## Download
+>Maven / Gradle
 
-Gradle
-```gradle
-compile 'com.neko:sql-light-rail:0.0.1-SNAPSHOT'
-```
+https://github.com/SolarisNeko/sql-light-rail/packages/1276427
 
-URL
+>Source URL
+
 https://github.com/SolarisNeko/sql-light-rail/tags
 
 
