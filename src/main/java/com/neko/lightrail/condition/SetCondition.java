@@ -20,7 +20,7 @@ public class SetCondition implements Condition {
         return setSqlBuilder.toString();
     }
 
-    public SetCondition equalsTo(String columnName, String value) {
+    public SetCondition equalsTo(String columnName, Object value) {
         if (setSqlBuilder.toString().equals("Set ")) {
             setSqlBuilder.append(columnName)
                 .append(" = ")

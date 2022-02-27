@@ -1,17 +1,10 @@
 package com.neko.lightrail.orm;
 
-import com.neko.lightrail.SqlLightRail;
-import com.neko.lightrail.condition.WhereCondition;
-import com.neko.lightrail.pojo.User;
-import com.neko.lightrail.pojo.UserWithEmail;
 import com.neko.lightrail.util.CamelCaseUtil;
 import com.neko.lightrail.util.ReflectUtil;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,7 +17,8 @@ import static java.util.stream.Collectors.toMap;
  * @author SolarisNeko
  * @date 2022-02-26
  */
-public class ORM {
+public class LightRailOrm {
+
 
     /**
      * ORM convert
@@ -33,7 +27,7 @@ public class ORM {
      * @param <T> 范型
      * @return SQL ResultSet 通过 ORM 映射后的 Java DataList
      */
-    public static <T> List<T> convert(ResultSet rs, Class clazz) {
+    public static <T> List<T> mapping(ResultSet rs, Class clazz) {
         List<Field> fieldList = ReflectUtil.getAllFields(clazz);
         Map<String, String> fieldColumnMap = fieldList.stream()
             .collect(toMap(

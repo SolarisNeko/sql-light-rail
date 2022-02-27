@@ -30,6 +30,7 @@ public class SelectSqlBuilder extends SqlBuilder {
 
     /**
      * 如果没有传 tableName, 默认使用 Class 的 Lower CamelCase 小驼峰。
+     *
      * @param tablePojo
      */
     public SelectSqlBuilder(Class tablePojo) {
@@ -55,8 +56,18 @@ public class SelectSqlBuilder extends SqlBuilder {
         super(tableNameList);
     }
 
+    private static void checkSelectNecessaryParams(Sql sql) {
+        List<String> selectList = sql.getSelect().stream()
+            .filter(StringUtils::isNotBlank)
+            .collect(toList());
+        if (CollectionUtils.isEmpty(selectList)) {
+            throw new SqlLightRailException("Must set 'select' in SQL");
+        }
+
+    }
+
     /**
-     * TODO 应该指定一个可大小写的选择参数
+     * 应该指定一个可大小写的选择参数
      *
      * @return
      */
@@ -64,33 +75,23 @@ public class SelectSqlBuilder extends SqlBuilder {
     public String build() {
         checkSelectNecessaryParams(sql);
         List<String> selectList = sql.getSelect().stream()
-                .filter(Objects::nonNull)
-                .map(t -> {
-                    String alias = sql.getAliasMap().get(t);
-                    if (alias == null) {
-                        return t;
-                    }
-                    return t + " as " + Condition.toSqlValueByType(alias);
-                })
-                .collect(toList());
+            .filter(Objects::nonNull)
+            .map(fieldName -> {
+                String alias = sql.getAliasMap().get(fieldName);
+                if (alias != null) {
+                    return fieldName + " as " + Condition.toSqlValueByType(alias);
+                }
+                return CamelCaseUtil.getBigCamelLowerName(fieldName);
+            })
+            .collect(toList());
         return "SELECT " + String.join(", ", selectList)
-                + " FROM " + String.join(",", sql.getTableList()) + " "
-                + Optional.ofNullable(sql.getWhere()).orElse("")
-                + Optional.ofNullable(sql.getOrderBy()).orElse("")
-                + Optional.ofNullable(sql.getGroupBy()).orElse("")
-                + Optional.ofNullable(sql.getLimit()).orElse("")
-                + Optional.ofNullable(sql.getJoin()).orElse("")
-                ;
-    }
-
-    private static void checkSelectNecessaryParams(Sql sql) {
-        List<String> selectList = sql.getSelect().stream()
-                .filter(StringUtils::isNotBlank)
-                .collect(toList());
-        if (CollectionUtils.isEmpty(selectList)) {
-            throw new SqlLightRailException("Must set 'select' in SQL");
-        }
-
+            + " FROM " + String.join(",", sql.getTableList()) + " "
+            + Optional.ofNullable(sql.getWhere()).orElse("")
+            + Optional.ofNullable(sql.getOrderBy()).orElse("")
+            + Optional.ofNullable(sql.getGroupBy()).orElse("")
+            + Optional.ofNullable(sql.getLimit()).orElse("")
+            + Optional.ofNullable(sql.getJoin()).orElse("")
+            ;
     }
 
     public SelectSqlBuilder select(String... columns) {

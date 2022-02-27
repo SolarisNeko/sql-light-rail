@@ -4,6 +4,7 @@ import com.neko.lightrail.builder.DeleteSqlBuilder;
 import com.neko.lightrail.builder.InsertSqlBuilder;
 import com.neko.lightrail.builder.SelectSqlBuilder;
 import com.neko.lightrail.builder.UpdateSqlBuilder;
+import com.neko.lightrail.util.CamelCaseUtil;
 
 /**
  *
@@ -12,6 +13,20 @@ import com.neko.lightrail.builder.UpdateSqlBuilder;
  * @date 2022-02-20
  */
 public class SqlLightRail {
+
+    /**
+     * 生成 Insert 的占位符模板
+     */
+    public static InsertSqlBuilder generateInsertTemplate(Class<?> clazz, Long insertTimes) {
+        return generateInsertTemplate(CamelCaseUtil.getBigCamelLowerName(clazz.getSimpleName()), clazz, insertTimes);
+    }
+
+    /**
+     * 生成 Insert 的占位符模板
+     */
+    public static InsertSqlBuilder generateInsertTemplate(String tableName, Class<?> clazz, Long insertTimes) {
+        return new InsertSqlBuilder(tableName).insertColumns(clazz).values(insertTimes);
+    }
 
     public static InsertSqlBuilder insertTable(String tableName) {
         return new InsertSqlBuilder(tableName);

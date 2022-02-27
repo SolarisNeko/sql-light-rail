@@ -12,7 +12,7 @@
 
 	<groupId>com.neko</groupId>
 	<artifactId>sql-light-rail</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>sql_light_rail</name>
 	<contributors>
 		<contributor>
@@ -52,6 +52,12 @@
 	<dependencies>
 
 		<!-- DAO Layer -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.2.8</version>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -155,5 +161,12 @@
 <!--	</pluginRepositories>-->
 
 
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>SolarisNeko Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/SolarisNeko/sql-light-rail</url>
+		</repository>
+	</distributionManagement>
 
 </project>

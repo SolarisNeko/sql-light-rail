@@ -1,6 +1,6 @@
 package com.neko.lightrail.util;
 
-import jdk.nashorn.internal.runtime.logging.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toList;
  * @author SolarisNeko
  * @date 2022-02-20
  */
-@Logger
+@Slf4j
 public class ReflectUtil {
 
     public static final String SUPER_CLASS_SIMPLE_NAME = "Object";
@@ -37,10 +37,12 @@ public class ReflectUtil {
         try {
             parentField = getParentFieldByNameShortly(targetClass, insertColumn);
         } catch (NoSuchFieldException e) {
+            e.printStackTrace();
         }
         try {
             childField = targetClass.getDeclaredField(insertColumn);
-        } catch (NoSuchFieldException ignored) {
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
         }
         // parent field not exists
         field = childField != null ? childField : parentField;
@@ -52,7 +54,7 @@ public class ReflectUtil {
             field.setAccessible(true);
             fieldValue = field.get(object);
         } catch (IllegalAccessException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
         return fieldValue;
     }
