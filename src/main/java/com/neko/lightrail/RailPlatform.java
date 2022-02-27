@@ -1,10 +1,7 @@
 package com.neko.lightrail;
 
-import com.neko.lightrail.builder.DeleteSqlBuilder;
-import com.neko.lightrail.builder.InsertSqlBuilder;
 import com.neko.lightrail.builder.SelectSqlBuilder;
 import com.neko.lightrail.builder.SqlBuilder;
-import com.neko.lightrail.builder.UpdateSqlBuilder;
 import com.neko.lightrail.domain.ExecuteSqlContext;
 import com.neko.lightrail.orm.LightRailOrm;
 import com.neko.lightrail.plugin.Plugin;
@@ -37,7 +34,7 @@ public class RailPlatform {
     private static final String DEFAULT_DATASOURCE_KEY = "default";
     private static final String JOIN_SCHEMA_TABLE_KEY = ">";
 
-    private static final List<Plugin> PLUGINS = new ArrayList<>();
+    private static final List<Plugin> GLOBAL_PLUGINS = new ArrayList<>();
 
     private static final String LOG_PREFIX_TITLE = "[LightRail Platform] ";
 
@@ -88,13 +85,28 @@ public class RailPlatform {
     }
 
     /**
-     * 注册插件
+     * 添加插件
      *
      * @param plugin
      * @return
      */
-    public RailPlatform registerPlugin(Plugin plugin) {
-        PLUGINS.add(plugin);
+    public RailPlatform addGlobalPlugin(Plugin plugin) {
+        if (GLOBAL_PLUGINS.contains(plugin)) {
+            return getInstance();
+        }
+        GLOBAL_PLUGINS.add(plugin);
+        plugin.initPlugin();
+        return getInstance();
+    }
+
+    /**
+     * 移除插件
+     *
+     * @param plugin
+     * @return
+     */
+    public RailPlatform removeGlobalPlugin(Plugin plugin) {
+        GLOBAL_PLUGINS.remove(plugin);
         plugin.initPlugin();
         return getInstance();
     }
@@ -102,30 +114,27 @@ public class RailPlatform {
     /**
      * Select
      */
-    public Integer executeUpdate(SqlBuilder sqlBuilder) {
-        return executeUpdate(sqlBuilder.build());
-    }
-
-    /**
-     * Select
-     */
     public <T> List<T> executeQuery(SelectSqlBuilder sqlBuilder, Class<?> clazz) {
-        return executeQuery(sqlBuilder.build(), clazz);
+        return executeQuery(sqlBuilder.build(), clazz, true, null, null);
     }
 
     /**
      * Select ORM to List<Class object>
      */
-    public <T> List<T> executeQuery(String sql, Class<?> clazz) {
+    public <T> List<T> executeQuery(String sql, Class<?> clazz, Boolean isAutoCommit, List<Plugin> addPlugins, List<String> excludePluginNames) {
         checkDataSource();
         ExecuteSqlContext context = null;
         try {
             context = ExecuteSqlContext.builder()
+                .isAutoCommit(isAutoCommit)
                 .sql(sql)
                 .isProcessDefault(true)
-                .plugins(PLUGINS)
+                .plugins(GLOBAL_PLUGINS)
+                .addPlugins(addPlugins)
+                .excludePluginNames(excludePluginNames)
                 .build();
             Connection conn = getDefaultDataSource().getConnection();
+            conn.setAutoCommit(isAutoCommit);
             context.setConnection(conn);
             context.notifyPluginsBegin();
             context.setPreparedStatement(conn.prepareStatement(sql));
@@ -136,6 +145,11 @@ public class RailPlatform {
             context.notifyPluginsPostExecuteSql();
             context.notifyPluginsEnd();
         } catch (SQLException e) {
+            try {
+                context.getConnection().rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
         }
         if (context.getIsProcessDefault()) {
@@ -147,41 +161,44 @@ public class RailPlatform {
     }
 
     /**
-     * Insert
+     * Insert/Update/Delete/...
      */
-    public Integer executeUpdate(InsertSqlBuilder builder) {
-        return executeUpdate(builder.build());
+    public Integer executeUpdate(SqlBuilder sqlBuilder) {
+        return executeUpdate(sqlBuilder.build(), true, null, null);
+    }
+    /**
+     * Insert/Update/Delete/...
+     */
+    public Integer executeUpdate(SqlBuilder sqlBuilder, Boolean isAutoCommit) {
+        return executeUpdate(sqlBuilder.build(), isAutoCommit, null, null);
+    }
+    /**
+     * Insert/Update/Delete/...
+     */
+    public Integer executeUpdate(SqlBuilder sqlBuilder, Boolean isAutoCommit, List<String> excludePluginNames) {
+        return executeUpdate(sqlBuilder.build(), isAutoCommit, null, excludePluginNames);
     }
 
-    /**
-     * Update
-     */
-    public Integer executeUpdate(UpdateSqlBuilder builder) {
-        return executeUpdate(builder.build());
-    }
-
-    /**
-     * Delete
-     */
-    public Integer executeUpdate(DeleteSqlBuilder builder) {
-        return executeUpdate(builder.build());
-    }
 
     /**
      * 执行更新
      *
      * @return 修改行数
      */
-    public Integer executeUpdate(String sql) {
+    public Integer executeUpdate(String sql, Boolean isAutoCommit, List<Plugin> addPlugins, List<String> excludePluginNames) {
         checkDataSource();
         ExecuteSqlContext context = null;
         try {
             context = ExecuteSqlContext.builder()
+                .isAutoCommit(isAutoCommit)
                 .sql(sql)
                 .isProcessDefault(true)
-                .plugins(PLUGINS)
+                .plugins(GLOBAL_PLUGINS)
+                .addPlugins(addPlugins)
+                .excludePluginNames(excludePluginNames)
                 .build();
             Connection conn = getDefaultDataSource().getConnection();
+            conn.setAutoCommit(isAutoCommit);
             context.setConnection(conn);
             context.notifyPluginsBegin();
             context.setPreparedStatement(conn.prepareStatement(sql));
@@ -193,6 +210,11 @@ public class RailPlatform {
             context.notifyPluginsPostExecuteSql();
             context.notifyPluginsEnd();
         } catch (SQLException e) {
+            try {
+                context.getConnection().rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
         }
         return context.getUpdateCount();
@@ -203,16 +225,19 @@ public class RailPlatform {
      *
      * @return 更新数量
      */
-    public Integer executeUpdate(String sql, List<Object[]> valueList) {
+    public Integer executeUpdate(String sql, List<Object[]> valueList, Boolean isAutoCommit, List<Plugin> addPlugins, List<String> excludePluginNames) {
         checkDataSource();
         ExecuteSqlContext context = null;
         try {
             context = ExecuteSqlContext.builder()
+                .isAutoCommit(isAutoCommit)
                 .sql(sql)
                 .valueList(valueList)
-                .plugins(PLUGINS)
+                .plugins(GLOBAL_PLUGINS)
+                .excludePluginNames(excludePluginNames)
                 .build();
             Connection conn = getDefaultDataSource().getConnection();
+            conn.setAutoCommit(isAutoCommit);
             context.setConnection(conn);
             context.notifyPluginsBegin();
             context.setPreparedStatement(conn.prepareStatement(sql));
@@ -224,6 +249,11 @@ public class RailPlatform {
             context.notifyPluginsPostExecuteSql();
             context.notifyPluginsEnd();
         } catch (SQLException e) {
+            try {
+                context.getConnection().rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
         }
         return context.getUpdateCount();

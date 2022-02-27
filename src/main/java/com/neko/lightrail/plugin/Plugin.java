@@ -14,6 +14,10 @@ public abstract class Plugin {
         this.pluginName = pluginName;
     }
 
+    public String getPluginName() {
+        return pluginName;
+    }
+
     /**
      * 初始化 plugin 阶段
      */

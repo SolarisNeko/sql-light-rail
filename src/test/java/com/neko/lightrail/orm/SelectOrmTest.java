@@ -20,7 +20,7 @@ public class SelectOrmTest {
     public void selectOrmTest() throws Exception {
         RailPlatform railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDataSource());
 
-        railPlatform.registerPlugin(new SlowSqlPlugin());
+        railPlatform.addGlobalPlugin(new SlowSqlPlugin());
 
         List<UserWithEmail> dataList = railPlatform.executeQuery(
             SqlLightRail.selectTable("user", UserWithEmail.class),

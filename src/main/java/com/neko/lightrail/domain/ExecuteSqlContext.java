@@ -15,6 +15,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * 执行 SQL 期间的上下文
  *
@@ -28,12 +30,16 @@ import java.util.List;
 public class ExecuteSqlContext<T> {
 
     private String sql;
-    // prepareStatement 的占位符值
+    // 对应 prepareStatement 的占位符值
     private List<Object[]> valueList;
+    // JDBC Connect
+    private Boolean isAutoCommit;
     private Connection connection;
     private PreparedStatement preparedStatement;
     // 插件
     private List<Plugin> plugins;
+    private List<Plugin> addPlugins;
+    private List<String> excludePluginNames;
     // 是否使用默认执行的 JDBC, 如果为 false 需要提供 dataList 操作结果。
     private Boolean isProcessDefault;
     // 处理结果
@@ -61,6 +67,18 @@ public class ExecuteSqlContext<T> {
      * 调用所有开始阶段
      */
     public void notifyPluginsBegin() {
+        // add plugins
+        if (CollectionUtils.isNotEmpty(addPlugins)) {
+            plugins.addAll(addPlugins);
+        }
+        // remove plugins
+        if (CollectionUtils.isNotEmpty(excludePluginNames)) {
+            List<Plugin> ratePlugins = plugins.stream()
+                .filter(plugin -> !excludePluginNames.contains(plugin.getPluginName()))
+                .collect(toList());
+            plugins = ratePlugins;
+        }
+        // template method
         for (Plugin plugin : plugins) {
             plugin.begin();
         }
