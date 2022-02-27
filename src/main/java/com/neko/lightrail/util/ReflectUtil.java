@@ -37,10 +37,12 @@ public class ReflectUtil {
         try {
             parentField = getParentFieldByNameShortly(targetClass, insertColumn);
         } catch (NoSuchFieldException e) {
+            e.printStackTrace();
         }
         try {
             childField = targetClass.getDeclaredField(insertColumn);
-        } catch (NoSuchFieldException ignored) {
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
         }
         // parent field not exists
         field = childField != null ? childField : parentField;
@@ -52,7 +54,7 @@ public class ReflectUtil {
             field.setAccessible(true);
             fieldValue = field.get(object);
         } catch (IllegalAccessException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
         return fieldValue;
     }
