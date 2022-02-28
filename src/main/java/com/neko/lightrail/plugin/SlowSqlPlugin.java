@@ -55,7 +55,7 @@ public class SlowSqlPlugin extends Plugin {
      * @param sql
      */
     private static void checkIsSlowSql(String sql, long startMsTime) {
-        long spendTime = getCurrentNanoTime() - startMsTime;
+        long spendTime = getCurrentMsTime() - startMsTime;
         if (spendTime > THRESHOLD_SLOW_SQL_IN_MS) {
             log.warn(LOG_PREFIX_TITLE + "Slow SQL warn. SQL = {}. Spend Time = {} ms", sql, spendTime);
             return;
@@ -63,7 +63,7 @@ public class SlowSqlPlugin extends Plugin {
         log.info(LOG_PREFIX_TITLE + "Query SQL = {}. Spend Time = {} ms", sql, spendTime);
     }
 
-    private static long getCurrentNanoTime() {
+    private static long getCurrentMsTime() {
         return System.nanoTime() / NANO_TO_MILLIS_SECONDS;
     }
 

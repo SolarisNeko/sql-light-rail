@@ -58,15 +58,15 @@ public class InsertSqlBuilder extends SqlBuilder {
         return this;
     }
 
-    public <T> InsertSqlBuilder values(List<T> valueList) {
-        if (CollectionUtils.isEmpty(valueList)) {
+    public <T> InsertSqlBuilder values(List<T> insertValueList) {
+        if (CollectionUtils.isEmpty(insertValueList)) {
             throw new SqlLightRailException("Must set values! ");
         }
-        T data = valueList.get(0);
+        T data = insertValueList.get(0);
         List<String> fieldNames = ReflectUtil.getFieldNames(data);
         resetColumnNames(fieldNames);
 
-        List<String> valueSqlList = valueList.stream()
+        List<String> valueSqlList = insertValueList.stream()
             .map(object -> {
                 StringBuilder valueSql = new StringBuilder();
                 valueSql.append("(");

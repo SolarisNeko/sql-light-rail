@@ -31,13 +31,13 @@ public class SelectSqlBuilder extends SqlBuilder {
     /**
      * 如果没有传 tableName, 默认使用 Class 的 Lower CamelCase 小驼峰。
      *
-     * @param tablePojo
+     * @param tablePojo 符合驼峰大小写的 Pojo, 例如: LoginSum -> login_sum
      */
-    public SelectSqlBuilder(Class tablePojo) {
+    public SelectSqlBuilder(Class<?> tablePojo) {
         this(CamelCaseUtil.getBigCamelLowerName(tablePojo.getSimpleName()), tablePojo);
     }
 
-    public SelectSqlBuilder(String tableName, Class tablePojo) {
+    public SelectSqlBuilder(String tableName, Class<?> tablePojo) {
         super(tableName);
         List<String> fieldNames = ReflectUtil.getFieldNames(tablePojo);
         sql.setSelect(fieldNames);

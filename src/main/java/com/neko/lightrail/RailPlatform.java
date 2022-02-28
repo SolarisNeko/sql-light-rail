@@ -114,6 +114,13 @@ public class RailPlatform {
     /**
      * Select
      */
+    public <T> List<T> executeQuery(Class<?> clazz) {
+        return executeQuery(SqlLightRail.selectTable(clazz).build(), clazz, true, null, null);
+    }
+
+    /**
+     * Select
+     */
     public <T> List<T> executeQuery(SelectSqlBuilder sqlBuilder, Class<?> clazz) {
         return executeQuery(sqlBuilder.build(), clazz, true, null, null);
     }

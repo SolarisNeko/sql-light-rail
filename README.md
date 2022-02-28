@@ -31,7 +31,6 @@ https://github.com/SolarisNeko/sql-light-rail/tags
 2. MyBatis 并没有足够好到让我替换他，入侵性过强，较为重量。
 3. MyBatis 不太兼容很多公司自研框架(例如：分库分表框架).
 4. 没有语法提示。工作中使用到的 SQL 非常多, 但语法也各不一样，如: MySQL, Oracle, Spark SQL, Hive SQL, Kylin SQL...
-5. 
 
 ## 发展状态
 
@@ -103,7 +102,8 @@ Assert.assertEquals(target, selectSql);
 # 完成进度
 ## 1、基本进度
 1. [x] 基本 CRUD
-2. [ ] Select 的字段别名, 希望加入 alias Map 支持自定义映射规则
+2. [ ] MySQL Partition 分区支持
+
 
 ## 2、细进度
 ### 1、Insert
