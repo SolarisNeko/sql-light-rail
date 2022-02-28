@@ -5,7 +5,7 @@ import lombok.Data;
 
 /**
  * @author SolarisNeko
- * @date 2022-02-20
+ * Date on 2022-02-20
  */
 @Data
 public class UserExt extends User {

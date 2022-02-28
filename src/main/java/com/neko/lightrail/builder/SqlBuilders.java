@@ -3,7 +3,7 @@ package com.neko.lightrail.builder;
 /**
  * 快捷入口
  * @author SolarisNeko
- * @date 2022-03-01
+ * Date on 2022-03-01
  */
 public class SqlBuilders {
 

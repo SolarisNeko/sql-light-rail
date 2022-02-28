@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * @author SolarisNeko
- * @date 2022-02-20
+ * Date on 2022-02-20
  */
 public class SelectSqlBuilder extends SqlBuilder {
 

@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * @author SolarisNeko
- * @date 2022-02-20
+ * Date on 2022-02-20
  */
 public class SelectCondition implements Condition {
 

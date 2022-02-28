@@ -20,7 +20,7 @@ import static com.neko.lightrail.condition.Condition.PLACEHOLDER;
 
 /**
  * @author SolarisNeko
- * @date 2022-02-21
+ * Date on 2022-02-21
  **/
 public class SelectTest {
 

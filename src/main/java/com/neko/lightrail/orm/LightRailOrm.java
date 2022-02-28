@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toMap;
 
 /**
  * @author SolarisNeko
- * @date 2022-02-26
+ * Date on 2022-02-26
  */
 public class LightRailOrm {
 

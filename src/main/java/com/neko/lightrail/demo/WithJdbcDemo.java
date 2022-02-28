@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 /**
  * @author SolarisNeko
- * @date 2022-02-24
+ * Date on 2022-02-24
  */
 public class WithJdbcDemo {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {

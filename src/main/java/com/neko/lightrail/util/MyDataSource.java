@@ -19,7 +19,7 @@ import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_USERNAME;
 /**
  * 演示用
  * @author SolarisNeko
- * @date 2022-02-26
+ * Date on 2022-02-26
  */
 public class MyDataSource {
 

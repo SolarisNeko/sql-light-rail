@@ -6,7 +6,7 @@ import java.util.Optional;
 
 /**
  * @author SolarisNeko
- * @date 2022-02-20
+ * Date on 2022-02-20
  */
 public class DeleteSqlBuilder extends SqlBuilder {
 

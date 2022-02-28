@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author SolarisNeko
- * @date 2022-02-26
+ * Date on 2022-02-26
  */
 @Slf4j
 public class RailPlatform {

@@ -4,7 +4,7 @@ import com.neko.lightrail.domain.ExecuteSqlContext;
 
 /**
  * @author SolarisNeko
- * @date 2022-02-26
+ * Date on 2022-02-26
  */
 public abstract class Plugin {
 

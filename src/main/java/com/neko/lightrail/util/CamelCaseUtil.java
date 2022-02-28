@@ -5,7 +5,7 @@ package com.neko.lightrail.util;
  * @title 处理 char 工具
  * @description: 目前主要用来处理 [ Big Camel + Small Camel ]
  * @author: SolarisNeko
- * @date: 2021/7/4
+ * Date on: 2021/7/4
  */
 public class CamelCaseUtil {
 

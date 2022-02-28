@@ -2,7 +2,7 @@ package com.neko.lightrail.condition;
 
 /**
  * @author SolarisNeko
- * @date 2022-02-20
+ * Date on 2022-02-20
  */
 public class Conditions {
 
