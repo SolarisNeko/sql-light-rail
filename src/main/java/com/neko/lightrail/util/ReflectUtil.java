@@ -1,6 +1,6 @@
 package com.neko.lightrail.util;
 
-import jdk.nashorn.internal.runtime.logging.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -14,10 +14,11 @@ import static java.util.stream.Collectors.toList;
  * @author SolarisNeko
  * @date 2022-02-20
  */
-@Logger
+@Slf4j
 public class ReflectUtil {
 
     public static final String SUPER_CLASS_SIMPLE_NAME = "Object";
+    public static final Class SUPER_CLASS = Object.class;
 
     /**
      * 就近原则获取 field value By FieldName
@@ -36,10 +37,12 @@ public class ReflectUtil {
         try {
             parentField = getParentFieldByNameShortly(targetClass, insertColumn);
         } catch (NoSuchFieldException e) {
+            e.printStackTrace();
         }
         try {
             childField = targetClass.getDeclaredField(insertColumn);
-        } catch (NoSuchFieldException ignored) {
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
         }
         // parent field not exists
         field = childField != null ? childField : parentField;
@@ -51,7 +54,7 @@ public class ReflectUtil {
             field.setAccessible(true);
             fieldValue = field.get(object);
         } catch (IllegalAccessException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
         return fieldValue;
     }
@@ -68,14 +71,38 @@ public class ReflectUtil {
         return parentField;
     }
 
-    public static <T> List<String> getFieldNames(T t) {
+    public static List<String> getFieldNames(Class aClass) {
         List<String> columns = new ArrayList<>();
-        Class<?> aClass = t.getClass();
-        while (!SUPER_CLASS_SIMPLE_NAME.equals(aClass.getSimpleName())) {
-            List<String> collect = Arrays.stream(aClass.getDeclaredFields())
+        while (!(aClass.getSimpleName().equals(SUPER_CLASS_SIMPLE_NAME))) {
+            List<String> currentFields = Arrays.stream(aClass.getDeclaredFields())
                 .map(Field::getName)
                 .collect(Collectors.toList());
-            columns.addAll(collect);
+            columns.addAll(currentFields);
+            aClass = aClass.getSuperclass();
+        }
+        return columns.stream().sorted().collect(toList());
+    }
+
+    public static List<Field> getAllFields(Class aClass) {
+        List<Field> columns = new ArrayList<>();
+        while (!(aClass.getSimpleName().equals(SUPER_CLASS_SIMPLE_NAME))) {
+            List<Field> currentFields = Arrays.stream(aClass.getDeclaredFields())
+                .collect(Collectors.toList());
+            columns.addAll(currentFields);
+            aClass = aClass.getSuperclass();
+        }
+        return columns.stream().collect(toList());
+    }
+
+
+    public static <T> List<String> getFieldNames(T object) {
+        List<String> columns = new ArrayList<>();
+        Class<?> aClass = object.getClass();
+        while (!(aClass.getSimpleName().equals(SUPER_CLASS_SIMPLE_NAME))) {
+            List<String> currentFields = Arrays.stream(aClass.getDeclaredFields())
+                .map(Field::getName)
+                .collect(Collectors.toList());
+            columns.addAll(currentFields);
             aClass = aClass.getSuperclass();
         }
         return columns.stream().sorted().collect(toList());

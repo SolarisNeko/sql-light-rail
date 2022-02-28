@@ -38,6 +38,11 @@ public class UpdateSqlBuilder extends SqlBuilder {
             ;
     }
 
+    public UpdateSqlBuilder set(String set) {
+        sql.setSet("Set " + set);
+        return this;
+    }
+
     public UpdateSqlBuilder set(SetCondition set) {
         sql.setSet(set.build());
         return this;

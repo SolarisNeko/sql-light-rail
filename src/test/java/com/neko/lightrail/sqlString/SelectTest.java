@@ -1,5 +1,6 @@
-package com.neko.lightrail;
+package com.neko.lightrail.sqlString;
 
+import com.neko.lightrail.SqlLightRail;
 import com.neko.lightrail.builder.SelectSqlBuilder;
 import com.neko.lightrail.condition.Conditions;
 import com.neko.lightrail.condition.GroupByCondition;
@@ -7,9 +8,12 @@ import com.neko.lightrail.condition.JoinCondition;
 import com.neko.lightrail.condition.OnCondition;
 import com.neko.lightrail.condition.SelectCondition;
 import com.neko.lightrail.condition.WhereCondition;
+import com.neko.lightrail.pojo.User;
+import com.neko.lightrail.pojo.UserExt;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import static com.neko.lightrail.condition.Condition.PLACEHOLDER;
@@ -50,15 +54,29 @@ public class SelectTest {
         }
 
         // 3 build SQL
-        String select = SqlLightRail.selectTable("new_traffic_ltv_sum_daily")
+        String select = SqlLightRail.selectTable("traffic_statistics_report")
                 .select(selectCondition.build())
                 .where(whereCondition.build())
                 .groupBy(groupByCondition)
                 .build();
         // 4 execute
         System.out.println(select);
-        String target = "SELECT app_id, channel_id, sum(pay_money) as 'sum_money', register_time, pay_time, package_id FROM new_traffic_ltv_sum_daily  WHERE app_id = ? and channel_id = '-1' and package_id = '-1' and register_time <= ? and register_time <= ? GROUP BY register_time, pay_time, channel_id, package_id";
+        String target = "SELECT app_id, channel_id, sum(pay_money) as 'sum_money', register_time, pay_time, package_id FROM traffic_statistics_report  WHERE app_id = ? and channel_id = '-1' and package_id = '-1' and register_time <= ? and register_time <= ? GROUP BY register_time, pay_time, channel_id, package_id";
         Assert.assertEquals(target, select);
+    }
+
+    @Test
+    public void selectByORM() {
+        String selectAllSql = SqlLightRail.selectTable(User.class).build();
+        String target = "SELECT id, name FROM user ";
+        Assert.assertEquals(target, selectAllSql);
+    }
+
+    @Test
+    public void selectByORM_ExtentPojo() {
+        String selectAllSql = SqlLightRail.selectTable(UserExt.class).build();
+        String target = "SELECT age, id, name FROM user_ext ";
+        Assert.assertEquals(target, selectAllSql);
     }
 
     @Test
@@ -177,4 +195,31 @@ public class SelectTest {
         Assert.assertEquals(target, selectSql);
     }
 
+
+    @Test
+    public void fuckSql() {
+        // if Web send you some data
+        String name = "root";
+
+        // 新手不要学, 某些公司会存在这种莫名其妙的判断逻辑, 分在不同的 SQL 里, 但是如果在 Java 里汇总起来, 也总比看 2 个莫名其妙的 SQL 方便
+        SelectSqlBuilder sqlBuilder = SqlLightRail.selectTable(User.class);
+        if ("root".equals(name)) {
+            sqlBuilder.where(WhereCondition.builder()
+                .equalsTo("deleted", "0")
+                .lessThanOrEquals("create_time", new Date())
+            );
+        }
+        if ("sb".equals(name)) {
+            sqlBuilder.where(WhereCondition.builder()
+                .equalsTo("name", "root")
+                .equalsTo("1", "1")
+            );
+        }
+
+        String selectSql = sqlBuilder.build();
+        String target = "SELECT id, name FROM user WHERE deleted = '0' and create_time <= '2022-02-27 12:04:58'";
+
+        System.out.println(selectSql);
+//        Assert.assertEquals(target, selectSql);
+    }
 }
