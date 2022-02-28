@@ -132,9 +132,6 @@ public class WhereCondition implements Condition {
         return this;
     }
 
-    /**
-     * value 如果是 String, 应该给一个 Log WARN
-     */
     public WhereCondition greaterThan(String columnName, Object value) {
         isFirstParams();
         whereSqlBuilder.append(columnName.trim()).append(" > ").append(Condition.toSqlValueByType(value));

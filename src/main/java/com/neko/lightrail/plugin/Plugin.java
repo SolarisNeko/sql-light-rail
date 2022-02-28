@@ -18,38 +18,20 @@ public abstract class Plugin {
         return pluginName;
     }
 
-    /**
-     * 初始化 plugin 阶段
-     */
     public abstract void initPlugin();
 
-    /**
-     * 开始阶段
-     */
     public void begin() {
 
     }
 
-    /**
-     * 执行前
-     * @param context
-     */
     public void preExecuteSql(ExecuteSqlContext context) {
 
     }
 
-
-    /**
-     * 执行后
-     * @param context
-     */
     public void postExecuteSql(ExecuteSqlContext context) {
 
     }
 
-    /**
-     * 完成时
-     */
     public void end() {
 
     }

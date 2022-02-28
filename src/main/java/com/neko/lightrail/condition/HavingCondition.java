@@ -102,9 +102,6 @@ public class HavingCondition implements Condition {
         return value.toString();
     }
 
-    /**
-     * TODO value 如果是 String, 应该给一个 Log WARN
-     */
     public HavingCondition greaterThan(String columnName, Object value) {
         havingSqlBuilder.append(" and ")
             .append(columnName)

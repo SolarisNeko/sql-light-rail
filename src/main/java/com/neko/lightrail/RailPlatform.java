@@ -84,12 +84,6 @@ public class RailPlatform {
         return MULTI_DATASOURCE_MAP.get(schema + JOIN_SCHEMA_TABLE_KEY + table);
     }
 
-    /**
-     * 添加插件
-     *
-     * @param plugin
-     * @return
-     */
     public RailPlatform addGlobalPlugin(Plugin plugin) {
         if (GLOBAL_PLUGINS.contains(plugin)) {
             return getInstance();
@@ -99,35 +93,20 @@ public class RailPlatform {
         return getInstance();
     }
 
-    /**
-     * 移除插件
-     *
-     * @param plugin
-     * @return
-     */
     public RailPlatform removeGlobalPlugin(Plugin plugin) {
         GLOBAL_PLUGINS.remove(plugin);
         plugin.initPlugin();
         return getInstance();
     }
 
-    /**
-     * Select
-     */
     public <T> List<T> executeQuery(Class<?> clazz) {
         return executeQuery(SqlLightRail.selectTable(clazz).build(), clazz, true, null, null);
     }
 
-    /**
-     * Select
-     */
     public <T> List<T> executeQuery(SelectSqlBuilder sqlBuilder, Class<?> clazz) {
         return executeQuery(sqlBuilder.build(), clazz, true, null, null);
     }
 
-    /**
-     * Select ORM to List<Class object>
-     */
     public <T> List<T> executeQuery(String sql, Class<?> clazz, Boolean isAutoCommit, List<Plugin> addPlugins, List<String> excludePluginNames) {
         checkDataSource();
         ExecuteSqlContext context = null;
@@ -167,33 +146,19 @@ public class RailPlatform {
         return Optional.ofNullable(context.getDataList()).orElse(new ArrayList<>());
     }
 
-    /**
-     * Insert/Update/Delete/...
-     */
     public Integer executeUpdate(SqlBuilder sqlBuilder) {
         return executeUpdate(sqlBuilder.build(), true, null, null);
     }
 
-    /**
-     * Insert/Update/Delete/...
-     */
     public Integer executeUpdate(SqlBuilder sqlBuilder, Boolean isAutoCommit) {
         return executeUpdate(sqlBuilder.build(), isAutoCommit, null, null);
     }
 
-    /**
-     * Insert/Update/Delete/...
-     */
     public Integer executeUpdate(SqlBuilder sqlBuilder, Boolean isAutoCommit, List<String> excludePluginNames) {
         return executeUpdate(sqlBuilder.build(), isAutoCommit, null, excludePluginNames);
     }
 
 
-    /**
-     * 执行更新
-     *
-     * @return 修改行数
-     */
     public Integer executeUpdate(String sql, Boolean isAutoCommit, List<Plugin> addPlugins, List<String> excludePluginNames) {
         checkDataSource();
         ExecuteSqlContext context = null;
@@ -229,11 +194,6 @@ public class RailPlatform {
         return context.getUpdateCount();
     }
 
-    /**
-     * 有占位符的 insert/Update SQL
-     *
-     * @return 更新数量
-     */
     public Integer executeUpdate(String sql, List<Object[]> valueList, Boolean isAutoCommit, List<Plugin> addPlugins, List<String> excludePluginNames) {
         checkDataSource();
         ExecuteSqlContext context = null;

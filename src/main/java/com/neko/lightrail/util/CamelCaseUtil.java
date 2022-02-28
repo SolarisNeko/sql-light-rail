@@ -2,17 +2,13 @@ package com.neko.lightrail.util;
 
 
 /**
- * @title 处理 char 工具
- * @description: 目前主要用来处理 [ Big Camel + Small Camel ]
- * @author: SolarisNeko
+ *  处理 char 工具
+ * @author SolarisNeko
  * Date on: 2021/7/4
  */
 public class CamelCaseUtil {
 
-    /**
-     * 转换成 Big Camel（大驼峰）的 Upper Case 版本!
-     * 例如: SystemUser -> SYSTEM_USER
-     */
+
     public static String getBigCamelUpperName(String name) {
         StringBuilder sb = new StringBuilder();
         char[] chars = name.toCharArray();
@@ -39,10 +35,7 @@ public class CamelCaseUtil {
         return sb.toString();
     }
 
-    /**
-     * 转换成 Big Camel（大驼峰）的 lower case 版本!
-     * 例如: SystemUser -> system_user
-     */
+
     public static String getBigCamelLowerName(String name) {
         StringBuilder sb = new StringBuilder();
         // 转化成 char[] 流

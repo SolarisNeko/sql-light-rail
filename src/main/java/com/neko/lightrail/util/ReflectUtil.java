@@ -20,12 +20,6 @@ public class ReflectUtil {
     public static final String SUPER_CLASS_SIMPLE_NAME = "Object";
     public static final Class SUPER_CLASS = Object.class;
 
-    /**
-     * 就近原则获取 field value By FieldName
-     * @param object
-     * @param insertColumn
-     * @return
-     */
     public static Object getFieldValueByNameShortly(Object object, String insertColumn) {
         Field field;
         Field parentField = null;

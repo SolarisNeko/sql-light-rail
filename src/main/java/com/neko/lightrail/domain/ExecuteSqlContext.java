@@ -85,9 +85,7 @@ public class ExecuteSqlContext<T> {
     }
 
 
-    /**
-     * 执行查询, 插件处理结果集
-     */
+
     public void notifyPluginsPostExecuteSql() throws SQLException {
         for (Plugin plugin : plugins) {
             plugin.postExecuteSql(this);

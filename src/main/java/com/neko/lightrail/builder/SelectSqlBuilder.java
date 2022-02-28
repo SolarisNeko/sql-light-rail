@@ -31,7 +31,7 @@ public class SelectSqlBuilder extends SqlBuilder {
     /**
      * 如果没有传 tableName, 默认使用 Class 的 Lower CamelCase 小驼峰。
      *
-     * @param tablePojo 符合驼峰大小写的 Pojo, 例如: LoginSum -> login_sum
+     * @param tablePojo 符合驼峰大小写的 Pojo, 例如: LoginSum to login_sum
      */
     public SelectSqlBuilder(Class<?> tablePojo) {
         this(CamelCaseUtil.getBigCamelLowerName(tablePojo.getSimpleName()), tablePojo);
@@ -69,7 +69,7 @@ public class SelectSqlBuilder extends SqlBuilder {
     /**
      * 应该指定一个可大小写的选择参数
      *
-     * @return
+     * @return String
      */
     @Override
     public String build() {
@@ -152,9 +152,9 @@ public class SelectSqlBuilder extends SqlBuilder {
     /**
      * pageNum 从 0 开始
      *
-     * @param pageNum
-     * @param pageSize
-     * @return
+     * @param pageNum 分页
+     * @param pageSize 分页
+     * @return SelectSqlBuilder
      */
     public SelectSqlBuilder limitByPage(Integer pageNum, Integer pageSize) {
         if (pageNum == null) {
