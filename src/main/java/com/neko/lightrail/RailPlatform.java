@@ -126,13 +126,13 @@ public class RailPlatform {
         ExecuteSqlContext context = null;
         try {
             context = ExecuteSqlContext.builder()
-                .isAutoCommit(isAutoCommit)
-                .sql(sql)
-                .isProcessDefault(true)
-                .plugins(GLOBAL_PLUGINS)
-                .addPlugins(addPlugins)
-                .excludePluginNames(excludePluginNames)
-                .build();
+                    .isProcessDefault(true)
+                    .isAutoCommit(isAutoCommit)
+                    .sql(sql)
+                    .plugins(GLOBAL_PLUGINS)
+                    .addPlugins(addPlugins)
+                    .excludePluginNames(excludePluginNames)
+                    .build();
             Connection conn = getDefaultDataSource().getConnection();
             conn.setAutoCommit(isAutoCommit);
             context.setConnection(conn);
@@ -154,7 +154,7 @@ public class RailPlatform {
         }
         if (context.getIsProcessDefault()) {
             ResultSet rs = Optional.ofNullable(Objects.requireNonNull(context).getResultSet())
-                .orElseThrow(() -> new RuntimeException(LOG_PREFIX_TITLE + "execute query error."));
+                    .orElseThrow(() -> new RuntimeException(LOG_PREFIX_TITLE + "execute query error."));
             context.setDataList(LightRailOrm.mapping(rs, clazz));
         }
         return Optional.ofNullable(context.getDataList()).orElse(new ArrayList<>());
@@ -166,12 +166,14 @@ public class RailPlatform {
     public Integer executeUpdate(SqlBuilder sqlBuilder) {
         return executeUpdate(sqlBuilder.build(), true, null, null);
     }
+
     /**
      * Insert/Update/Delete/...
      */
     public Integer executeUpdate(SqlBuilder sqlBuilder, Boolean isAutoCommit) {
         return executeUpdate(sqlBuilder.build(), isAutoCommit, null, null);
     }
+
     /**
      * Insert/Update/Delete/...
      */
@@ -190,13 +192,13 @@ public class RailPlatform {
         ExecuteSqlContext context = null;
         try {
             context = ExecuteSqlContext.builder()
-                .isAutoCommit(isAutoCommit)
-                .sql(sql)
-                .isProcessDefault(true)
-                .plugins(GLOBAL_PLUGINS)
-                .addPlugins(addPlugins)
-                .excludePluginNames(excludePluginNames)
-                .build();
+                    .isProcessDefault(true)
+                    .isAutoCommit(isAutoCommit)
+                    .sql(sql)
+                    .plugins(GLOBAL_PLUGINS)
+                    .addPlugins(addPlugins)
+                    .excludePluginNames(excludePluginNames)
+                    .build();
             Connection conn = getDefaultDataSource().getConnection();
             conn.setAutoCommit(isAutoCommit);
             context.setConnection(conn);
@@ -230,12 +232,13 @@ public class RailPlatform {
         ExecuteSqlContext context = null;
         try {
             context = ExecuteSqlContext.builder()
-                .isAutoCommit(isAutoCommit)
-                .sql(sql)
-                .valueList(valueList)
-                .plugins(GLOBAL_PLUGINS)
-                .excludePluginNames(excludePluginNames)
-                .build();
+                    .isProcessDefault(true)
+                    .isAutoCommit(isAutoCommit)
+                    .sql(sql)
+                    .valueList(valueList)
+                    .plugins(GLOBAL_PLUGINS)
+                    .excludePluginNames(excludePluginNames)
+                    .build();
             Connection conn = getDefaultDataSource().getConnection();
             conn.setAutoCommit(isAutoCommit);
             context.setConnection(conn);
