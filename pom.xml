@@ -8,29 +8,7 @@
     <version>0.0.1</version>
 
     <name>sql_light_rail</name>
-    <developers>
-        <developer>
-            <name>SolarisNeko</name>
-            <url>https://github.com/SolarisNeko</url>
-        </developer>
-        <developer>
-            <name>Emmett Woo</name>
-            <url>https://github.com/Emmettwoo</url>
-        </developer>
-    </developers>
-
-    <scm>
-        <connection>scm:git:https://github.com/SolarisNeko/sql-light-rail.git</connection>
-        <developerConnection>scm:git:https://github.com/SolarisNeko/sql-light-rail.git</developerConnection>
-        <url>https://github.com/SolarisNeko/sql-light-rail</url>
-    </scm>
-
-    <licenses>
-        <license>
-            <name>Apache 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
+    <url>https://github.com/SolarisNeko/sql-light-rail/tree/main</url>
 
     <description>
         SQL Light Rail (SQL 轻轨)
@@ -51,6 +29,31 @@
 
         本架构 License 为 Apache2.0
     </description>
+
+    <developers>
+        <developer>
+            <name>SolarisNeko</name>
+            <url>https://github.com/SolarisNeko</url>
+        </developer>
+        <developer>
+            <name>Emmett Woo</name>
+            <url>https://github.com/Emmettwoo</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/SolarisNeko/sql-light-rail.git</connection>
+        <developerConnection>scm:git:ssh://github.com/SolarisNeko/sql-light-rail.git</developerConnection>
+        <url>http://github.com/SolarisNeko/sql-light-rail/tree/main</url>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
 
     <properties>
         <java.version>8</java.version>
