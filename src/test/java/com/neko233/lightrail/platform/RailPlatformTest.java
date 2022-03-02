@@ -8,7 +8,7 @@ import com.neko233.lightrail.builder.SqlBuilder;
 import com.neko233.lightrail.condition.SetCondition;
 import com.neko233.lightrail.condition.WhereCondition;
 import com.neko233.lightrail.pojo.User;
-import com.neko233.lightrail.util.MyDataSource;
+import com.neko233.lightrail.dataSource.MyDataSource;
 import org.junit.Assert;
 import org.junit.Test;
 

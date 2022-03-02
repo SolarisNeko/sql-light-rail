@@ -1,4 +1,4 @@
-package com.neko233.lightrail.util;
+package com.neko233.lightrail.dataSource;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 

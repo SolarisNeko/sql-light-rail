@@ -5,7 +5,7 @@ import com.neko233.lightrail.RailPlatformFactory;
 import com.neko233.lightrail.SqlLightRail;
 import com.neko233.lightrail.plugin.SlowSqlPlugin;
 import com.neko233.lightrail.pojo.UserWithEmail;
-import com.neko233.lightrail.util.MyDataSource;
+import com.neko233.lightrail.dataSource.MyDataSource;
 import org.junit.Test;
 
 import java.util.List;

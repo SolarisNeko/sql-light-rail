@@ -1,7 +1,7 @@
 package com.neko233.lightrail.condition;
 
 /**
- * @author LuoHaoJun
+ * @author SolarisNeko
  * Date on 2022-02-21
  **/
 public class JoinCondition implements Condition {
