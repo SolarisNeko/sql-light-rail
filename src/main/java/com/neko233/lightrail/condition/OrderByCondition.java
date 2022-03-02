@@ -6,7 +6,7 @@ package com.neko233.lightrail.condition;
  */
 public class OrderByCondition implements Condition {
 
-    private StringBuilder orderBySqlBuilder = new StringBuilder(" ORDER BY ");
+    private StringBuilder orderBySqlBuilder = new StringBuilder();
 
     private OrderByCondition() {
 
@@ -19,7 +19,7 @@ public class OrderByCondition implements Condition {
     @Override
     public String build() {
         // 为了美观, 逗号后面都有空格, 所以 - 2
-        return orderBySqlBuilder.substring(0, orderBySqlBuilder.length() - 2);
+        return " ORDER BY " + orderBySqlBuilder.substring(0, orderBySqlBuilder.length() - 2);
     }
 
     public OrderByCondition orderByAsc(String... columnNames) {

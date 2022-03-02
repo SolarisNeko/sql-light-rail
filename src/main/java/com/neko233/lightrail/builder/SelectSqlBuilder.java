@@ -1,6 +1,7 @@
 package com.neko233.lightrail.builder;
 
 import com.neko233.lightrail.condition.Condition;
+import com.neko233.lightrail.condition.Conditions;
 import com.neko233.lightrail.condition.GroupByCondition;
 import com.neko233.lightrail.condition.JoinCondition;
 import com.neko233.lightrail.condition.OrderByCondition;
@@ -84,8 +85,9 @@ public class SelectSqlBuilder extends SqlBuilder {
                 return CamelCaseUtil.getBigCamelLowerName(fieldName);
             })
             .collect(toList());
+        //
         return "SELECT " + String.join(", ", selectList)
-            + " FROM " + String.join(",", sql.getTableList()) + " "
+            + " FROM " + String.join(",", sql.getTableList())
             + Optional.ofNullable(sql.getWhere()).orElse("")
             + Optional.ofNullable(sql.getOrderBy()).orElse("")
             + Optional.ofNullable(sql.getGroupBy()).orElse("")
@@ -128,8 +130,8 @@ public class SelectSqlBuilder extends SqlBuilder {
         return this;
     }
 
-    public SelectSqlBuilder orderBy(String columns) {
-        sql.setOrderBy(columns);
+    public SelectSqlBuilder orderBy(String orderBySql) {
+        sql.setOrderBy(orderBySql);
         return this;
     }
 

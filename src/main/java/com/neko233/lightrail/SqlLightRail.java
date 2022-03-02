@@ -71,8 +71,8 @@ public class SqlLightRail {
      * @param innerSelectBuilder builder
      * @return SelectSqlBuilder
      */
-    public static SelectSqlBuilder selectSubTable(SelectSqlBuilder innerSelectBuilder) {
-        return new SelectSqlBuilder(" ( " + innerSelectBuilder.build() + " ) ");
+    public static SelectSqlBuilder selectSubTable(SelectSqlBuilder innerSelectBuilder, String subTableName) {
+        return new SelectSqlBuilder("( " + innerSelectBuilder.build() + " ) " + subTableName + " ");
     }
 
 }

@@ -18,7 +18,7 @@ public class DeleteTest {
                         .equalsTo("id", 1)
                 )
                 .build();
-        String target = "Delete From user WHERE id = 1 ";
+        String target = "Delete From user WHERE id = 1";
         Assert.assertEquals(target, deleteSql);
     }
 
@@ -29,7 +29,7 @@ public class DeleteTest {
                         .equalsTo("name", "neko")
                 )
                 .build();
-        String target = "Delete From user WHERE name = 'neko' ";
+        String target = "Delete From user WHERE name = 'neko'";
         Assert.assertEquals(target, deleteSql);
     }
 

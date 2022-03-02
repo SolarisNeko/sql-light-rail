@@ -21,7 +21,7 @@ public class UpdateTest {
                         .equalsTo("id", 1)
                 )
                 .build();
-        String target = "Update user Set name = 'neko' WHERE id = 1 ";
+        String target = "Update user Set name = 'neko' WHERE id = 1";
         Assert.assertEquals(target, updateSql);
     }
 

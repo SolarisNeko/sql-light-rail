@@ -24,7 +24,7 @@ public class JoinCondition implements Condition {
         if (on == null) {
             return "";
         }
-        return "JOIN " + table + " ON " + on + " ";
+        return " JOIN " + table + " ON " + on + " ";
     }
 
     public JoinCondition join(String tableName) {

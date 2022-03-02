@@ -1,6 +1,8 @@
 package com.neko233.lightrail.builder;
 
 import com.neko233.lightrail.condition.WhereCondition;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
 
@@ -20,9 +22,9 @@ public class DeleteSqlBuilder extends SqlBuilder {
     }
 
     private String buildDeleteSql() {
-        return "Delete From " + sql.getTableList().get(0) + " "
-            + Optional.ofNullable(sql.getWhere()).orElse("") + " "
-            ;
+        return "Delete From " + sql.getTableList().get(0)
+            + (StringUtils.isBlank(sql.getWhere()) ?
+            "" : sql.getWhere());
     }
 
 

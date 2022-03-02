@@ -33,8 +33,8 @@ public class UpdateSqlBuilder extends SqlBuilder {
 
     private String buildSelectSql() {
         return "Update " + sql.getTableList().get(0) + " "
-            + Optional.ofNullable(sql.getSet()).orElse("") + " "
-            + Optional.ofNullable(sql.getWhere()).orElse("") + " "
+            + Optional.ofNullable(sql.getSet()).orElse("")
+            + Optional.ofNullable(sql.getWhere()).orElse("")
             ;
     }
 

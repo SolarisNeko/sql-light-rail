@@ -68,14 +68,14 @@ public class SelectTest {
     @Test
     public void selectByORM() {
         String selectAllSql = SqlLightRail.selectTable(User.class).build();
-        String target = "SELECT id, name FROM user ";
+        String target = "SELECT id, name FROM user";
         Assert.assertEquals(target, selectAllSql);
     }
 
     @Test
     public void selectByORM_ExtentPojo() {
         String selectAllSql = SqlLightRail.selectTable(UserExt.class).build();
-        String target = "SELECT age, id, name FROM user_ext ";
+        String target = "SELECT age, id, name FROM user_ext";
         Assert.assertEquals(target, selectAllSql);
     }
 
@@ -86,10 +86,10 @@ public class SelectTest {
                 .where(WhereCondition.builder()
                         .equalsTo("id", PLACEHOLDER)
                 );
-        String select = SqlLightRail.selectSubTable(innerBuilder)
+        String select = SqlLightRail.selectSubTable(innerBuilder, "a")
                 .select("id", "name")
                 .build();
-        String target = "SELECT id, name FROM  ( SELECT id, name FROM inner_demo WHERE id = ? )  ";
+        String target = "SELECT id, name FROM ( SELECT id, name FROM inner_demo WHERE id = ? ) a ";
         Assert.assertEquals(target, select);
     }
 
@@ -100,10 +100,10 @@ public class SelectTest {
                 .where(WhereCondition.builder()
                         .equalsTo("id", 1)
                 );
-        String select = SqlLightRail.selectSubTable(innerBuilder)
+        String select = SqlLightRail.selectSubTable(innerBuilder, "a")
                 .select("id", "name")
                 .build();
-        String target = "SELECT id, name FROM  ( SELECT id, name FROM inner_demo WHERE id = 1 )  ";
+        String target = "SELECT id, name FROM ( SELECT id, name FROM inner_demo WHERE id = 1 ) a ";
         Assert.assertEquals(target, select);
     }
 
@@ -221,5 +221,16 @@ public class SelectTest {
 
         System.out.println(selectSql);
 //        Assert.assertEquals(target, selectSql);
+    }
+
+    @Test
+    public void orderBy() {
+        String build = SqlLightRail.selectTable("user")
+            .select("id", "name")
+            .orderBy("id")
+            .build();
+        System.out.println(build);
+        String target = "";
+//        Assert.assertEquals();
     }
 }
