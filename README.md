@@ -1,7 +1,7 @@
 # SQL Light Rail
 
 ## 简介
-> 'sql-light-rail' is a DAO Layer Micro Framework to handle SQL by Java, use it like 'Chain Builder / Stream'.
+> 'sqlStatement-light-rail' is a DAO Layer Micro Framework to handle SQL by Java, use it like 'Chain Builder / Stream'.
 >
 > '轻轨' 是一款 DAO 层操作的微框架, 处理 SQL 就如同写 Java Stream / Chain Builder 一样。
 
@@ -9,20 +9,40 @@
 
 同时，将 SQL 难以编写的复杂语法，转移到 Java 层面处理，实在是非常的爽！
 
+
+### 详细介绍
+SQL Light Rail (SQL 轻轨)
+        
+轻轨: 有多节车厢, 如同本框架设计的 Chain Builder 思想。
+
+这是一款【约定大于配置】的 Java SQL Flux 框架, 用于快速构建大量 SQL, 辅助 DAO 操作/复用 SQL。
+
+设计原因:
+1. 因部分公司有大量历史代码, MyBatis 入侵性过强, 迁移的工作量巨大, 并不能友好地支持快速开发. 
+2. 其次, MyBatis Generator 生成无意义的代码过多, 文件过多, 项目结构庞大, 不够轻量化。 
+3. 以及...原因。
+4. 我希望复杂拼接 SQL 应该在 Java 层, 而不是在 xml .并且配合 IDE 智能提示, 如 IDEA, vscode, 等 都有明显的开发速度提升。
+
+约定 > 配置:
+1. 如果你的 Pojo 遵循驼峰命名, SQL Table 命名遵循大驼峰命名, 如 class LoginSumDaily -> table login_sum_daily 。 那么我们会自动帮你将 field 转换为表结构。
+2. 采用 Flux/Stream 写法。
+
+本架构 License 为 Apache2.0
+
 ## Download
 ### Maven
 ```xml
 <dependency>
     <groupId>com.neko233</groupId>
-    <artifactId>sql-light-rail</artifactId>
-    <version>0.0.2</version>
+    <artifactId>sqlStatement-light-rail</artifactId>
+    <version>0.0.3</version>
 </dependency>
 
 ```
 
 ### Gradle
 ```groovy
-implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.0.2'
+implementation group: 'com.neko233', name: 'sqlStatement-light-rail', version: '0.0.3'
 ```
 
 ## 初衷 / 痛点
@@ -59,6 +79,11 @@ yml config
 
 
 # Code & API
+## Code Guide
+[详细手册 Code Guide](./Code%20Guide.md)
+
+## Simpel Demo
+
 Select
 ```java
 // SELECT a.id, a.name FROM user a JOIN user_role b ON a.id = b.id 

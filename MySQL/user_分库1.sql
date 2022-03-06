@@ -1,5 +1,6 @@
-create database sql_light_rail;
-use sql_light_rail;
+-- # Multi DataSource 1
+create database sql_light_rail_1;
+use sql_light_rail_1;
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;

@@ -22,33 +22,33 @@ public class ReflectUtil {
 
     public static Object getFieldValueByNameShortly(Object object, String insertColumn) {
         Field field;
-        Field parentField = null;
-        Field childField = null;
-        Object fieldValue = null;
+        Field parentField;
+        Field childField;
+        Object fieldValue;
         Class<?> targetClass = object.getClass();
 
-        // 1 get which field
+        // 1 get field by Recursive
         try {
             parentField = getParentFieldByNameShortly(targetClass, insertColumn);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            parentField = null;
         }
         try {
             childField = targetClass.getDeclaredField(insertColumn);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            childField = null;
         }
-        // parent field not exists
         field = childField != null ? childField : parentField;
-        // 2 get value
         if (field == null) {
             return null;
         }
+
+        // get value from clazz
         try {
             field.setAccessible(true);
             fieldValue = field.get(object);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            return null;
         }
         return fieldValue;
     }
@@ -74,7 +74,7 @@ public class ReflectUtil {
             columns.addAll(currentFields);
             aClass = aClass.getSuperclass();
         }
-        return columns.stream().sorted().collect(toList());
+        return new ArrayList<>(columns);
     }
 
     public static List<Field> getAllFields(Class aClass) {
@@ -85,7 +85,7 @@ public class ReflectUtil {
             columns.addAll(currentFields);
             aClass = aClass.getSuperclass();
         }
-        return columns.stream().collect(toList());
+        return new ArrayList<>(columns);
     }
 
 
@@ -99,6 +99,6 @@ public class ReflectUtil {
             columns.addAll(currentFields);
             aClass = aClass.getSuperclass();
         }
-        return columns.stream().sorted().collect(toList());
+        return new ArrayList<>(columns);
     }
 }

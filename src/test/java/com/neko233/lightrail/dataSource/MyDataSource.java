@@ -27,11 +27,11 @@ public class MyDataSource {
 
 
     public static Connection getConnection() throws Exception {
-        return getDataSource().getConnection();
+        return getDefaultDataSource().getConnection();
     }
 
-    public static DataSource getDataSource() throws Exception {
-        MyDataSource.dataSource = DruidDataSourceFactory.createDataSource(getDbConfig());
+    public static DataSource getDefaultDataSource() throws Exception {
+        MyDataSource.dataSource = DruidDataSourceFactory.createDataSource(getDefaultDbConfig());
         return dataSource;
     }
 
@@ -40,7 +40,7 @@ public class MyDataSource {
      *
      * @return 配置信息
      */
-    public static Properties getDbConfig() {
+    public static Properties getDefaultDbConfig() {
         Properties properties = new Properties();
         properties.put(PROP_URL, "jdbc:mysql://localhost:3306/sql_light_rail");
         properties.put(PROP_USERNAME, "root");

@@ -141,7 +141,7 @@ public class SelectTest {
                                 .groupBy("id", "name")
                 ).limitByPage(1, 10)
                 .build();
-        String target = "SELECT id, name FROM user WHERE id like 1 ORDER BY a ASC, b ASC GROUP BY id, name HAVING 1 = 1 and id = 1 LIMIT 10, 20 ";
+        String target = "SELECT id, name FROM user WHERE id like 1 ORDER BY a ASC, b ASC GROUP BY id, name HAVING 1 = 1 and id = 1 LIMIT 0, 10 ";
         Assert.assertEquals(target, selectSql);
     }
 

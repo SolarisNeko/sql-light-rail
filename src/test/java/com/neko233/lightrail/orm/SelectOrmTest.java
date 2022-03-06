@@ -18,7 +18,7 @@ public class SelectOrmTest {
 
     @Test
     public void selectOrmTest() throws Exception {
-        RailPlatform railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDataSource());
+        RailPlatform railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDefaultDataSource());
 
         railPlatform.addGlobalPlugin(new SlowSqlPlugin());
 

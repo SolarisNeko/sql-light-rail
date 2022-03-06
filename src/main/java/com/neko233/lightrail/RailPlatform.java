@@ -3,9 +3,12 @@ package com.neko233.lightrail;
 import com.neko233.lightrail.builder.SelectSqlBuilder;
 import com.neko233.lightrail.builder.SqlBuilder;
 import com.neko233.lightrail.domain.ExecuteSqlContext;
-import com.neko233.lightrail.orm.LightRailOrm;
+import com.neko233.lightrail.exception.SqlLightRailException;
+import com.neko233.lightrail.orm.RailPlatformOrm;
 import com.neko233.lightrail.plugin.Plugin;
+import com.neko233.lightrail.pojo.SqlStatement;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -27,23 +30,28 @@ public class RailPlatform {
 
     private static final RailPlatform INSTANCE = new RailPlatform();
 
+    private static final String LOG_PREFIX_TITLE = "[LightRail Platform] ";
+
     /**
-     * 多数据源
+     * Multi DataSource Cache
      */
     private static Map<String, DataSource> MULTI_DATASOURCE_MAP = new ConcurrentHashMap<>();
-    private static final String DEFAULT_DATASOURCE_KEY = "default";
+    private static final String DEFAULT_SHARDING_KEY = "default";
+
+    /**
+     * Plugin
+     */
     private static final String JOIN_SCHEMA_TABLE_KEY = ">";
 
     private static final List<Plugin> GLOBAL_PLUGINS = new ArrayList<>();
 
-    private static final String LOG_PREFIX_TITLE = "[LightRail Platform] ";
 
     private RailPlatform() {
     }
 
     public synchronized static RailPlatform createLightRailPlatform(DataSource dataSource) {
         if (RailPlatform.MULTI_DATASOURCE_MAP.size() > 0) {
-            log.warn(LOG_PREFIX_TITLE + "You can't create DataSource again.");
+            log.error(LOG_PREFIX_TITLE + "You can't create DataSource again.");
             return INSTANCE;
         }
         RailPlatform.MULTI_DATASOURCE_MAP.put("default", dataSource);
@@ -54,34 +62,69 @@ public class RailPlatform {
         return INSTANCE;
     }
 
-    public static RailPlatform addDataSource(String shardingKey, DataSource dataSource) {
-        MULTI_DATASOURCE_MAP.put(shardingKey, dataSource);
+    public synchronized RailPlatform addDataSource(String shardingKey, DataSource newDataSource) {
+        DataSource originalDataSource = MULTI_DATASOURCE_MAP.get(shardingKey);
+        if (originalDataSource != null) {
+            log.info("Override dataSource Cache. ShardingKey = {}, original DataSource = {}, new DataSource = {}",
+                shardingKey, originalDataSource, newDataSource);
+        }
+        MULTI_DATASOURCE_MAP.put(shardingKey, newDataSource);
         return getInstance();
     }
 
-    public static RailPlatform addDataSource(String schema, String table, DataSource dataSource) {
-        return addDataSource(schema + JOIN_SCHEMA_TABLE_KEY + table, dataSource);
+    /**
+     * The rule of creating sharding key.
+     *
+     * @param url    DataBase URL, you can write simple like 'localhost:3306'
+     * @param schema schema = database = use ???
+     * @param table  表名
+     * @return shardingKey
+     */
+    private static String getShardingKey(String url, String schema, String table) {
+        return url + JOIN_SCHEMA_TABLE_KEY + schema + JOIN_SCHEMA_TABLE_KEY + table;
     }
 
-    public static RailPlatform removeDataSource(String shardingKey) {
-        MULTI_DATASOURCE_MAP.remove(shardingKey);
+    /**
+     * add DataSource(Pool)
+     *
+     * @param url
+     * @param schema
+     * @param table
+     * @param dataSource
+     * @return platform
+     */
+    public RailPlatform addDataSource(String url, String schema, String table, DataSource dataSource) {
+        return addDataSource(getShardingKey(url, schema, table), dataSource);
+    }
+
+    public synchronized RailPlatform removeDataSource(String shardingKey) {
+        DataSource remove = MULTI_DATASOURCE_MAP.remove(shardingKey);
+        if (remove != null) {
+            log.info("You remove a DataSource From RailPlatform cacheJ! DataSource = {}", remove);
+        }
         return getInstance();
     }
 
-    public static RailPlatform removeDataSource(String schema, String table) {
-        return removeDataSource(schema + JOIN_SCHEMA_TABLE_KEY + table);
+    public RailPlatform removeDataSource(String url, String schema, String table) {
+        return removeDataSource(getShardingKey(url, schema, table));
     }
 
-    public static DataSource getDefaultDataSource() {
-        return MULTI_DATASOURCE_MAP.get(DEFAULT_DATASOURCE_KEY);
+    public DataSource getDefaultDataSource() {
+        return MULTI_DATASOURCE_MAP.get(DEFAULT_SHARDING_KEY);
     }
 
-    public static DataSource getDataSource(String shardingKey) {
+    /**
+     * get DataSource by sharding key.
+     *
+     * @param shardingKey 分库分表的 ID
+     * @return DataSource | maybe null
+     */
+    public DataSource getDataSource(String shardingKey) {
         return MULTI_DATASOURCE_MAP.get(shardingKey);
     }
 
-    public static DataSource getDataSource(String schema, String table) {
-        return MULTI_DATASOURCE_MAP.get(schema + JOIN_SCHEMA_TABLE_KEY + table);
+    public DataSource getDataSource(String url, String schema, String table) {
+        return MULTI_DATASOURCE_MAP.get(getShardingKey(url, schema, table));
     }
 
     public RailPlatform addGlobalPlugin(Plugin plugin) {
@@ -99,31 +142,56 @@ public class RailPlatform {
         return getInstance();
     }
 
-    public <T> List<T> executeQuery(Class<?> clazz) {
-        return executeQuery(SqlLightRail.selectTable(clazz).build(), clazz, true, null, null);
+    /**
+     * use sharding key = 'default', if you need to choose another DataSource, you need to give me
+     * a SqlStatement object.
+     *
+     * @param sqlBuilder SQL Builder
+     * @param returnType return Type
+     * @param <T>
+     * @return
+     * @throws SQLException
+     */
+    public <T> List<T> executeQuery(SelectSqlBuilder sqlBuilder, Class<?> returnType) throws SQLException {
+        return executeQuery(DEFAULT_SHARDING_KEY, sqlBuilder, returnType);
     }
 
-    public <T> List<T> executeQuery(SelectSqlBuilder sqlBuilder, Class<?> clazz) {
-        return executeQuery(sqlBuilder.build(), clazz, true, null, null);
+    public <T> List<T> executeQuery(String shardingKey, SelectSqlBuilder sqlBuilder, Class<?> returnType) throws SQLException {
+        return executeQuery(SqlStatement.builder()
+            .shardingKey(shardingKey)
+            .sql(sqlBuilder.build())
+            .returnType(returnType)
+            .isAutoCommit(true)
+            .addTempPlugins(null)
+            .excludePluginNames(null)
+            .build());
     }
 
-    public <T> List<T> executeQuery(String sql, Class<?> clazz, Boolean isAutoCommit, List<Plugin> addPlugins, List<String> excludePluginNames) {
+    public <T> List<T> executeQuery(SqlStatement statement) throws SQLException {
         checkDataSource();
+        checkSelectSqlStatement(statement);
+
         ExecuteSqlContext context = null;
         try {
             context = ExecuteSqlContext.builder()
-                    .isProcessDefault(true)
-                    .isAutoCommit(isAutoCommit)
-                    .sql(sql)
-                    .plugins(GLOBAL_PLUGINS)
-                    .addPlugins(addPlugins)
-                    .excludePluginNames(excludePluginNames)
-                    .build();
-            Connection conn = getDefaultDataSource().getConnection();
-            conn.setAutoCommit(isAutoCommit);
+                .isProcessDefault(true)
+                .isAutoCommit(statement.getIsAutoCommit())
+                .sql(statement.getSql())
+                .plugins(GLOBAL_PLUGINS)
+                .addPlugins(statement.getAddTempPlugins())
+                .excludePluginNames(statement.getExcludePluginNames())
+                .build();
+            // multi DataSource
+            Connection conn;
+            if (MULTI_DATASOURCE_MAP.get(statement.getShardingKey()) == null) {
+                conn = getDefaultDataSource().getConnection();
+            } else {
+                conn = MULTI_DATASOURCE_MAP.get(statement.getShardingKey()).getConnection();
+            }
+            conn.setAutoCommit(statement.getIsAutoCommit() == null || statement.getIsAutoCommit());
             context.setConnection(conn);
             context.notifyPluginsBegin();
-            context.setPreparedStatement(conn.prepareStatement(sql));
+            context.setPreparedStatement(conn.prepareStatement(statement.getSql()));
             context.notifyPluginsPreExecuteSql();
             if (context.getIsProcessDefault()) {
                 context.executeQuery();
@@ -131,51 +199,66 @@ public class RailPlatform {
             context.notifyPluginsPostExecuteSql();
             context.notifyPluginsEnd();
         } catch (SQLException e) {
-            try {
-                context.getConnection().rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            context.getConnection().rollback();
             e.printStackTrace();
         }
         if (context.getIsProcessDefault()) {
             ResultSet rs = Optional.ofNullable(Objects.requireNonNull(context).getResultSet())
-                    .orElseThrow(() -> new RuntimeException(LOG_PREFIX_TITLE + "execute query error."));
-            context.setDataList(LightRailOrm.mapping(rs, clazz));
+                .orElseThrow(() -> new RuntimeException(LOG_PREFIX_TITLE + "execute query error."));
+            context.setDataList(RailPlatformOrm.mapping(rs, statement.getReturnType()));
         }
+
+        Objects.requireNonNull(context).getConnection().close();
         return Optional.ofNullable(context.getDataList()).orElse(new ArrayList<>());
     }
 
-    public Integer executeUpdate(SqlBuilder sqlBuilder) {
-        return executeUpdate(sqlBuilder.build(), true, null, null);
+
+    /**
+     * SQL - Insert / Update / Delete
+     *
+     * @param sqlBuilder sql
+     * @return
+     * @throws SQLException
+     */
+    public Integer executeUpdate(SqlBuilder sqlBuilder) throws SQLException {
+        return executeUpdate(DEFAULT_SHARDING_KEY, sqlBuilder);
     }
 
-    public Integer executeUpdate(SqlBuilder sqlBuilder, Boolean isAutoCommit) {
-        return executeUpdate(sqlBuilder.build(), isAutoCommit, null, null);
+    public Integer executeUpdate(String shardingKey, SqlBuilder sqlBuilder) throws SQLException {
+        return executeUpdate(SqlStatement.builder()
+            .shardingKey(shardingKey)
+            .sql(sqlBuilder.build())
+            .isAutoCommit(true)
+            .addTempPlugins(null)
+            .excludePluginNames(null)
+            .build());
     }
 
-    public Integer executeUpdate(SqlBuilder sqlBuilder, Boolean isAutoCommit, List<String> excludePluginNames) {
-        return executeUpdate(sqlBuilder.build(), isAutoCommit, null, excludePluginNames);
-    }
-
-
-    public Integer executeUpdate(String sql, Boolean isAutoCommit, List<Plugin> addPlugins, List<String> excludePluginNames) {
+    public Integer executeUpdate(SqlStatement statement) throws SQLException {
         checkDataSource();
+        checkUpdateSqlStatement(statement);
+
         ExecuteSqlContext context = null;
         try {
             context = ExecuteSqlContext.builder()
-                    .isProcessDefault(true)
-                    .isAutoCommit(isAutoCommit)
-                    .sql(sql)
-                    .plugins(GLOBAL_PLUGINS)
-                    .addPlugins(addPlugins)
-                    .excludePluginNames(excludePluginNames)
-                    .build();
-            Connection conn = getDefaultDataSource().getConnection();
-            conn.setAutoCommit(isAutoCommit);
+                .isProcessDefault(true)
+                .isAutoCommit(statement.getIsAutoCommit() == null || statement.getIsAutoCommit())
+                .sql(statement.getSql())
+                .plugins(GLOBAL_PLUGINS)
+                .addPlugins(statement.getAddTempPlugins())
+                .excludePluginNames(statement.getExcludePluginNames())
+                .build();
+            // multi DataSource
+            Connection conn;
+            if (MULTI_DATASOURCE_MAP.get(statement.getShardingKey()) == null) {
+                conn = getDefaultDataSource().getConnection();
+            } else {
+                conn = MULTI_DATASOURCE_MAP.get(statement.getShardingKey()).getConnection();
+            }
+            conn.setAutoCommit(statement.getIsAutoCommit());
             context.setConnection(conn);
             context.notifyPluginsBegin();
-            context.setPreparedStatement(conn.prepareStatement(sql));
+            context.setPreparedStatement(conn.prepareStatement(statement.getSql()));
             context.notifyPluginsPreExecuteSql();
             // 如有需要, 请在 Plugin 的 Pre / Post 阶段操作。
             if (context.getIsProcessDefault()) {
@@ -191,42 +274,39 @@ public class RailPlatform {
             }
             e.printStackTrace();
         }
+        Objects.requireNonNull(context).getConnection().close();
         return context.getUpdateCount();
     }
 
-    public Integer executeUpdate(String sql, List<Object[]> valueList, Boolean isAutoCommit, List<Plugin> addPlugins, List<String> excludePluginNames) {
-        checkDataSource();
-        ExecuteSqlContext context = null;
-        try {
-            context = ExecuteSqlContext.builder()
-                    .isProcessDefault(true)
-                    .isAutoCommit(isAutoCommit)
-                    .sql(sql)
-                    .valueList(valueList)
-                    .plugins(GLOBAL_PLUGINS)
-                    .excludePluginNames(excludePluginNames)
-                    .build();
-            Connection conn = getDefaultDataSource().getConnection();
-            conn.setAutoCommit(isAutoCommit);
-            context.setConnection(conn);
-            context.notifyPluginsBegin();
-            context.setPreparedStatement(conn.prepareStatement(sql));
-            context.notifyPluginsPreExecuteSql();
-            // 如有需要, 请在 Plugin 的 Pre / Post 阶段操作。
-            if (context.getIsProcessDefault()) {
-                context.executeUpdate();
-            }
-            context.notifyPluginsPostExecuteSql();
-            context.notifyPluginsEnd();
-        } catch (SQLException e) {
-            try {
-                context.getConnection().rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-            e.printStackTrace();
+    /**
+     * Check 'sql' and 'return type'
+     * set default sharding key if not absent.
+     *
+     * @param statement
+     */
+    private void checkSelectSqlStatement(SqlStatement statement) {
+        if (StringUtils.isBlank(statement.getSql())) {
+            throw new SqlLightRailException("[SqlStatement] You need to '.sql()' set your SQL.");
         }
-        return context.getUpdateCount();
+        if (statement.getReturnType() == null) {
+            throw new SqlLightRailException("[SqlStatement] You need to '.returnType()' set your return class.");
+        }
+
+        // set shardingKey
+        if (StringUtils.isBlank(statement.getShardingKey())) {
+            statement.setShardingKey(DEFAULT_SHARDING_KEY);
+        }
+    }
+
+    private void checkUpdateSqlStatement(SqlStatement statement) {
+        if (StringUtils.isBlank(statement.getSql())) {
+            throw new SqlLightRailException("[SqlStatement] You need to '.sql()' set your SQL.");
+        }
+
+        // set shardingKey
+        if (StringUtils.isBlank(statement.getShardingKey())) {
+            statement.setShardingKey(DEFAULT_SHARDING_KEY);
+        }
     }
 
     private void checkDataSource() {

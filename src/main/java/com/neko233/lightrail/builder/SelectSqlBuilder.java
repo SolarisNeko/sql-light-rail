@@ -12,6 +12,7 @@ import com.neko233.lightrail.util.ReflectUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -26,6 +27,8 @@ import static java.util.stream.Collectors.toList;
  * Date on 2022-02-20
  */
 public class SelectSqlBuilder extends SqlBuilder {
+
+    private static final String LOG_PREFIX_TIPS = "[SelectSqlBuilder] ";
 
     private static final String WHERE_PREFIX = "where";
 
@@ -96,6 +99,20 @@ public class SelectSqlBuilder extends SqlBuilder {
             ;
     }
 
+    /**
+     * Select Entity's all field with 'Camel Case(驼峰命名法)' as same as table's columns.
+     * @param entity as same as table's columns by rule 'Camel Case'
+     * @return builder
+     */
+    public SelectSqlBuilder select(Class<?> entity) {
+        List<Field> allFields = ReflectUtil.getAllFields(entity);
+        List<String> columnNames = allFields.stream()
+            .map(field -> CamelCaseUtil.getBigCamelLowerName(field.getName()))
+            .collect(toList());
+        sql.setSelect(columnNames);
+        return this;
+    }
+
     public SelectSqlBuilder select(String... columns) {
         sql.setSelect(Arrays.asList(columns));
         return this;
@@ -152,9 +169,10 @@ public class SelectSqlBuilder extends SqlBuilder {
     }
 
     /**
-     * pageNum 从 0 开始
+     * pageNum 从 1 开始
+     * pageSize 从 1 开始
      *
-     * @param pageNum 分页
+     * @param pageNum 开始页数
      * @param pageSize 分页
      * @return SelectSqlBuilder
      */
@@ -165,7 +183,15 @@ public class SelectSqlBuilder extends SqlBuilder {
         if (pageSize == null) {
             return this;
         }
-        sql.setLimit(" LIMIT " + pageNum * pageSize + ", " + (pageNum * pageSize + pageSize) + " ");
+
+        if (pageNum <= 0) {
+            throw new SqlLightRailException(LOG_PREFIX_TIPS + "your pageNum <= 0! can't use. Must set >= 1");
+        }
+        if (pageSize <= 0) {
+            throw new SqlLightRailException(LOG_PREFIX_TIPS + "your pageSize <= 0! can't use. Must set >= 1");
+        }
+        int startStep = pageNum - 1;
+        sql.setLimit(" LIMIT " + startStep * pageSize + ", " + (startStep * pageSize + pageSize) + " ");
         return this;
     }
 

@@ -18,7 +18,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 /**
- * 执行 SQL 期间的上下文
+ * The Context about executing SQL CRUD.
  *
  * @author SolarisNeko
  * Date on 2022-02-26

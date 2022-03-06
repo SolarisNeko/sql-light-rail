@@ -44,12 +44,12 @@ public class SqlLightRail {
 
     /**
      * 将 Class 进行 ORM 转换成 Select SQL.
-     * ps: ClassName, FieldNames 需要遵守 CamelCase(驼峰命名法) 这个约定。
-     * @param tablePojo camelCasePojo
+     *
+     * @param entity 数据库实体对象, 遵守 CamelCase(驼峰命名法) 这个约定。
      * @return SelectSqlBuilder
      */
-    public static SelectSqlBuilder selectTable(Class tablePojo) {
-        return new SelectSqlBuilder(tablePojo);
+    public static SelectSqlBuilder selectTable(Class<?> entity) {
+        return new SelectSqlBuilder(entity);
     }
 
     public static SelectSqlBuilder selectTable(String tableName, Class tablePojo) {
