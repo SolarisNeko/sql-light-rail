@@ -217,7 +217,7 @@ public class RailPlatform {
      * SQL - Insert / Update / Delete
      *
      * @param sqlBuilder sql
-     * @return
+     * @return update count
      * @throws SQLException
      */
     public Integer executeUpdate(SqlBuilder sqlBuilder) throws SQLException {
