@@ -1,7 +1,7 @@
 # SQL Light Rail
 
 ## 简介
-> 'sqlStatement-light-rail' is a DAO Layer Micro Framework to handle SQL by Java, use it like 'Chain Builder / Stream'.
+> 'sql-light-rail' is a DAO Layer Micro Framework to handle SQL by Java, use it like 'Chain Builder / Stream'.
 >
 > '轻轨' 是一款 DAO 层操作的微框架, 处理 SQL 就如同写 Java Stream / Chain Builder 一样。
 
@@ -34,7 +34,7 @@ SQL Light Rail (SQL 轻轨)
 ```xml
 <dependency>
     <groupId>com.neko233</groupId>
-    <artifactId>sqlStatement-light-rail</artifactId>
+    <artifactId>sql-light-rail</artifactId>
     <version>0.0.3</version>
 </dependency>
 
@@ -42,7 +42,7 @@ SQL Light Rail (SQL 轻轨)
 
 ### Gradle
 ```groovy
-implementation group: 'com.neko233', name: 'sqlStatement-light-rail', version: '0.0.3'
+implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.0.3'
 ```
 
 ## 初衷 / 痛点

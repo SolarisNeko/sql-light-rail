@@ -4,7 +4,7 @@ maven
 ```xml
 <dependency>
     <groupId>com.neko233</groupId>
-    <artifactId>sqlStatement-light-rail</artifactId>
+    <artifactId>sql-light-rail</artifactId>
     <version>0.0.3</version>
 </dependency>
 ```
