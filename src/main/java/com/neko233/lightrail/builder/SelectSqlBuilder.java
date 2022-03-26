@@ -33,6 +33,35 @@ public class SelectSqlBuilder extends SqlBuilder {
     private static final String WHERE_PREFIX = "where";
 
     /**
+     * 应该指定一个可大小写的选择参数
+     *
+     * @return String
+     */
+    @Override
+    public String build() {
+        checkSelectNecessaryParams(sql);
+        List<String> selectList = sql.getSelect().stream()
+            .filter(Objects::nonNull)
+            .map(fieldName -> {
+                String alias = sql.getAliasMap().get(fieldName);
+                if (alias != null) {
+                    return fieldName + " as " + Condition.toSqlValueByType(alias);
+                }
+                return CamelCaseUtil.getBigCamelLowerName(fieldName);
+            })
+            .collect(toList());
+        //
+        return "SELECT " + String.join(", ", selectList)
+            + " FROM " + String.join(",", sql.getTableList())
+            + Optional.ofNullable(sql.getWhere()).orElse("")
+            + Optional.ofNullable(sql.getOrderBy()).orElse("")
+            + Optional.ofNullable(sql.getGroupBy()).orElse("")
+            + Optional.ofNullable(sql.getLimit()).orElse("")
+            + Optional.ofNullable(sql.getJoin()).orElse("")
+            ;
+    }
+
+    /**
      * 如果没有传 tableName, 默认使用 Class 的 Lower CamelCase 小驼峰。
      *
      * @param tablePojo 符合驼峰大小写的 Pojo, 例如: LoginSum to login_sum
@@ -67,36 +96,6 @@ public class SelectSqlBuilder extends SqlBuilder {
         if (CollectionUtils.isEmpty(selectList)) {
             throw new SqlLightRailException("Must set 'select' in SQL");
         }
-
-    }
-
-    /**
-     * 应该指定一个可大小写的选择参数
-     *
-     * @return String
-     */
-    @Override
-    public String build() {
-        checkSelectNecessaryParams(sql);
-        List<String> selectList = sql.getSelect().stream()
-            .filter(Objects::nonNull)
-            .map(fieldName -> {
-                String alias = sql.getAliasMap().get(fieldName);
-                if (alias != null) {
-                    return fieldName + " as " + Condition.toSqlValueByType(alias);
-                }
-                return CamelCaseUtil.getBigCamelLowerName(fieldName);
-            })
-            .collect(toList());
-        //
-        return "SELECT " + String.join(", ", selectList)
-            + " FROM " + String.join(",", sql.getTableList())
-            + Optional.ofNullable(sql.getWhere()).orElse("")
-            + Optional.ofNullable(sql.getOrderBy()).orElse("")
-            + Optional.ofNullable(sql.getGroupBy()).orElse("")
-            + Optional.ofNullable(sql.getLimit()).orElse("")
-            + Optional.ofNullable(sql.getJoin()).orElse("")
-            ;
     }
 
     /**
@@ -210,4 +209,7 @@ public class SelectSqlBuilder extends SqlBuilder {
         sql.getAliasMap().putAll(aliasMap);
         return this;
     }
+
+
+
 }

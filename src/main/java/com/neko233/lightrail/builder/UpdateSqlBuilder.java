@@ -19,7 +19,10 @@ public class UpdateSqlBuilder extends SqlBuilder {
     @Override
     public String build() {
         checkUpdateNecessaryParams(sql);
-        return buildSelectSql();
+        return "Update " + sql.getTableList().get(0) + " "
+            + Optional.ofNullable(sql.getSet()).orElse("")
+            + Optional.ofNullable(sql.getWhere()).orElse("")
+            ;
     }
 
     private void checkUpdateNecessaryParams(Sql sql) {
@@ -29,13 +32,6 @@ public class UpdateSqlBuilder extends SqlBuilder {
         if (sql.getWhere() == null) {
             throw new SqlLightRailException("Update SQL must set 'Where' condition ! ");
         }
-    }
-
-    private String buildSelectSql() {
-        return "Update " + sql.getTableList().get(0) + " "
-            + Optional.ofNullable(sql.getSet()).orElse("")
-            + Optional.ofNullable(sql.getWhere()).orElse("")
-            ;
     }
 
     public UpdateSqlBuilder set(String set) {

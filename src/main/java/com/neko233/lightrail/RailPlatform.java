@@ -51,7 +51,7 @@ public class RailPlatform {
 
     public synchronized static RailPlatform createLightRailPlatform(DataSource dataSource) {
         if (RailPlatform.MULTI_DATASOURCE_MAP.size() > 0) {
-            log.error(LOG_PREFIX_TITLE + "You can't create DataSource again.");
+            log.error(LOG_PREFIX_TITLE + "You can't create RailPlatform by DataSource again.");
             return INSTANCE;
         }
         RailPlatform.MULTI_DATASOURCE_MAP.put("default", dataSource);
@@ -205,7 +205,7 @@ public class RailPlatform {
         if (context.getIsProcessDefault()) {
             ResultSet rs = Optional.ofNullable(Objects.requireNonNull(context).getResultSet())
                 .orElseThrow(() -> new RuntimeException(LOG_PREFIX_TITLE + "execute query error."));
-            context.setDataList(RailPlatformOrm.mapping(rs, statement.getReturnType()));
+            context.setDataList(RailPlatformOrm.orm(rs, statement.getReturnType()));
         }
 
         Objects.requireNonNull(context).getConnection().close();

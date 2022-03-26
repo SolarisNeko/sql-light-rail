@@ -18,15 +18,10 @@ public class DeleteSqlBuilder extends SqlBuilder {
 
     @Override
     public String build() {
-        return buildDeleteSql();
-    }
-
-    private String buildDeleteSql() {
         return "Delete From " + sql.getTableList().get(0)
             + (StringUtils.isBlank(sql.getWhere()) ?
             "" : sql.getWhere());
     }
-
 
     public DeleteSqlBuilder where(WhereCondition condition) {
         sql.setWhere(condition.build());
