@@ -24,6 +24,36 @@ public class SelectOrmTest {
     }
 
     @Test
+    public void selectOrmTest_original_SQL_String() throws Exception {
+
+        railPlatform.addGlobalPlugin(new SlowSqlPlugin());
+
+        List<UserWithEmail> dataList = railPlatform.executeQuery(
+            "select id, name From user",
+            UserWithEmail.class
+        );
+        for (UserWithEmail user : dataList) {
+            Assert.assertTrue(user.getName() != null);
+        }
+    }
+
+    @Test
+    public void selectOrmTest_original_SQL_With_ShardingKey() throws Exception {
+
+        railPlatform.addGlobalPlugin(new SlowSqlPlugin());
+
+        // 可分库
+        List<UserWithEmail> dataList = railPlatform.executeQuery(
+//            "t1",
+            "select name From user",
+            UserWithEmail.class
+        );
+        for (UserWithEmail user : dataList) {
+            Assert.assertTrue(user.getId() == null);
+        }
+    }
+
+    @Test
     public void selectOrmTest() throws Exception {
 
         railPlatform.addGlobalPlugin(new SlowSqlPlugin());

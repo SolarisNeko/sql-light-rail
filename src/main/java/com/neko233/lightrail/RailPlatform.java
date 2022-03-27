@@ -153,13 +153,17 @@ public class RailPlatform {
      * @throws SQLException
      */
     public <T> List<T> executeQuery(SelectSqlBuilder sqlBuilder, Class<?> returnType) throws SQLException {
-        return executeQuery(DEFAULT_SHARDING_KEY, sqlBuilder, returnType);
+        return executeQuery(sqlBuilder.build(), returnType);
     }
 
-    public <T> List<T> executeQuery(String shardingKey, SelectSqlBuilder sqlBuilder, Class<?> returnType) throws SQLException {
+    public <T> List<T> executeQuery(String sql, Class<?> returnType) throws SQLException {
+        return executeQuery(DEFAULT_SHARDING_KEY, sql, returnType);
+    }
+
+    public <T> List<T> executeQuery(String shardingKey, String sql, Class<?> returnType) throws SQLException {
         return executeQuery(SqlStatement.builder()
             .shardingKey(shardingKey)
-            .sql(sqlBuilder.build())
+            .sql(sql)
             .returnType(returnType)
             .isAutoCommit(true)
             .addTempPlugins(null)
@@ -221,13 +225,17 @@ public class RailPlatform {
      * @throws SQLException
      */
     public Integer executeUpdate(SqlBuilder sqlBuilder) throws SQLException {
-        return executeUpdate(DEFAULT_SHARDING_KEY, sqlBuilder);
+        return executeUpdate(DEFAULT_SHARDING_KEY, sqlBuilder.build());
     }
 
-    public Integer executeUpdate(String shardingKey, SqlBuilder sqlBuilder) throws SQLException {
+    public Integer executeUpdate(String sql) throws SQLException {
+        return executeUpdate(DEFAULT_SHARDING_KEY, sql);
+    }
+
+    public Integer executeUpdate(String shardingKey, String sql) throws SQLException {
         return executeUpdate(SqlStatement.builder()
             .shardingKey(shardingKey)
-            .sql(sqlBuilder.build())
+            .sql(sql)
             .isAutoCommit(true)
             .addTempPlugins(null)
             .excludePluginNames(null)

@@ -35,7 +35,7 @@ SQL Light Rail (SQL 轻轨)
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
 </dependency>
 
 ```
