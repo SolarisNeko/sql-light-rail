@@ -5,31 +5,31 @@ maven
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.5</version>
 </dependency>
 ```
 
-# SqlLightRail
+# 组装 SQL 入口 - class SqlLightRail
 动态组装 SQL
 
 
-# RailPlatform 统一操作层
+# DAO 统一操作层 - class RailPlatform 
 ## 多数据源演示
-依赖
+需要 2 个依赖, DataSource + Connector.
 ```xml
-        <!-- DAO Layer -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>1.2.8</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.25</version>
-        </dependency>
+<!-- DAO Layer -->
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid</artifactId>
+    <version>1.2.8</version>
+</dependency>
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.25</version>
+</dependency>
 ```
-Code
+## Demo Code
 ```java
     DataSource ds = DruidDataSourceFactory.createDataSource(getDefaultDbConfig());
     DataSource ds1 = DruidDataSourceFactory.createDataSource(getMultiDataSource_1());
