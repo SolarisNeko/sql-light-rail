@@ -10,13 +10,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SlowSqlPlugin extends Plugin {
 
-    public static final String LOG_PREFIX_TITLE = "[Slow-SQL] ";
+    private static final String LOG_PREFIX_TITLE = "[Plugin|SlowSql] ";
     private static final Long THRESHOLD_SLOW_SQL_IN_MS = 1000L;
 
     public static final Long NANO_TO_MILLIS_SECONDS = 1_000_000L;
-    private Long startMsTime;
-    private Long endMsTime;
 
+    /**
+     * ThreadLocal for temporary plugin.
+     */
+    private static final ThreadLocal<Long> START_MS_TIME_THREAD_LOCALS = new ThreadLocal<>();
 
     public SlowSqlPlugin() {
         super("slow-sql-plugin");
@@ -34,12 +36,13 @@ public class SlowSqlPlugin extends Plugin {
 
     @Override
     public void preExecuteSql(ExecuteSqlContext context) {
-        startMsTime = System.nanoTime() / NANO_TO_MILLIS_SECONDS;
+        long startMsTime = System.nanoTime() / NANO_TO_MILLIS_SECONDS;
+        START_MS_TIME_THREAD_LOCALS.set(startMsTime);
     }
 
     @Override
     public void postExecuteSql(ExecuteSqlContext context) {
-        checkIsSlowSql(context.getSql(), startMsTime);
+        checkIsSlowSql(context.getSql(), START_MS_TIME_THREAD_LOCALS.get());
     }
 
     @Override
@@ -56,6 +59,8 @@ public class SlowSqlPlugin extends Plugin {
      */
     private static void checkIsSlowSql(String sql, long startMsTime) {
         long spendTime = getCurrentMsTime() - startMsTime;
+        // must remove after use
+        START_MS_TIME_THREAD_LOCALS.remove();
         if (spendTime > THRESHOLD_SLOW_SQL_IN_MS) {
             log.warn(LOG_PREFIX_TITLE + "Slow SQL warn. SQL = {}. Spend Time = {} ms", sql, spendTime);
             return;

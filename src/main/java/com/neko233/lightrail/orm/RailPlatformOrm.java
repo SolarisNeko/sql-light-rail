@@ -49,7 +49,7 @@ public class RailPlatformOrm {
                 dataList.add(newObject);
             }
         } catch (Exception e) {
-            log.error("[RailPlatformOrm] ORM Mapping error! Exception = {}", e.getMessage());
+            log.error("[RailPlatformOrm] ORM Mapping error!", e);
             return dataList;
         }
 
