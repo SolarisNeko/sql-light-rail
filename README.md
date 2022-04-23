@@ -225,11 +225,14 @@ DataSource dataSource=DruidDataSourceFactory.createDataSource(getDbConfig());
 
 // Demo
         RailPlatform railPlatform=RailPlatformFactory.createLightRailPlatform(dataSource);
-        SqlBuilder updateSql=SqlLightRail.updateTable("user")
-        .set("create_time = '2022-01-01 11:11:11'")
-        .where(WhereCondition.builder()
-        .equalsTo("id",1)
-        );
-        Integer rowCount=railPlatform.executeUpdate(updateSql);
-        Assert.assertTrue(1==rowCount);
+
+        // 基本类型
+        List<Integer> testIntValue = railPlatform.executeQuery("Select 1 From dual ", Integer.class);
+        // must not null
+        System.out.println(testIntValue.get(0));
+
+        // Object ORM
+        List<User> users = railPlatform.executeQuery("Select id, name From user Limit 0, 1 ", User.class);
+        users.forEach(System.out::println)
+
 ```

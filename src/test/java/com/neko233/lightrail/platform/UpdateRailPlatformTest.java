@@ -23,11 +23,11 @@ import java.util.List;
  * @author: SolarisNeko
  * Date on: 2/26/2022
  */
-public class RailPlatformTest {
+public class UpdateRailPlatformTest {
 
     RailPlatform railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDefaultDataSource());
 
-    public RailPlatformTest() throws Exception {
+    public UpdateRailPlatformTest() throws Exception {
     }
 
 
@@ -92,5 +92,6 @@ public class RailPlatformTest {
 
         Assert.assertTrue(1 == rowCount);
     }
+
 
 }

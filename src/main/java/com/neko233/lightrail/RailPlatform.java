@@ -169,7 +169,7 @@ public class RailPlatform {
             log.error(LOG_PREFIX + "ShardingKey miss! Please check your input!");
             throw new RuntimeException(LOG_PREFIX + "ShardingKey miss! Please check your input!");
         } else {
-            conn = MULTI_DATASOURCE_MAP.get(statement.getShardingKey()).getConnection();
+             conn = MULTI_DATASOURCE_MAP.get(statement.getShardingKey()).getConnection();
         }
         conn.setAutoCommit(statement.getIsAutoCommit() == null || statement.getIsAutoCommit());
         context.setConnection(conn);
@@ -180,21 +180,22 @@ public class RailPlatform {
             if (context.getIsDefaultProcess()) {
                 context.executeQuery();
             }
+            context.notifyPluginsPostExecuteSql();
+            context.notifyPluginsEnd();
+
+            // 获取最终结果
+            if (context.getIsDefaultProcess()) {
+                ResultSet rs = Optional.ofNullable(Objects.requireNonNull(context).getResultSet())
+                        .orElseThrow(() -> new RailPlatformException(LOG_PREFIX + "Execute query error. SQL = " + statement.getSql()));
+                context.setDataList(RailPlatformOrm.orm(rs, statement.getReturnType()));
+            }
         } catch (SQLException e) {
             log.error(LOG_PREFIX + "Execute query error will rollback. SQL = {}.", statement.getSql(), e);
             context.getConnection().rollback();
         } finally {
             Objects.requireNonNull(context).getConnection().close();
         }
-        context.notifyPluginsPostExecuteSql();
-        context.notifyPluginsEnd();
 
-        // 获取最终结果
-        if (context.getIsDefaultProcess()) {
-            ResultSet rs = Optional.ofNullable(Objects.requireNonNull(context).getResultSet())
-                    .orElseThrow(() -> new RailPlatformException(LOG_PREFIX + "Execute query error. SQL = " + statement.getSql()));
-            context.setDataList(RailPlatformOrm.orm(rs, statement.getReturnType()));
-        }
         return Optional.ofNullable(context.getDataList()).orElse(new ArrayList<T>());
     }
 
@@ -252,6 +253,7 @@ public class RailPlatform {
 
         conn.setAutoCommit(statement.getIsAutoCommit());
         context.setConnection(conn);
+        // pre handle
         context.notifyPluginsBegin();
         context.setPreparedStatement(conn.prepareStatement(statement.getSql()));
         context.notifyPluginsPreExecuteSql();
@@ -260,14 +262,17 @@ public class RailPlatform {
             if (context.getIsDefaultProcess()) {
                 context.executeUpdate();
             }
+
+            // post handle
+            context.notifyPluginsPostExecuteSql();
+            context.notifyPluginsEnd();
         } catch (SQLException e) {
             log.error(LOG_PREFIX + "Execute error SQL = {} Will rollback.", context.getSql(), e);
             context.getConnection().rollback();
         } finally {
             Objects.requireNonNull(context).getConnection().close();
         }
-        context.notifyPluginsPostExecuteSql();
-        context.notifyPluginsEnd();
+
         return context.getUpdateCount();
     }
 
