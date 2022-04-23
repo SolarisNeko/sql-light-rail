@@ -17,15 +17,11 @@ SQL Light Rail (SQL 轻轨)
 
 这是一款【约定大于配置】的 Java SQL Flux 框架, 用于快速构建大量 SQL, 辅助 DAO 操作/复用 SQL。
 
-设计原因:
-1. 因部分公司有大量历史代码, MyBatis 入侵性过强, 迁移的工作量巨大, 并不能友好地支持快速开发. 
-2. 其次, MyBatis Generator 生成无意义的代码过多, 文件过多, 项目结构庞大, 不够轻量化。 
-3. 以及...原因。
-4. 我希望复杂拼接 SQL 应该在 Java 层, 而不是在 xml .并且配合 IDE 智能提示, 如 IDEA, vscode, 等 都有明显的开发速度提升。
 
 约定 > 配置:
-1. 如果你的 Pojo 遵循驼峰命名, SQL Table 命名遵循大驼峰命名, 如 class LoginSumDaily -> table login_sum_daily 。 那么我们会自动帮你将 field 转换为表结构。
-2. 采用 Flux/Stream 写法。
+1. CamelCase Style for Pojo/Class. 
+    如果你的 Pojo 遵循驼峰命名, SQL Table 命名遵循大驼峰命名, 如 class LoginSumDaily -> table login_sum_daily 。 那么我们会自动帮你将 field 转换为表结构。
+2. Flux/Stream Style。
 
 本架构 License 为 Apache2.0
 
