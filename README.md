@@ -10,7 +10,7 @@
 
 同时，将 SQL 难以编写的复杂语法，转移到 Java 层面处理，实在是非常的爽！
 
-### 详细介绍
+### 介绍
 
 SQL Light Rail (SQL 轻轨)
 
@@ -18,19 +18,12 @@ SQL Light Rail (SQL 轻轨)
 
 这是一款【约定大于配置】的 Java SQL Flux 框架, 用于快速构建大量 SQL, 辅助 DAO 操作/复用 SQL。
 
-约定 > 配置:
+### 约定 > 配置:
 
 1. 如果你的 Pojo 遵循驼峰命名, SQL Table 命名遵循大驼峰命名, 如 class LoginSumDaily -> table login_sum_daily 。 那么我们会自动帮你将 field 转换为表结构。
 2. 采用 Flux/Stream 写法。
 
 License 为 Apache2.0
-
-### 设计原因
-
-1. 因部分公司有大量历史代码, MyBatis 入侵性过强, 迁移的工作量巨大, 并不能友好地支持快速开发.
-2. 其次, MyBatis Generator 生成无意义的代码过多, 文件过多, 项目结构庞大, 不够轻量化。
-3. 以及...原因。
-4. 我希望复杂拼接 SQL 应该在 Java 层, 而不是在 xml .并且配合 IDE 智能提示, 如 IDEA, vscode, 等 都有明显的开发速度提升。
 
 ## Download
 
@@ -49,15 +42,15 @@ License 为 Apache2.0
 ### Gradle
 
 ```groovy
-implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.0.3'
+implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.0.7'
 ```
 
 ## 初衷 / 痛点
 
-1. MyBatis 迁移的工作量巨大, 除非重构项目, 实际开发速度提升并不明显。
-2. MyBatis 并没有足够好到让我替换巨量DAO操作，入侵性过强，较为重量。
-3. MyBatis 不太兼容很多公司自研框架 (例如：分库分表框架等, 限死了使用 ShardingSphere/MyCat 等).
-4. 没有语法提示。工作中使用到的 SQL 非常多, 但语法也各不一样，如: MySQL, Oracle, Spark SQL, Hive SQL, Kylin SQL...
+1. MyBatis 迁移的工作量巨大, 除非重构项目, 半路使用的体验较差。所以诞生了 rail-platform （执行 SQL）
+2. 我喜欢 MyBatis Plus 的 flux 风格，但我不喜欢他强绑定了 MyBatis。所以诞生了 sql-light-rail
+3. 我喜欢 Sharding Sphere(JDBC) / MyCat 提供分库分表能力，但是我希望有一个完全一体化的东西。
+
 
 ## Development Status [发展状态]
 
