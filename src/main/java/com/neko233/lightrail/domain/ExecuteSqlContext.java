@@ -29,19 +29,23 @@ import static java.util.stream.Collectors.toList;
 @Builder
 public class ExecuteSqlContext<T> {
 
+    private String shardingKey;
     private String sql;
+
     // 对应 prepareStatement 的占位符值
     private List<Object[]> valueList;
+
     // JDBC Connect
     private Boolean isAutoCommit;
     private Connection connection;
     private PreparedStatement preparedStatement;
+
     // 插件
     private List<Plugin> plugins;
     private List<Plugin> addPlugins;
     private List<String> excludePluginNames;
     // 是否使用默认执行的 JDBC, 如果为 false 需要提供 dataList 操作结果。
-    private Boolean isProcessDefault;
+    private Boolean isDefaultProcess;
     // 处理结果
     private ResultSet resultSet;
     private Integer updateCount;

@@ -1,7 +1,6 @@
 
 -- Default DataSource
-create database sql_light_rail;
-use sql_light_rail;
+
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;

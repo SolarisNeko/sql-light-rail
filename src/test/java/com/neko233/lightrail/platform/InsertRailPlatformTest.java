@@ -4,19 +4,13 @@ import com.neko233.lightrail.RailPlatform;
 import com.neko233.lightrail.RailPlatformFactory;
 import com.neko233.lightrail.SqlLightRail;
 import com.neko233.lightrail.builder.InsertSqlBuilder;
-import com.neko233.lightrail.builder.SqlBuilder;
-import com.neko233.lightrail.condition.SetCondition;
-import com.neko233.lightrail.condition.WhereCondition;
 import com.neko233.lightrail.dataSource.MyDataSource;
 import com.neko233.lightrail.pojo.User;
 import com.neko233.lightrail.pojo.UserWithEmail;
-import com.sun.tools.javac.comp.Todo;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**

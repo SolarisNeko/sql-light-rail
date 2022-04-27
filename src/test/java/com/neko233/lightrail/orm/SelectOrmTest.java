@@ -8,6 +8,7 @@ import com.neko233.lightrail.pojo.UserLackFields;
 import com.neko233.lightrail.pojo.UserWithEmail;
 import com.neko233.lightrail.dataSource.MyDataSource;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -18,15 +19,17 @@ import java.util.List;
  */
 public class SelectOrmTest {
 
-    RailPlatform railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDefaultDataSource());
+    RailPlatform railPlatform;
 
-    public SelectOrmTest() throws Exception {
+    @Before
+    public void before() throws Exception {
+        railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDefaultDataSource());
+        railPlatform.removeAllPlugins();
+        railPlatform.addGlobalPlugin(new SlowSqlPlugin());
     }
 
     @Test
     public void selectOrmTest_original_SQL_String() throws Exception {
-
-        railPlatform.addGlobalPlugin(new SlowSqlPlugin());
 
         List<UserWithEmail> dataList = railPlatform.executeQuery(
             "select id, name From user",
@@ -39,8 +42,6 @@ public class SelectOrmTest {
 
     @Test
     public void selectOrmTest_original_SQL_With_ShardingKey() throws Exception {
-
-        railPlatform.addGlobalPlugin(new SlowSqlPlugin());
 
         // 可分库
         List<UserWithEmail> dataList = railPlatform.executeQuery(
@@ -56,8 +57,6 @@ public class SelectOrmTest {
     @Test
     public void selectOrmTest() throws Exception {
 
-        railPlatform.addGlobalPlugin(new SlowSqlPlugin());
-
         List<UserWithEmail> dataList = railPlatform.executeQuery(
             SqlLightRail.selectTable("user", UserWithEmail.class),
             UserWithEmail.class
@@ -69,8 +68,6 @@ public class SelectOrmTest {
 
     @Test
     public void selectOrmTest_lackSomeField_1() throws Exception {
-
-        railPlatform.addGlobalPlugin(new SlowSqlPlugin());
 
         List<UserLackFields> dataList = railPlatform.executeQuery(
             SqlLightRail.selectTable("user", UserLackFields.class),
@@ -90,8 +87,6 @@ public class SelectOrmTest {
      */
     @Test
     public void selectOrmTest_lackSomeField_2() throws Exception {
-
-        railPlatform.addGlobalPlugin(new SlowSqlPlugin());
 
         List<UserLackFields> dataList = railPlatform.executeQuery(
             SqlLightRail.selectTable("user").select("id", "name"),
