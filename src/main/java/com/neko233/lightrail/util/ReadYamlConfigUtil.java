@@ -1,4 +1,4 @@
-package com.neko.lightrail.util;
+package com.neko233.lightrail.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -8,19 +8,24 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Maybe multi threads read a variable
+ *
+ * @author Emmett Woo
+ */
 @Slf4j
-public class ConfigUtil {
+public class ReadYamlConfigUtil {
 
     private final static String DEFAULT_CONFIG_FILE_NAME = "application.yml";
     private final static String DEFAULT_KEY_STRING_SEPARATOR = ".";
 
     private LinkedHashMap<String, Object> configurationFile;
 
-    public ConfigUtil() {
+    public ReadYamlConfigUtil() {
         this(DEFAULT_CONFIG_FILE_NAME);
     }
 
-    public ConfigUtil(String configFileName) {
+    public ReadYamlConfigUtil(String configFileName) {
         this.setConfigFile(configFileName);
     }
 
@@ -33,7 +38,7 @@ public class ConfigUtil {
             throw new IllegalArgumentException("only supported yaml file");
         }
 
-        InputStream configurationInputStream = ConfigUtil.class.getClassLoader().getResourceAsStream(configFileName);
+        InputStream configurationInputStream = ReadYamlConfigUtil.class.getClassLoader().getResourceAsStream(configFileName);
         if (configurationInputStream == null) {
             throw new IllegalArgumentException("configuration file with name " + configFileName + " not found");
         }
