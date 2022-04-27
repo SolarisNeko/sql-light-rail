@@ -1,41 +1,55 @@
 # SQL Light Rail
 
 ## 简介
-> 这是一款基于 Flux / Stream / Chain / Builder 概念的 Java SQL 处理工具。让你写 SQL 如同写 Java Stream ~
+> 'sql-light-rail' is a DAO Layer Micro Framework to handle SQL by Java, use it like 'Chain Builder / Stream'.
+>
+> '轻轨' 是一款 DAO 层操作的微框架, 处理 SQL 就如同写 Java Stream / Chain Builder 一样。
 
-搭配 IDE 的提示，你能几乎提速 200%+ 的编写 SQL 速度，并且能够借助 SQL Light Rail 避免大量的低级语法错误。
+搭配 IDE 提示，你能几乎提速 200%+ 的编写 SQL 速度，并且能够借助 SQL Light Rail 避免大量的低级语法错误。
 
 同时，将 SQL 难以编写的复杂语法，转移到 Java 层面处理，实在是非常的爽！
 
-## Use / Download
-Maven
+
+### 详细介绍
+SQL Light Rail (SQL 轻轨)
+        
+轻轨: 有多节车厢, 如同本框架设计的 Chain Builder 思想。
+
+这是一款【约定大于配置】的 Java SQL Flux 框架, 用于快速构建大量 SQL, 辅助 DAO 操作/复用 SQL。
+
+
+约定 > 配置:
+1. CamelCase Style for Pojo/Class. 
+    如果你的 Pojo 遵循驼峰命名, SQL Table 命名遵循大驼峰命名, 如 class LoginSumDaily -> table login_sum_daily 。 那么我们会自动帮你将 field 转换为表结构。
+2. Flux/Stream Style。
+
+本架构 License 为 Apache2.0
+
+## Download
+### Maven
 ```xml
 <dependency>
-    <groupId>com.neko</groupId>
+    <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.7</version>
 </dependency>
+
 ```
 
-Gradle
-```gradle
-compile 'com.neko:sql-light-rail:0.0.1-SNAPSHOT'
+### Gradle
+```groovy
+implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.0.7'
 ```
-
-URL
-https://github.com/SolarisNeko/sql-light-rail/tags
-
 
 ## 初衷 / 痛点
-1. 大部分公司很多 SQL 还是 SQL String, MyBatis 迁移的工作量巨大，实际提升并不明显。
-2. MyBatis 并没有足够好到让我替换他，入侵性过强，较为重量。
-3. MyBatis 不太兼容很多公司自研框架(例如：分库分表框架).
+1.  MyBatis 迁移的工作量巨大, 除非重构项目, 实际开发速度提升并不明显。
+2. MyBatis 并没有足够好到让我替换巨量DAO操作，入侵性过强，较为重量。
+3. MyBatis 不太兼容很多公司自研框架 (例如：分库分表框架等, 限死了使用 ShardingSphere/MyCat 等).
 4. 没有语法提示。工作中使用到的 SQL 非常多, 但语法也各不一样，如: MySQL, Oracle, Spark SQL, Hive SQL, Kylin SQL...
-5. 
 
-## 发展状态
+## Development Status [发展状态]
 
-> Base function done ! 
+Base function done ! 
 
 基础功能已全部完成 ！
 
@@ -43,7 +57,7 @@ Aha~ We're glad to you use our Architecture to avoid Write SQL in XML / String.
 
 我们很高兴你可以使用我们的 SQL Light Rail 去避免大量的将 SQL String 迁移到 XML / 保持原来的 SQL String 拼接。
 
-> Advanced develop...
+> Advanced Function [高级功能]
 
 高级功能1 : 主要打造 LightRail Platform，将
 1. SQL 生成
@@ -55,14 +69,20 @@ Aha~ We're glad to you use our Architecture to avoid Write SQL in XML / String.
 高级功能2 : 简单适配 BigData 领域的特殊 SQL
 1. Hive 的 Delimiter By ... Row Formatter .... 等 SQL 语法。
 
-> Special Function
+> Special Function [特殊功能]
 
 yml config 
 
 
-# 代码 Demo
+# Code & API
+## Code Guide
+[详细手册 Code Guide](./Code%20Guide.md)
+
+## Simpel Demo
+
 Select
 ```java
+// SELECT a.id, a.name FROM user a JOIN user_role b ON a.id = b.id 
 String selectSql = SqlLightRail.selectTable("user a")
         .select("a.id", "a.name")
         .join(JoinCondition.builder()
@@ -70,8 +90,6 @@ String selectSql = SqlLightRail.selectTable("user a")
                 .on("a.id = b.id")
         )
         .build();
-String target = "SELECT a.id, a.name FROM user a JOIN user_role b ON a.id = b.id ";
-Assert.assertEquals(target, selectSql);
 ```
 
 应对复杂业务的情况
@@ -96,14 +114,15 @@ if ("sb".equals(name)) {
 }
 
 String selectSql = sqlBuilder.build();
-String target = "SELECT id, name FROM user WHERE deleted = '0' and create_time <= '2022-02-27 12:04:58'";
-Assert.assertEquals(target, selectSql);
+// SELECT id, name FROM user WHERE deleted = '0' and create_time <= '2022-02-27 12:04:58'
+System.out.println(selectSql);
 ```
 
 # 完成进度
 ## 1、基本进度
 1. [x] 基本 CRUD
-2. [ ] Select 的字段别名, 希望加入 alias Map 支持自定义映射规则
+2. [ ] MySQL Partition 分区 API 支持
+
 
 ## 2、细进度
 ### 1、Insert
@@ -154,7 +173,11 @@ String target = "SELECT id, name FROM user ";
 1. [x] Delete From table
 2. [x] where ...
 
-# RailPlatform - Java DAO 统一操作平台
+# DAO Unified Layer - RailPlatform
+> Rail Platform, Dispatch SQL how to work.
+> 
+> 轻轨系统平台, 指挥 SQL 执行。
+
 RailPlatform 由 4 部分组合而成:
 1. SqlLightRail : 这是一款轻量级的 Java SQL 编写工具。主要处理各类 Java 缘分
 2. JDBC : 不解释。
@@ -167,5 +190,20 @@ RailPlatformFactory
 你需要自己准备 DataSource (数据源 / 数据库连接池) 给本框架。
 
 
+# RailPlatform - Code & API
+## How to use
+```java
+// 'MyDataSource.getDataSource()' need you @override it!
+// DataSource 需要你自己提供, 如: Druid, C3P0, Hikari ...
+DataSource dataSource = DruidDataSourceFactory.createDataSource(getDbConfig());
 
-
+// Demo
+RailPlatform railPlatform = RailPlatformFactory.createLightRailPlatform(dataSource);
+SqlBuilder updateSql = SqlLightRail.updateTable("user")
+    .set("create_time = '2022-01-01 11:11:11'")
+    .where(WhereCondition.builder()
+        .equalsTo("id", 1)
+    );
+Integer rowCount = railPlatform.executeUpdate(updateSql);
+Assert.assertTrue(1 == rowCount);
+```
