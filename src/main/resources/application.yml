@@ -1,0 +1,12 @@
+# Configuration Example
+lightrail:
+  slowSQL:
+    # Enable SlowSQL
+    enable: true
+  connection:
+    driver:
+      name: "mysql"
+      version: 7.3
+    # Timeout in seconds
+    timeout: 10
+  plugins: ["slow-sql-plugin", "jdbc-logging-plugin"]
