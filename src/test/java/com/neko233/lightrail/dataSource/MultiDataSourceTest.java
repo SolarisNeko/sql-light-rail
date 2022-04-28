@@ -4,7 +4,7 @@ import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.neko233.lightrail.RailPlatform;
 import com.neko233.lightrail.RailPlatformFactory;
 import com.neko233.lightrail.SqlLightRail;
-import com.neko233.lightrail.pojo.SqlStatement;
+import com.neko233.lightrail.domain.SqlStatement;
 import com.neko233.lightrail.pojo.User;
 import org.junit.Test;
 

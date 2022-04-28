@@ -31,7 +31,7 @@ import static java.util.stream.Collectors.toList;
 public class ExecuteSqlContext<T> {
 
     private String shardingKey;
-    private List<String> sql;
+    private List<String> sqlList;
 
     // 对应 prepareStatement 的占位符值
     private List<Object[]> valueList;

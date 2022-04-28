@@ -1,4 +1,4 @@
-package com.neko233.lightrail.pojo;
+package com.neko233.lightrail.domain;
 
 import com.neko233.lightrail.plugin.Plugin;
 import lombok.AllArgsConstructor;

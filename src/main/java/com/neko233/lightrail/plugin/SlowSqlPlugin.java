@@ -46,7 +46,7 @@ public class SlowSqlPlugin extends Plugin {
 
     @Override
     public void postExecuteSql(ExecuteSqlContext context) {
-        List<String> sqlList = context.getSql();
+        List<String> sqlList = context.getSqlList();
         StopWatch stopWatch = START_MS_TIME_THREAD_LOCALS.get();
         stopWatch.stop();
         checkIsSlowSql(String.join("\n", sqlList), stopWatch.getTime(TimeUnit.MILLISECONDS));

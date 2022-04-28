@@ -7,7 +7,7 @@ import com.neko233.lightrail.exception.RailPlatformException;
 import com.neko233.lightrail.exception.SqlLightRailException;
 import com.neko233.lightrail.orm.RailPlatformOrm;
 import com.neko233.lightrail.plugin.Plugin;
-import com.neko233.lightrail.pojo.SqlStatement;
+import com.neko233.lightrail.domain.SqlStatement;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -157,7 +157,7 @@ public class RailPlatform {
                 .shardingKey(statement.getShardingKey())
                 .isDefaultProcess(true)
                 .isAutoCommit(statement.getIsAutoCommit())
-                .sql(statement.getSqlList())
+                .sqlList(statement.getSqlList())
                 .plugins(GLOBAL_PLUGINS)
                 .addPlugins(statement.getAddTempPlugins())
                 .excludePluginNames(statement.getExcludePluginNames())
@@ -267,7 +267,7 @@ public class RailPlatform {
                 .shardingKey(statement.getShardingKey())
                 .isDefaultProcess(true)
                 .isAutoCommit(statement.getIsAutoCommit() == null || statement.getIsAutoCommit())
-                .sql(statement.getSqlList())
+                .sqlList(statement.getSqlList())
                 .plugins(GLOBAL_PLUGINS)
                 .addPlugins(statement.getAddTempPlugins())
                 .excludePluginNames(statement.getExcludePluginNames())
@@ -301,7 +301,7 @@ public class RailPlatform {
             }
 
         } catch (SQLException e) {
-            log.error(LOG_PREFIX + "Execute error SQL = {} Will rollback.", context.getSql(), e);
+            log.error(LOG_PREFIX + "Execute error SQL = {} Will rollback.", context.getSqlList(), e);
             context.getConnection().rollback();
         } finally {
             Objects.requireNonNull(context).getConnection().close();

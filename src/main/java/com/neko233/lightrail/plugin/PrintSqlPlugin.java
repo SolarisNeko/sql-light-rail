@@ -28,7 +28,8 @@ public class PrintSqlPlugin extends Plugin {
 
     @Override
     public void preExecuteSql(ExecuteSqlContext context) {
-        log.info(LOG_PREFIX_TITLE + "shardingKey = " + context.getShardingKey() + " | SQL = " + context.getSql());
+        String multiSql = String.join("\n", context.getSqlList());
+        log.info(LOG_PREFIX_TITLE + "shardingKey = " + context.getShardingKey() + " | SQL = " + multiSql);
     }
 
     @Override
