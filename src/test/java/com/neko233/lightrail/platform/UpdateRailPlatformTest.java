@@ -7,13 +7,14 @@ import com.neko233.lightrail.builder.InsertSqlBuilder;
 import com.neko233.lightrail.builder.SqlBuilder;
 import com.neko233.lightrail.condition.SetCondition;
 import com.neko233.lightrail.condition.WhereCondition;
-import com.neko233.lightrail.pojo.User;
 import com.neko233.lightrail.dataSource.MyDataSource;
+import com.neko233.lightrail.pojo.User;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -91,6 +92,26 @@ public class UpdateRailPlatformTest {
         Integer rowCount = railPlatform.executeUpdate(where);
 
         Assert.assertTrue(1 == rowCount);
+    }
+
+    @Test
+    public void updateMultiSql_2_successfully() throws Exception {
+        RailPlatform railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDefaultDataSource());
+
+        String build = SqlLightRail.updateTable("user")
+                .set(SetCondition.builder().equalsTo("create_time", new Date()))
+                .where(WhereCondition.builder()
+                        .equalsTo("id", 1)
+                ).build();
+        String build2 = SqlLightRail.updateTable("user")
+                .set(SetCondition.builder().equalsTo("create_time", new Date()))
+                .where(WhereCondition.builder()
+                        .equalsTo("id", 1)
+                ).build();
+
+        Integer rowCount = railPlatform.executeUpdate(Arrays.asList(build, build2));
+
+        Assert.assertTrue(2 == rowCount);
     }
 
 

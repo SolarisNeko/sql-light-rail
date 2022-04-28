@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -30,7 +31,7 @@ import static java.util.stream.Collectors.toList;
 public class ExecuteSqlContext<T> {
 
     private String shardingKey;
-    private String sql;
+    private List<String> sql;
 
     // 对应 prepareStatement 的占位符值
     private List<Object[]> valueList;
@@ -107,7 +108,8 @@ public class ExecuteSqlContext<T> {
         if (CollectionUtils.isNotEmpty(valueList)) {
             setValuesToPrepareStatement(preparedStatement, valueList);
         }
-        updateCount = preparedStatement.executeUpdate();
+        Integer previousCount = Optional.ofNullable(updateCount).orElse(0);
+        updateCount = previousCount + preparedStatement.executeUpdate();
     }
 
     private static void setValuesToPrepareStatement(PreparedStatement ps, List<Object[]> values) throws SQLException {

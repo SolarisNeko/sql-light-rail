@@ -45,7 +45,6 @@ public class SelectOrmTest {
 
         // 可分库
         List<UserWithEmail> dataList = railPlatform.executeQuery(
-//            "t1",
             "select name From user",
             UserWithEmail.class
         );

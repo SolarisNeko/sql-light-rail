@@ -9,18 +9,16 @@ import com.neko233.lightrail.orm.RailPlatformOrm;
 import com.neko233.lightrail.plugin.Plugin;
 import com.neko233.lightrail.pojo.SqlStatement;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * ShardingKey is not sorted and random. Need Developer to set your rule to keep it in rule.
@@ -50,7 +48,7 @@ public class RailPlatform {
 
     public synchronized static RailPlatform createLightRailPlatform(DataSource dataSource) {
         if (RailPlatform.MULTI_DATASOURCE_MAP.size() > 0) {
-            log.error(LOG_PREFIX + "You can't create RailPlatform by DataSource again.");
+            log.debug(LOG_PREFIX + "You can't create RailPlatform by DataSource again.");
             return INSTANCE;
         }
         RailPlatform.MULTI_DATASOURCE_MAP.put("default", dataSource);
@@ -141,7 +139,7 @@ public class RailPlatform {
         }
         return executeQuery(SqlStatement.builder()
                 .shardingKey(shardingKey)
-                .sql(sql)
+                .sqlList(Collections.singletonList(sql))
                 .returnType(returnType)
                 .isAutoCommit(true)
                 .addTempPlugins(null)
@@ -151,6 +149,7 @@ public class RailPlatform {
 
     public <T> List<T> executeQuery(SqlStatement statement) throws SQLException {
         checkDataSource();
+        addSql2SqlListInSqlStatement(statement);
         checkSelectSqlStatement(statement);
 
         ExecuteSqlContext context;
@@ -158,7 +157,7 @@ public class RailPlatform {
                 .shardingKey(statement.getShardingKey())
                 .isDefaultProcess(true)
                 .isAutoCommit(statement.getIsAutoCommit())
-                .sql(statement.getSql())
+                .sql(statement.getSqlList())
                 .plugins(GLOBAL_PLUGINS)
                 .addPlugins(statement.getAddTempPlugins())
                 .excludePluginNames(statement.getExcludePluginNames())
@@ -169,12 +168,20 @@ public class RailPlatform {
             log.error(LOG_PREFIX + "ShardingKey miss! Please check your input!");
             throw new RuntimeException(LOG_PREFIX + "ShardingKey miss! Please check your input!");
         } else {
-             conn = MULTI_DATASOURCE_MAP.get(statement.getShardingKey()).getConnection();
+            conn = MULTI_DATASOURCE_MAP.get(statement.getShardingKey()).getConnection();
         }
         conn.setAutoCommit(statement.getIsAutoCommit() == null || statement.getIsAutoCommit());
         context.setConnection(conn);
         context.notifyPluginsBegin();
-        context.setPreparedStatement(conn.prepareStatement(statement.getSql()));
+        List<String> sqlList = statement.getSqlList();
+
+        if (CollectionUtils.isEmpty(sqlList)) {
+            throw new SqlLightRailException("Un-support empty SQL query");
+        } else if (sqlList.size() > 1) {
+            throw new SqlLightRailException("Un-support multi SQL Query! SQL = " + String.join("\n", sqlList));
+        }
+
+        context.setPreparedStatement(conn.prepareStatement(sqlList.get(0)));
         context.notifyPluginsPreExecuteSql();
         try {
             if (context.getIsDefaultProcess()) {
@@ -186,17 +193,30 @@ public class RailPlatform {
             // 获取最终结果
             if (context.getIsDefaultProcess()) {
                 ResultSet rs = Optional.ofNullable(Objects.requireNonNull(context).getResultSet())
-                        .orElseThrow(() -> new RailPlatformException(LOG_PREFIX + "Execute query error. SQL = " + statement.getSql()));
+                        .orElseThrow(() -> new RailPlatformException(LOG_PREFIX + "Execute query error. SQL = " + statement.getSqlList()));
                 context.setDataList(RailPlatformOrm.orm(rs, statement.getReturnType()));
             }
         } catch (SQLException e) {
-            log.error(LOG_PREFIX + "Execute query error will rollback. SQL = {}.", statement.getSql(), e);
+            log.error(LOG_PREFIX + "Execute query error will rollback. SQL = {}.", statement.getSqlList(), e);
             context.getConnection().rollback();
         } finally {
             Objects.requireNonNull(context).getConnection().close();
         }
 
         return Optional.ofNullable(context.getDataList()).orElse(new ArrayList<T>());
+    }
+
+    /**
+     * 将 .sql() -> 整合到 .sqlList
+     * @param statement
+     */
+    private static void addSql2SqlListInSqlStatement(SqlStatement statement) {
+        List<String> sqlList = Optional.ofNullable(statement.getSqlList()).orElse(new ArrayList<>());
+        String sql = statement.getSql();
+        if (StringUtils.isNotBlank(sql)) {
+            sqlList.add(sql);
+            statement.setSqlList(sqlList);
+        }
     }
 
 
@@ -215,14 +235,22 @@ public class RailPlatform {
         return executeUpdate(DEFAULT_SHARDING_KEY, sql);
     }
 
+    public Integer executeUpdate(List<String> sqlList) throws SQLException {
+        return executeUpdate(DEFAULT_SHARDING_KEY, sqlList);
+    }
+
     public Integer executeUpdate(String shardingKey, String sql) throws SQLException {
+        return executeUpdate(shardingKey, Collections.singletonList(sql));
+    }
+
+    public Integer executeUpdate(String shardingKey, List<String> sqlList) throws SQLException {
         if (StringUtils.isBlank(shardingKey)) {
             log.error(LOG_PREFIX + "Sharding Key must not null!");
             throw new RailPlatformException(LOG_PREFIX + "Sharding Key must not null!");
         }
         return executeUpdate(SqlStatement.builder()
                 .shardingKey(shardingKey)
-                .sql(sql)
+                .sqlList(sqlList)
                 .isAutoCommit(true)
                 .addTempPlugins(null)
                 .excludePluginNames(null)
@@ -231,6 +259,7 @@ public class RailPlatform {
 
     public Integer executeUpdate(SqlStatement statement) throws SQLException {
         checkDataSource();
+        addSql2SqlListInSqlStatement(statement);
         checkUpdateSqlStatement(statement);
         // 转换成一个完整的 RailPlatform sql 上下文
         ExecuteSqlContext context;
@@ -238,7 +267,7 @@ public class RailPlatform {
                 .shardingKey(statement.getShardingKey())
                 .isDefaultProcess(true)
                 .isAutoCommit(statement.getIsAutoCommit() == null || statement.getIsAutoCommit())
-                .sql(statement.getSql())
+                .sql(statement.getSqlList())
                 .plugins(GLOBAL_PLUGINS)
                 .addPlugins(statement.getAddTempPlugins())
                 .excludePluginNames(statement.getExcludePluginNames())
@@ -255,24 +284,29 @@ public class RailPlatform {
         context.setConnection(conn);
         // pre handle
         context.notifyPluginsBegin();
-        context.setPreparedStatement(conn.prepareStatement(statement.getSql()));
-        context.notifyPluginsPreExecuteSql();
+        List<String> sqlList = statement.getSqlList();
         // 执行实际的操作
         try {
-            if (context.getIsDefaultProcess()) {
-                context.executeUpdate();
+            for (String sql : sqlList) {
+                if (StringUtils.isBlank(sql)) {
+                    continue;
+                }
+                context.notifyPluginsPreExecuteSql();
+                context.setPreparedStatement(conn.prepareStatement(sql.trim()));
+                if (context.getIsDefaultProcess()) {
+                    context.executeUpdate();
+                }
+                // post handle
+                context.notifyPluginsPostExecuteSql();
             }
 
-            // post handle
-            context.notifyPluginsPostExecuteSql();
-            context.notifyPluginsEnd();
         } catch (SQLException e) {
             log.error(LOG_PREFIX + "Execute error SQL = {} Will rollback.", context.getSql(), e);
             context.getConnection().rollback();
         } finally {
             Objects.requireNonNull(context).getConnection().close();
         }
-
+        context.notifyPluginsEnd();
         return context.getUpdateCount();
     }
 
@@ -283,9 +317,11 @@ public class RailPlatform {
      * @param sqlStatement SQL 清单
      */
     private void checkSelectSqlStatement(SqlStatement sqlStatement) {
-        if (StringUtils.isBlank(sqlStatement.getSql())) {
-            throw new SqlLightRailException("[SqlStatement] You need to '.sql()' set your SQL.");
+        List<String> sqlList = sqlStatement.getSqlList();
+        if (CollectionUtils.isEmpty(sqlList)) {
+            throw new SqlLightRailException("[SqlStatement] You need to use '.sql(..)/.sqlList(..)' set your SQL.");
         }
+
         if (sqlStatement.getReturnType() == null) {
             throw new SqlLightRailException("[SqlStatement] You need to '.returnType()' set your return class.");
         }
@@ -297,9 +333,12 @@ public class RailPlatform {
     }
 
     private void checkUpdateSqlStatement(SqlStatement statement) {
-        if (StringUtils.isBlank(statement.getSql())) {
-            throw new SqlLightRailException("[SqlStatement] You need to '.sql()' set your SQL.");
+        List<String> sqlList = statement.getSqlList();
+        if (CollectionUtils.isEmpty(sqlList)) {
+            throw new SqlLightRailException("[SqlStatement] You need to use '.sql()' set your SQL.");
         }
+        List<String> notBlankSql = sqlList.stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        statement.setSqlList(notBlankSql);
 
         // set shardingKey
         if (StringUtils.isBlank(statement.getShardingKey())) {

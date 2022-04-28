@@ -12,13 +12,7 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.Properties;
 
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_INITIALSIZE;
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_MAXACTIVE;
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_MAXWAIT;
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_MINIDLE;
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_PASSWORD;
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_URL;
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_USERNAME;
+import static com.alibaba.druid.pool.DruidDataSourceFactory.*;
 
 /**
  * @author SolarisNeko
@@ -56,6 +50,10 @@ public class MultiDataSourceTest {
     public MultiDataSourceTest() throws Exception {
     }
 
+    /**
+     * How to use multi DataSource
+     * @throws Exception 异常
+     */
     @Test
     public void multiDataSourceTest() throws Exception {
         // 多个 dataSource
@@ -63,10 +61,11 @@ public class MultiDataSourceTest {
         platform.addDataSource("ds1", ds1);
 
         System.out.println("--------- sql_light_rail 数据源 -------------- ");
-        List<User> users = platform.executeQuery(SqlStatement.builder()
-            .sql(SqlLightRail.selectTable(User.class)
+        String sql = SqlLightRail.selectTable(User.class)
                 .limitByPage(1, 1)
-                .build())
+                .build();
+        List<User> users = platform.executeQuery(SqlStatement.builder()
+            .sql(sql)
             .returnType(User.class)
             .build());
         users.forEach(System.out::println);

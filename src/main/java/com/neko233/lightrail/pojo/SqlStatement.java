@@ -24,6 +24,8 @@ public class SqlStatement {
 
     String sql;
 
+    List<String> sqlList;
+
     Class<?> returnType;
 
     Boolean isAutoCommit;

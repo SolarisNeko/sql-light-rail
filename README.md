@@ -34,7 +34,7 @@ License 为 Apache2.0
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.0.8</version>
+    <version>0.0.9</version>
 </dependency>
 
 ```
@@ -42,8 +42,11 @@ License 为 Apache2.0
 ### Gradle
 
 ```groovy
-implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.0.8'
+implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.0.9'
 ```
+
+## TODO
+1. 事务
 
 ## 初衷 / 痛点
 
@@ -235,4 +238,27 @@ DataSource dataSource=DruidDataSourceFactory.createDataSource(getDbConfig());
         List<User> users = railPlatform.executeQuery("Select id, name From user Limit 0, 1 ", User.class);
         users.forEach(System.out::println)
 
+```
+
+## Batch Update SQL
+```java
+    @Test
+    public void updateMultiSql_2_successfully() throws Exception {
+        RailPlatform railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDefaultDataSource());
+
+        String build = SqlLightRail.updateTable("user")
+                .set(SetCondition.builder().equalsTo("create_time", new Date()))
+                .where(WhereCondition.builder()
+                        .equalsTo("id", 1)
+                ).build();
+        String build2 = SqlLightRail.updateTable("user")
+                .set(SetCondition.builder().equalsTo("create_time", new Date()))
+                .where(WhereCondition.builder()
+                        .equalsTo("id", 1)
+                ).build();
+
+        Integer rowCount = railPlatform.executeUpdate(Arrays.asList(build, build2));
+
+        Assert.assertTrue(2 == rowCount);
+    }
 ```

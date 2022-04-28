@@ -41,7 +41,44 @@ public class ObjectStrategy implements TypeStrategy {
         field.setAccessible(true);
         String typeName = field.getType().getSimpleName();
         switch (typeName) {
+            case "byte":
+            case "Byte":
+            case "java.lang.Byte": {
+                byte[] rsValue;
+                try {
+                    rsValue = rs.getBytes(columnName);
+                } catch (SQLException e) {
+                    rsValue = null;
+                }
+                field.set(instance, rsValue);
+                break;
+            }
+            case "boolean":
+            case "Boolean":
+            case "java.lang.Boolean": {
+                Boolean rsValue;
+                try {
+                    rsValue = rs.getBoolean(columnName);
+                } catch (SQLException e) {
+                    rsValue = null;
+                }
+                field.set(instance, rsValue);
+                break;
+            }
+            case "short":
+            case "Short":
+            case "java.lang.Short": {
+                Short rsValue;
+                try {
+                    rsValue = rs.getShort(columnName);
+                } catch (SQLException e) {
+                    rsValue = null;
+                }
+                field.set(instance, rsValue);
+                break;
+            }
             case "int":
+            case "Integer":
             case "java.lang.Integer": {
                 Integer rsValue;
                 try {
@@ -53,6 +90,7 @@ public class ObjectStrategy implements TypeStrategy {
                 break;
             }
             case "float":
+            case "Float":
             case "java.lang.Float": {
                 Float rsValue;
                 try {
@@ -64,6 +102,7 @@ public class ObjectStrategy implements TypeStrategy {
                 break;
             }
             case "double":
+            case "Double":
             case "java.lang.Double": {
                 Double rsValue;
                 try {
@@ -75,6 +114,7 @@ public class ObjectStrategy implements TypeStrategy {
                 break;
             }
             case "long":
+            case "Long":
             case "java.lang.Long": {
                 Long rsValue;
                 try {
@@ -107,34 +147,13 @@ public class ObjectStrategy implements TypeStrategy {
                 field.set(instance, value);
                 break;
             }
-            case "boolean":
-            case "java.lang.Boolean": {
-                Boolean rsValue;
-                try {
-                    rsValue = rs.getBoolean(columnName);
-                } catch (SQLException e) {
-                    rsValue = null;
-                }
-                field.set(instance, rsValue);
-                break;
-            }
+
             case "Date":
             case "java.util.Date": {
                 // datetime = "yyyy-MM-dd hh:mm:ss"
                 Date rsValue;
                 try {
                     rsValue = rs.getDate(columnName);
-                } catch (SQLException e) {
-                    rsValue = null;
-                }
-                field.set(instance, rsValue);
-                break;
-            }
-            case "byte":
-            case "java.lang.Byte": {
-                byte[] rsValue;
-                try {
-                    rsValue = rs.getBytes(columnName);
                 } catch (SQLException e) {
                     rsValue = null;
                 }
