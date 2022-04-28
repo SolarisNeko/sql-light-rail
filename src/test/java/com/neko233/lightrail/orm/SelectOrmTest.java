@@ -32,7 +32,7 @@ public class SelectOrmTest {
     public void selectOrmTest_original_SQL_String() throws Exception {
 
         List<UserWithEmail> dataList = railPlatform.executeQuery(
-            "select id, name From user",
+            "select id, name From user Limit 0, 1",
             UserWithEmail.class
         );
         for (UserWithEmail user : dataList) {
@@ -45,7 +45,7 @@ public class SelectOrmTest {
 
         // 可分库
         List<UserWithEmail> dataList = railPlatform.executeQuery(
-            "select name From user",
+            "select name From user Limit 0, 1",
             UserWithEmail.class
         );
         for (UserWithEmail user : dataList) {
@@ -57,7 +57,8 @@ public class SelectOrmTest {
     public void selectOrmTest() throws Exception {
 
         List<UserWithEmail> dataList = railPlatform.executeQuery(
-            SqlLightRail.selectTable("user", UserWithEmail.class),
+            SqlLightRail.selectTable("user", UserWithEmail.class)
+                    .limitByPage(1, 5),
             UserWithEmail.class
         );
         for (UserWithEmail user : dataList) {
@@ -69,7 +70,8 @@ public class SelectOrmTest {
     public void selectOrmTest_lackSomeField_1() throws Exception {
 
         List<UserLackFields> dataList = railPlatform.executeQuery(
-            SqlLightRail.selectTable("user", UserLackFields.class),
+            SqlLightRail.selectTable("user", UserLackFields.class)
+                    .limitByPage(1, 10),
             UserLackFields.class
         );
         for (UserLackFields userLackFields : dataList) {
@@ -88,7 +90,8 @@ public class SelectOrmTest {
     public void selectOrmTest_lackSomeField_2() throws Exception {
 
         List<UserLackFields> dataList = railPlatform.executeQuery(
-            SqlLightRail.selectTable("user").select("id", "name"),
+            SqlLightRail.selectTable("user").select("id", "name")
+                    .limit(0, 5),
             UserLackFields.class
         );
 
