@@ -241,6 +241,8 @@ DataSource dataSource=DruidDataSourceFactory.createDataSource(getDbConfig());
 ```
 
 ## Batch Update SQL
+1. support Update SQL
+2. non-support Select SQL
 ```java
     @Test
     public void updateMultiSql_2_successfully() throws Exception {
