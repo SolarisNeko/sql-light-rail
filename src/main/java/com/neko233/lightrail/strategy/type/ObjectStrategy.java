@@ -26,6 +26,7 @@ public class ObjectStrategy implements TypeStrategy {
         return newObject;
     }
 
+
     /**
      * ORM set value to Instance
      *

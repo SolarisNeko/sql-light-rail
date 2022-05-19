@@ -41,6 +41,7 @@ public class RailPlatform {
     private static final String DEFAULT_SHARDING_KEY = "default";
 
     private static final List<Plugin> GLOBAL_PLUGINS = new ArrayList<>();
+    public static final String NULL_STRING = "null";
 
 
     private RailPlatform() {
@@ -60,7 +61,7 @@ public class RailPlatform {
     }
 
     public synchronized RailPlatform addDataSource(String shardingKey, DataSource newDataSource) {
-        if (StringUtils.isBlank(shardingKey) || "null".equalsIgnoreCase(shardingKey)) {
+        if (StringUtils.isBlank(shardingKey) || NULL_STRING.equalsIgnoreCase(shardingKey)) {
             throw new RuntimeException("[RailPlatform] Sharding Key must not null / 'null' !");
         }
         DataSource originalDataSource = MULTI_DATASOURCE_MAP.get(shardingKey);
@@ -128,11 +129,11 @@ public class RailPlatform {
         return executeQuery(sqlBuilder.build(), returnType);
     }
 
-    public <T> List<T> executeQuery(String sql, Class<?> returnType) throws SQLException {
+    public <T> List<T> executeQuery(String sql, Class<T> returnType) throws SQLException {
         return executeQuery(DEFAULT_SHARDING_KEY, sql, returnType);
     }
 
-    public <T> List<T> executeQuery(String shardingKey, String sql, Class<?> returnType) throws SQLException {
+    public <T> List<T> executeQuery(String shardingKey, String sql, Class<T> returnType) throws SQLException {
         if (StringUtils.isBlank(shardingKey)) {
             log.error(LOG_PREFIX + "Sharding Key must not null!");
             throw new RailPlatformException(LOG_PREFIX + "Sharding Key must not null!");
@@ -152,8 +153,7 @@ public class RailPlatform {
         addSql2SqlListInSqlStatement(statement);
         checkSelectSqlStatement(statement);
 
-        ExecuteSqlContext context;
-        context = ExecuteSqlContext.builder()
+        ExecuteSqlContext context = ExecuteSqlContext.builder()
                 .shardingKey(statement.getShardingKey())
                 .isDefaultProcess(true)
                 .isAutoCommit(statement.getIsAutoCommit())
@@ -208,7 +208,7 @@ public class RailPlatform {
 
     /**
      * 将 .sql() -> 整合到 .sqlList
-     * @param statement
+     * @param statement 封装的查询语句
      */
     private static void addSql2SqlListInSqlStatement(SqlStatement statement) {
         List<String> sqlList = Optional.ofNullable(statement.getSqlList()).orElse(new ArrayList<>());
@@ -262,8 +262,7 @@ public class RailPlatform {
         addSql2SqlListInSqlStatement(statement);
         checkUpdateSqlStatement(statement);
         // 转换成一个完整的 RailPlatform sql 上下文
-        ExecuteSqlContext context;
-        context = ExecuteSqlContext.builder()
+        ExecuteSqlContext context = ExecuteSqlContext.builder()
                 .shardingKey(statement.getShardingKey())
                 .isDefaultProcess(true)
                 .isAutoCommit(statement.getIsAutoCommit() == null || statement.getIsAutoCommit())

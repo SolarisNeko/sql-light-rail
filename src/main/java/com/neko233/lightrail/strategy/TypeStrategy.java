@@ -36,13 +36,13 @@ public interface TypeStrategy {
 
     /**
      *
-     * @param nextRs already next
+     * @param nextRs already next (基本类型只需要使用这个)
      * @param returnType 返回类型
      * @param returnTypeFieldList 返回类型的字段列表（递归获取）
      * @param field2ColumnNameMap 字段名对应的列名Map
      * @return 值对象 : 基本类型 / 对象
-     * @throws IllegalAccessException
-     * @throws InstantiationException
+     * @throws IllegalAccessException 非法操作异常
+     * @throws InstantiationException 实例化异常
      */
     Object getOrmValue(ResultSet nextRs, Class<?> returnType, List<Field> returnTypeFieldList, Map<String, String> field2ColumnNameMap) throws IllegalAccessException, InstantiationException, SQLException;
 
@@ -56,7 +56,7 @@ public interface TypeStrategy {
             }
             case SHORT:
             case JAVA_LANG_SHORT: {
-                return new IntegerStrategy();
+                return new ShortStrategy();
             }
             case INT:
             case JAVA_LANG_INTEGER: {

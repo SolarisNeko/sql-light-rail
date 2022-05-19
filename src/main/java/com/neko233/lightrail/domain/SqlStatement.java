@@ -20,18 +20,18 @@ import java.util.List;
 @Builder
 public class SqlStatement {
 
-    String shardingKey;
+    private String shardingKey;
 
-    String sql;
+    private String sql;
 
-    List<String> sqlList;
+    private List<String> sqlList;
 
-    Class<?> returnType;
+    private Class<?> returnType;
 
-    Boolean isAutoCommit;
+    private Boolean isAutoCommit;
 
-    List<Plugin> addTempPlugins;
+    private List<Plugin> addTempPlugins;
 
-    List<String> excludePluginNames;
+    private List<String> excludePluginNames;
 
 }

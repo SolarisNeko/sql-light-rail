@@ -6,11 +6,7 @@ import com.neko233.lightrail.util.ReflectUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Date;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +28,7 @@ public class RailPlatformOrm {
      * @param <T>        范型
      * @return SQL ResultSet 通过 ORM 映射后的 Java DataList
      */
-    public static <T> List<T> orm(ResultSet rs, Class<?> returnType) {
+    public static <T> List<T> orm(ResultSet rs, Class<T> returnType) {
         List<Field> returnTypeFieldList = ReflectUtil.getAllFields(returnType);
         Map<String, String> fieldColumnMap = returnTypeFieldList.stream()
             .collect(toMap(

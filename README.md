@@ -34,7 +34,7 @@ License 为 Apache2.0
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.0.9</version>
+    <version>0.1.0</version>
 </dependency>
 
 ```
@@ -42,7 +42,7 @@ License 为 Apache2.0
 ### Gradle
 
 ```groovy
-implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.0.9'
+implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.1.0'
 ```
 
 ## TODO
@@ -52,7 +52,8 @@ implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.0.9'
 
 1. MyBatis 迁移的工作量巨大, 除非重构项目, 半路使用的体验较差。所以诞生了 rail-platform （执行 SQL）
 2. 我喜欢 MyBatis Plus 的 flux 风格，但我不喜欢他强绑定了 MyBatis。所以诞生了 sql-light-rail
-3. 我喜欢 Sharding Sphere(JDBC) / MyCat 提供分库分表能力，但是我希望有一个完全一体化的东西。
+3. 我喜欢 Sharding Sphere(JDBC) / MyCat 提供分库分表能力，但是我希望有一个完全一体化的东西可以代替他, 而不是多个依赖。
+4. 统一风格。DataBase 基于【大驼峰风格】, 例如: my_favourite | Java Pojo 基于【小驼峰风格】, 例如: myFavourite
 
 
 ## Development Status [发展状态]
