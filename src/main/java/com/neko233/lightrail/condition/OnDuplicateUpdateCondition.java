@@ -5,37 +5,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * @author SolarisNeko
- * Date on 2022-02-20
- */
-public class SetCondition implements Condition {
+public class OnDuplicateUpdateCondition implements Condition {
 
-    private final StringBuilder setSqlBuilder = new StringBuilder();
-
+    private final StringBuilder builder = new StringBuilder();
     private final Map<String, Object> kvMap = new HashMap<>();
 
-    private SetCondition() {
-    }
+    private OnDuplicateUpdateCondition() {
 
-    public static SetCondition builder() {
-        return new SetCondition();
     }
 
     @Override
     public String build() {
-        setSqlBuilder.append("Set ");
+        builder.append(" On Duplicate Key Update ");
 
         List<String> setConditionList = kvMap.entrySet().stream()
                 .map(e -> e.getKey() + " = " + Condition.toSqlValueByType(e.getValue()))
                 .collect(Collectors.toList());
-        setSqlBuilder.append(String.join(", ", setConditionList));
-        return setSqlBuilder.toString();
+        builder.append(String.join(", ", setConditionList));
+        return builder.toString();
     }
 
-    public SetCondition equalsTo(String columnName, Object value) {
+    public static OnDuplicateUpdateCondition builder() {
+        return new OnDuplicateUpdateCondition();
+    }
+
+    public OnDuplicateUpdateCondition equalsTo(String columnName, Object value) {
         kvMap.put(columnName, value);
         return this;
     }
-
 }

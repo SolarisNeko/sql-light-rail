@@ -27,7 +27,7 @@ public class SqlLightRail {
      * @return InsertSqlBuilder
      */
     public static InsertSqlBuilder generateInsertTemplate(String tableName, Class<?> clazz, Long insertTimes) {
-        return new InsertSqlBuilder(tableName).insertColumns(clazz).values(insertTimes);
+        return new InsertSqlBuilder(tableName).columnNames(clazz).generateReplacement(insertTimes);
     }
 
     public static InsertSqlBuilder insertTable(String tableName) {

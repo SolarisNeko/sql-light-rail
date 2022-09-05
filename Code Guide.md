@@ -2,10 +2,22 @@
 ## Dependency
 maven
 ```xml
+<!-- ORM -->
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
+</dependency>
+<!-- DataSource -->
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid</artifactId>
+    <version>1.2.8</version>
+</dependency>
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.25</version>
 </dependency>
 ```
 
@@ -17,17 +29,7 @@ maven
 ## 多数据源演示
 需要 2 个依赖, DataSource + Connector.
 ```xml
-<!-- DAO Layer -->
-<dependency>
-    <groupId>com.alibaba</groupId>
-    <artifactId>druid</artifactId>
-    <version>1.2.8</version>
-</dependency>
-<dependency>
-    <groupId>mysql</groupId>
-    <artifactId>mysql-connector-java</artifactId>
-    <version>8.0.25</version>
-</dependency>
+
 ```
 ## Demo Code
 ```java

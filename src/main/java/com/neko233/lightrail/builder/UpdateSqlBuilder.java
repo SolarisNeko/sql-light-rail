@@ -44,7 +44,7 @@ public class UpdateSqlBuilder extends SqlBuilder {
         return this;
     }
 
-    public SqlBuilder where(WhereCondition where) {
+    public UpdateSqlBuilder where(WhereCondition where) {
         sql.setWhere(where.build());
         return this;
     }

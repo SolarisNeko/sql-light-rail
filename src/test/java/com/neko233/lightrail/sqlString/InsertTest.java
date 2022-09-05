@@ -23,7 +23,7 @@ public class InsertTest {
     @Test
     public void insertSqlTest() {
         String insertSql = SqlLightRail.insertTable("user")
-                .insertColumns("id", "name")
+                .columnNames("id", "name")
                 .values(Arrays.asList(
                         new User(10, "demo1"),
                         new User(20, "demo2")

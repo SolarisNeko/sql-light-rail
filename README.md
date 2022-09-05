@@ -1,5 +1,6 @@
 # SQL Light Rail
 
+
 ## 简介
 
 > 'sql-light-rail' is a DAO Layer Micro Framework to handle SQL by Java, use it like 'Chain Builder / Stream'.
@@ -16,7 +17,7 @@ SQL Light Rail (SQL 轻轨)
 
 轻轨: 有多节车厢, 如同本框架设计的 Chain Builder 思想。
 
-这是一款【约定大于配置】的 Java SQL Flux 框架, 用于快速构建大量 SQL, 辅助 DAO 操作/复用 SQL。
+这是一款【约定大于配置】的 Java SQL Flux 框架, 用于快速构建大量 SQL. 
 
 ### 约定 > 配置:
 
@@ -34,7 +35,7 @@ License 为 Apache2.0
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
 
 ```
@@ -42,11 +43,11 @@ License 为 Apache2.0
 ### Gradle
 
 ```groovy
-implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.1.0'
+implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.1.1'
 ```
 
-## TODO
-1. 事务
+
+
 
 ## 初衷 / 痛点
 
@@ -55,6 +56,16 @@ implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.1.0'
 3. 我喜欢 Sharding Sphere(JDBC) / MyCat 提供分库分表能力，但是我希望有一个完全一体化的东西可以代替他, 而不是多个依赖。
 4. 统一风格。DataBase 基于【大驼峰风格】, 例如: my_favourite | Java Pojo 基于【小驼峰风格】, 例如: myFavourite
 
+# RoadMap
+
+## v0.1.1
+1. 修复 InsertSqlBuilder 问题
+2. 追加 on duplicate key update 特性
+3. 分离 insert 的 singleRowValue 单行插入（该框架基于批处理思想）
+4. 确定历史拼接逻辑，过于臃肿难以优化。后续会更改拼接内核。不影响外部 API
+
+## v0.1.0
+基本可用. 
 
 ## Development Status [发展状态]
 

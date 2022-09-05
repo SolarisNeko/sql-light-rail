@@ -1,4 +1,6 @@
 
+create database sql_light_rail;
+use sql_light_rail;
 -- Default DataSource
 
 

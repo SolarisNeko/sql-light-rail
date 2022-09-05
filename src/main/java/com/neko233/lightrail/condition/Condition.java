@@ -21,7 +21,7 @@ public interface Condition {
      * */
     String PLACEHOLDER = "?";
 
-    DateFormat yyyyMMdd_hhmmss = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    DateFormat yyyyMMdd_hhmmss = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     static String toSqlValueByType(Object value) {
         if (value == null) {
@@ -30,8 +30,9 @@ public interface Condition {
         if (String.valueOf(value).equals(PLACEHOLDER)) {
             return "?";
         }
+
         if (value instanceof CharSequence) {
-            return "'" + value + "'";
+            return "'" + String.valueOf(value).replaceAll("'", "''") + "'";
         }
         if (value instanceof Date) {
             return "'" + yyyyMMdd_hhmmss.format(value) + "'";

@@ -42,7 +42,7 @@ public class UpdateRailPlatformTest {
     public void baseTest_insert2User() throws Exception {
 
         InsertSqlBuilder builder = SqlLightRail.insertTable("user")
-            .insertColumns("name")
+            .columnNames("name")
             .values("('demo10'), ('demo11') ");
         Integer rowCount = railPlatform.executeUpdate(builder);
 
@@ -59,7 +59,7 @@ public class UpdateRailPlatformTest {
         }};
 
         InsertSqlBuilder builder = SqlLightRail.insertTable("user")
-            .insertColumns("name")
+            .columnNames("name")
             .values(valueList);
         Integer rowCount = railPlatform.executeUpdate(builder);
 
