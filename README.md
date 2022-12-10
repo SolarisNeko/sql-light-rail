@@ -3,7 +3,7 @@
 
 ## 简介
 
-> 'sqlContext-light-rail' is a DAO Layer Micro Framework to handle SQL by Java, use it like 'Chain Builder / Stream'.
+> 'sql-light-rail' is a DAO Layer Micro Framework to handle SQL by Java, use it like 'Chain Builder / Stream'.
 >
 > '轻轨' 是一款 DAO 层操作的微框架, 处理 SQL 就如同写 Java Stream / Chain Builder 一样。
 
@@ -34,7 +34,7 @@ License 为 Apache2.0
 
 <dependency>
     <groupId>com.neko233</groupId>
-    <artifactId>sqlContext-light-rail</artifactId>
+    <artifactId>sql-light-rail</artifactId>
     <version>0.2.0</version>
 </dependency>
 
@@ -43,7 +43,7 @@ License 为 Apache2.0
 ### Gradle
 
 ```groovy
-implementation group: 'com.neko233', name: 'sqlContext-light-rail', version: '0.2.0'
+implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.0'
 ```
 
 
@@ -52,7 +52,7 @@ implementation group: 'com.neko233', name: 'sqlContext-light-rail', version: '0.
 ## 初衷 / 痛点
 
 1. MyBatis 迁移的工作量巨大, 除非重构项目, 半路使用的体验较差。所以诞生了 rail-platform （执行 SQL）
-2. 我喜欢 MyBatis Plus 的 flux 风格，但我不喜欢他强绑定了 MyBatis。所以诞生了 sqlContext-light-rail
+2. 我喜欢 MyBatis Plus 的 flux 风格，但我不喜欢他强绑定了 MyBatis。所以诞生了 sql-light-rail
 3. 我喜欢 Sharding Sphere(JDBC) / MyCat 提供分库分表能力，但是我希望有一个完全一体化的东西可以代替他, 而不是多个依赖。
 4. 统一风格。DataBase 基于【大驼峰风格】, 例如: my_favourite | Java Pojo 基于【小驼峰风格】, 例如: myFavourite
 

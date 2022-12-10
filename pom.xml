@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.neko233</groupId>
-    <artifactId>sqlContext-light-rail</artifactId>
+    <artifactId>sql-light-rail</artifactId>
     <version>0.2.0</version>
 
     <name>sql_light_rail</name>
-    <url>https://github.com/SolarisNeko/sqlContext-light-rail/tree/main</url>
+    <url>https://github.com/SolarisNeko/sql-light-rail/tree/main</url>
 
     <description>
         SQL Light Rail (SQL 轻轨)
@@ -33,9 +33,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/SolarisNeko/sqlContext-light-rail.git</connection>
-        <developerConnection>scm:git:ssh://github.com/SolarisNeko/sqlContext-light-rail.git</developerConnection>
-        <url>http://github.com/SolarisNeko/sqlContext-light-rail/tree/main</url>
+        <connection>scm:git:https://github.com/SolarisNeko/sql-light-rail.git</connection>
+        <developerConnection>scm:git:ssh://github.com/SolarisNeko/sql-light-rail.git</developerConnection>
+        <url>http://github.com/SolarisNeko/sql-light-rail/tree/main</url>
     </scm>
 
     <licenses>
