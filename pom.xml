@@ -4,19 +4,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.neko233</groupId>
-    <artifactId>sql-light-rail</artifactId>
-    <version>0.1.1</version>
+    <artifactId>sqlContext-light-rail</artifactId>
+    <version>0.2.0</version>
 
     <name>sql_light_rail</name>
-    <url>https://github.com/SolarisNeko/sql-light-rail/tree/main</url>
+    <url>https://github.com/SolarisNeko/sqlContext-light-rail/tree/main</url>
 
     <description>
         SQL Light Rail (SQL 轻轨)
 
-        The [SQL Light Rail] is the 'Stream' framework for DAO operating.
-        这是一款【约定 > 配置】的 Java SQL Stream DAO 平台框架。
+        v0.2.0
+        本框架 3 部分组成: Sharding DB(experimental), ORM Mapping, SQL Flux Builder.
 
-        > 轻轨: 多节车厢, 如同本框架设计的 Chain Builder 思想。
+        support JDK: oracle, openJDK
+        support version: jdk-1.8, jdk-11
+        高版本需要开启反射访问.
     </description>
 
     <developers>
@@ -31,9 +33,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/SolarisNeko/sql-light-rail.git</connection>
-        <developerConnection>scm:git:ssh://github.com/SolarisNeko/sql-light-rail.git</developerConnection>
-        <url>http://github.com/SolarisNeko/sql-light-rail/tree/main</url>
+        <connection>scm:git:https://github.com/SolarisNeko/sqlContext-light-rail.git</connection>
+        <developerConnection>scm:git:ssh://github.com/SolarisNeko/sqlContext-light-rail.git</developerConnection>
+        <url>http://github.com/SolarisNeko/sqlContext-light-rail/tree/main</url>
     </scm>
 
     <licenses>
@@ -117,10 +119,14 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
+
+
+        <!-- just test -->
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.29</version>
+            <version>1.33</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

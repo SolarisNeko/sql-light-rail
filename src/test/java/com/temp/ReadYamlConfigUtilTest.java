@@ -1,6 +1,6 @@
 package com.temp;
 
-import com.neko233.lightrail.util.ReadYamlConfigUtil;
+import com.neko233.sql.lightrail.util.ReadYamlConfigUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
