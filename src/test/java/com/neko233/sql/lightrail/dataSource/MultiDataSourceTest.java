@@ -57,21 +57,21 @@ public class MultiDataSourceTest {
     @Test
     public void multiDataSourceTest() throws Exception {
         // 多个 dataSource
-        RepositoryManager platform = RepositoryManagerFactory.create(ds);
-        platform.addDataSource("ds1", ds1);
+        RepositoryManager repositoryManager = RepositoryManagerFactory.create(ds);
+        repositoryManager.addDataSource("ds1", ds1);
 
         System.out.println("--------- sql_light_rail 数据源 -------------- ");
         String sql = SqlLightRail.selectTable(User.class)
                 .limitByPage(1, 1)
                 .build();
-        List<User> users = platform.executeQuery(SqlStatement.builder()
+        List<User> users = repositoryManager.executeQuery(SqlStatement.builder()
             .sql(sql)
             .returnType(User.class)
             .build());
         users.forEach(System.out::println);
 
         System.out.println("--------- sql_light_rail_1 数据源 -------------- ");
-        List<User> otherUsers = platform.executeQuery(SqlStatement.builder()
+        List<User> otherUsers = repositoryManager.executeQuery(SqlStatement.builder()
             .shardingKey("ds1")
             .sql(SqlLightRail.selectTable(User.class)
                 .limit(0, 1)
