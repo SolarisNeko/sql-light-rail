@@ -5,7 +5,7 @@
 
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
 
     <name>sql_light_rail</name>
     <url>https://github.com/SolarisNeko/sql-light-rail/tree/main</url>
@@ -13,8 +13,11 @@
     <description>
         SQL Light Rail (SQL 轻轨)
 
-        v0.2.0
-        本框架 3 部分组成: Sharding DB(experimental), ORM Mapping, SQL Flux Builder.
+        v0.2.1
+        本框架 3 个独立部分组成:
+        1. SQL Flux Builder ｜ SQL 流
+        2. ORM ｜ 对象映射
+        3. RepositoryManager with Sharding | 多数据源管理
 
         support JDK: oracle, openJDK
         support version: jdk-1.8, jdk-11
@@ -186,7 +189,7 @@
                 <executions>
                     <execution>
                         <goals>
-<!--                            <goal>jar</goal>-->
+                            <!--                            <goal>jar</goal>-->
                             <goal>test-jar</goal>
                         </goals>
                     </execution>

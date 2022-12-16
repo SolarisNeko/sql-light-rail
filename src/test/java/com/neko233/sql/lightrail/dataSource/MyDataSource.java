@@ -43,9 +43,9 @@ public class MyDataSource {
      */
     public static Properties getDefaultDbConfig() {
         Properties properties = new Properties();
-        properties.put(PROP_URL, "jdbc:mysql://114.132.247.235:3306/xxl_job");
+        properties.put(PROP_URL, "jdbc:mysql://localhost:3306/sql_light_rail");
         properties.put(PROP_USERNAME, "root");
-        properties.put(PROP_PASSWORD, "luojug00");
+        properties.put(PROP_PASSWORD, "root");
         properties.put(PROP_INITIALSIZE, "5");
         properties.put(PROP_MINIDLE, "5");
         properties.put(PROP_MAXACTIVE, "10");

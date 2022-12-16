@@ -24,10 +24,10 @@ public class UserWithEmail {
     @Column("name")
     private String name;
 
-    @Column("email")
+    @Column("")
     private String email;
 
-    @Column("createTime")
+    @Column(value = "", isUse = false)
     private Date createTime;
 
 }

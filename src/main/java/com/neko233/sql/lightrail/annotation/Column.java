@@ -11,18 +11,17 @@ public @interface Column {
 
     String value();
 
+    /**
+     * 是否使用
+     *
+     * @return true 使用 / false 不参与任何 SQL 处理
+     */
+    boolean isUse() default true;
+
     String jdbcType() default "";
 
     String comment() default "";
 
     boolean nullable() default true;
-
-    /**
-     * Position of this column in the table for this class (0=first, -1=unset).
-     *
-     * @return (relative) position of this column
-     * @since 3.1
-     */
-    int position() default -1;
 
 }

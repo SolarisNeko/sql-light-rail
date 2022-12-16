@@ -21,7 +21,7 @@ public class UserLackFields {
     @Column("name")
     private String name;
 
-    @Column("createTime")
+    @Column(isUse = false, value = "")
     private Date createTime;
 
 }

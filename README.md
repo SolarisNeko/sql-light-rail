@@ -1,6 +1,5 @@
 # SQL Light Rail
 
-
 ## 简介
 
 > 'sql-light-rail' is a DAO Layer Micro Framework to handle SQL by Java, use it like 'Chain Builder / Stream'.
@@ -17,11 +16,12 @@ SQL Light Rail (SQL 轻轨)
 
 轻轨: 有多节车厢, 如同本框架设计的 Chain Builder 思想。
 
-这是一款【约定大于配置】的 Java SQL Flux 框架, 用于快速构建大量 SQL. 
+这是一款【约定大于配置】的 Java SQL Flux 框架, 用于快速构建大量 SQL.
 
 ### 约定 > 配置:
 
-1. 如果你的 Pojo 遵循驼峰命名, SQL Table 命名遵循大驼峰命名, 如 class LoginSumDaily -> table login_sum_daily 。 那么我们会自动帮你将 field 转换为表结构。
+1. 如果你的 Pojo 遵循驼峰命名, SQL Table 命名遵循大驼峰命名, 如 class LoginSumDaily -> table login_sum_daily 。
+   那么我们会自动帮你将 field 转换为表结构。
 2. 采用 Flux/Stream 写法。
 
 License 为 Apache2.0
@@ -35,7 +35,7 @@ License 为 Apache2.0
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
 </dependency>
 
 ```
@@ -43,29 +43,42 @@ License 为 Apache2.0
 ### Gradle
 
 ```groovy
-implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.0'
+implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.1'
 ```
-
-
-
 
 ## 初衷 / 痛点
 
-1. MyBatis 迁移的工作量巨大, 除非重构项目, 半路使用的体验较差。所以诞生了 rail-platform （执行 SQL）
-2. 我喜欢 MyBatis Plus 的 flux 风格，但我不喜欢他强绑定了 MyBatis。所以诞生了 sql-light-rail
-3. 我喜欢 Sharding Sphere(JDBC) / MyCat 提供分库分表能力，但是我希望有一个完全一体化的东西可以代替他, 而不是多个依赖。
-4. 统一风格。DataBase 基于【大驼峰风格】, 例如: my_favourite | Java Pojo 基于【小驼峰风格】, 例如: myFavourite
+因 mybatis-plus/flux 等好用的 ORM 框架, 都依赖于 mybatis. 
+
+但一旦离开了 mybatis 生态圈, 很多好用的机制不能拿出来独立使用. 
+
+1. 独立的 SQL stream 写法, 直接生成 sql 语句. 无需 mybatis-plus 重量级依赖.
+2. 独立的 ORM 机制.
+3. 独立的 Sharding DB 机制
+4. Plugin Chain 处理 SQL 执行过程.
 
 # RoadMap
 
+## v0.2.1
+
+1. [Rename] RailPlatform -> RepositoryManager
+2. [Add] RepositoryGroupManager 组管理器
+3. [Add] 独立 Sharding 机制出来, ShardingId: Number + ShardingKey: String.
+
+## v0.2.0
+
+1. ORM 部分重构.
+
 ## v0.1.1
+
 1. 修复 InsertSqlBuilder 问题
 2. 追加 on duplicate key update 特性
 3. 分离 insert 的 singleRowValue 单行插入（该框架基于批处理思想）
 4. 确定历史拼接逻辑，过于臃肿难以优化。后续会更改拼接内核。不影响外部 API
 
 ## v0.1.0
-基本可用. 
+
+基本可用.
 
 ## Development Status [发展状态]
 
@@ -239,40 +252,42 @@ RailPlatformFactory
 DataSource dataSource=DruidDataSourceFactory.createDataSource(getDbConfig());
 
 // Demo
-        RailPlatform railPlatform=RailPlatformFactory.createLightRailPlatform(dataSource);
+        RailPlatform repositoryManager=RailPlatformFactory.createLightRailPlatform(dataSource);
 
         // 基本类型
-        List<Integer> testIntValue = railPlatform.executeQuery("Select 1 From dual ", Integer.class);
+        List<Integer> testIntValue=repositoryManager.executeQuery("Select 1 From dual ",Integer.class);
         // must not null
         System.out.println(testIntValue.get(0));
 
         // Object ORM
-        List<User> users = railPlatform.executeQuery("Select id, name From user Limit 0, 1 ", User.class);
+        List<User> users=repositoryManager.executeQuery("Select id, name From user Limit 0, 1 ",User.class);
         users.forEach(System.out::println)
 
 ```
 
 ## Batch Update SQL
+
 1. support Update SQL
 2. non-support Select SQL
+
 ```java
     @Test
-    public void updateMultiSql_2_successfully() throws Exception {
-        RailPlatform railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDefaultDataSource());
+public void updateMultiSql_2_successfully()throws Exception{
+        RailPlatform repositoryManager=RailPlatformFactory.createLightRailPlatform(MyDataSource.getDefaultDataSource());
 
-        String build = SqlLightRail.updateTable("user")
-                .set(SetCondition.builder().equalsTo("create_time", new Date()))
-                .where(WhereCondition.builder()
-                        .equalsTo("id", 1)
-                ).build();
-        String build2 = SqlLightRail.updateTable("user")
-                .set(SetCondition.builder().equalsTo("create_time", new Date()))
-                .where(WhereCondition.builder()
-                        .equalsTo("id", 1)
-                ).build();
+        String build=SqlLightRail.updateTable("user")
+        .set(SetCondition.builder().equalsTo("create_time",new Date()))
+        .where(WhereCondition.builder()
+        .equalsTo("id",1)
+        ).build();
+        String build2=SqlLightRail.updateTable("user")
+        .set(SetCondition.builder().equalsTo("create_time",new Date()))
+        .where(WhereCondition.builder()
+        .equalsTo("id",1)
+        ).build();
 
-        Integer rowCount = railPlatform.executeUpdate(Arrays.asList(build, build2));
+        Integer rowCount=repositoryManager.executeUpdate(Arrays.asList(build,build2));
 
-        Assert.assertTrue(2 == rowCount);
-    }
+        Assert.assertTrue(2==rowCount);
+        }
 ```

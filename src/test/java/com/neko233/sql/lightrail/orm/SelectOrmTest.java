@@ -1,12 +1,12 @@
 package com.neko233.sql.lightrail.orm;
 
-import com.neko233.sql.lightrail.RailPlatform;
-import com.neko233.sql.lightrail.RailPlatformFactory;
+import com.neko233.sql.lightrail.RepositoryManager;
+import com.neko233.sql.lightrail.RepositoryManagerFactory;
 import com.neko233.sql.lightrail.SqlLightRail;
+import com.neko233.sql.lightrail.dataSource.MyDataSource;
 import com.neko233.sql.lightrail.plugin.SlowSqlPlugin;
 import com.neko233.sql.lightrail.pojo.UserLackFields;
 import com.neko233.sql.lightrail.pojo.UserWithEmail;
-import com.neko233.sql.lightrail.dataSource.MyDataSource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,21 +19,21 @@ import java.util.List;
  */
 public class SelectOrmTest {
 
-    RailPlatform railPlatform;
+    RepositoryManager repositoryManager;
 
     @Before
     public void before() throws Exception {
-        railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDefaultDataSource());
-        railPlatform.removeAllPlugins();
-        railPlatform.addGlobalPlugin(new SlowSqlPlugin());
+        repositoryManager = RepositoryManagerFactory.create(MyDataSource.getDefaultDataSource());
+        repositoryManager.removeAllPlugins();
+        repositoryManager.addGlobalPlugin(new SlowSqlPlugin());
     }
 
     @Test
     public void selectOrmTest_original_SQL_String() throws Exception {
 
-        List<UserWithEmail> dataList = railPlatform.executeQuery(
-            "select id, name From user Limit 0, 1",
-            UserWithEmail.class
+        List<UserWithEmail> dataList = repositoryManager.executeQuery(
+                "select id, name From user Limit 0, 1",
+                UserWithEmail.class
         );
         for (UserWithEmail user : dataList) {
             Assert.assertTrue(user.getName() != null);
@@ -41,25 +41,14 @@ public class SelectOrmTest {
     }
 
     @Test
-    public void selectOrmTest_original_SQL_With_ShardingKey() throws Exception {
-
-        // 可分库
-        List<UserWithEmail> dataList = railPlatform.executeQuery(
-            "select name From user Limit 0, 1",
-            UserWithEmail.class
-        );
-        for (UserWithEmail user : dataList) {
-            Assert.assertTrue(user.getId() == null);
-        }
-    }
-
-    @Test
     public void selectOrmTest() throws Exception {
 
-        List<UserWithEmail> dataList = railPlatform.executeQuery(
-            SqlLightRail.selectTable("user", UserWithEmail.class)
-                    .limitByPage(1, 5),
-            UserWithEmail.class
+        String selectSql = SqlLightRail.selectTable("user", UserWithEmail.class)
+                .limitByPage(1, 5)
+                .build();
+        List<UserWithEmail> dataList = repositoryManager.executeQuery(
+                selectSql,
+                UserWithEmail.class
         );
         for (UserWithEmail user : dataList) {
             Assert.assertTrue(user.getName() != null);
@@ -69,10 +58,12 @@ public class SelectOrmTest {
     @Test
     public void selectOrmTest_lackSomeField_1() throws Exception {
 
-        List<UserLackFields> dataList = railPlatform.executeQuery(
-            SqlLightRail.selectTable("user", UserLackFields.class)
-                    .limitByPage(1, 10),
-            UserLackFields.class
+        String selectSql = SqlLightRail.selectTable("user", UserLackFields.class)
+                .limitByPage(1, 10)
+                .build();
+        List<UserLackFields> dataList = repositoryManager.executeQuery(
+                selectSql,
+                UserLackFields.class
         );
         for (UserLackFields userLackFields : dataList) {
             Assert.assertTrue(userLackFields.getName() != null);
@@ -89,10 +80,12 @@ public class SelectOrmTest {
     @Test
     public void selectOrmTest_lackSomeField_2() throws Exception {
 
-        List<UserLackFields> dataList = railPlatform.executeQuery(
-            SqlLightRail.selectTable("user").select("id", "name")
-                    .limit(0, 5),
-            UserLackFields.class
+        String build = SqlLightRail.selectTable("user").select("id", "name")
+                .limit(0, 5)
+                .build();
+        List<UserLackFields> dataList = repositoryManager.executeQuery(
+                build,
+                UserLackFields.class
         );
 
         for (UserLackFields userLackFields : dataList) {

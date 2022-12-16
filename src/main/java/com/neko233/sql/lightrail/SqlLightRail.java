@@ -7,8 +7,6 @@ import com.neko233.sql.lightrail.builder.UpdateSqlBuilder;
 import com.neko233.sql.lightrail.util.CamelCaseUtil;
 
 /**
- *
- *
  * @author SolarisNeko
  * Date on 2022-02-20
  */
@@ -21,8 +19,9 @@ public class SqlLightRail {
 
     /**
      * 生成 Insert 的占位符模板
-     * @param tableName 表名
-     * @param clazz 生成 select 模板
+     *
+     * @param tableName   表名
+     * @param clazz       生成 select 模板
      * @param insertTimes 次数
      * @return InsertSqlBuilder
      */
@@ -68,6 +67,7 @@ public class SqlLightRail {
 
     /**
      * 子查询
+     *
      * @param innerSelectBuilder builder
      * @return SelectSqlBuilder
      */

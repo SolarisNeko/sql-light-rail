@@ -1,7 +1,7 @@
 package com.neko233.sql.lightrail.platform;
 
-import com.neko233.sql.lightrail.RailPlatform;
-import com.neko233.sql.lightrail.RailPlatformFactory;
+import com.neko233.sql.lightrail.RepositoryManager;
+import com.neko233.sql.lightrail.RepositoryManagerFactory;
 import com.neko233.sql.lightrail.SqlLightRail;
 import com.neko233.sql.lightrail.builder.InsertSqlBuilder;
 import com.neko233.sql.lightrail.dataSource.MyDataSource;
@@ -19,11 +19,11 @@ import java.util.List;
  * @author: SolarisNeko
  * Date on: 2/26/2022
  */
-public class InsertRailPlatformTest {
+public class InsertRepositoryManagerTest {
 
-    RailPlatform railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDefaultDataSource());
+    RepositoryManager repositoryManager = RepositoryManagerFactory.create(MyDataSource.getDefaultDataSource());
 
-    public InsertRailPlatformTest() throws Exception {
+    public InsertRepositoryManagerTest() throws Exception {
     }
 
 
@@ -31,16 +31,16 @@ public class InsertRailPlatformTest {
     public void baseTest_insert2User() throws Exception {
 
         InsertSqlBuilder builder = SqlLightRail.insertTable("user")
-            .columnNames("name")
-            .values("('demo10'), ('demo11') ");
-        Integer rowCount = railPlatform.executeUpdate(builder);
+                .columnNames("name")
+                .values("('demo10'), ('demo11') ");
+        Integer rowCount = repositoryManager.executeUpdate(builder.build());
 
         Assert.assertTrue(2 == rowCount);
     }
 
     @Test
     public void baseTest_insert2User_single_ORM() throws Exception {
-        RailPlatform railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDefaultDataSource());
+        RepositoryManager repositoryManager = RepositoryManagerFactory.create(MyDataSource.getDefaultDataSource());
 
         List<User> valueList = new ArrayList<User>() {{
             add(User.builder().name("demo21").build());
@@ -48,16 +48,16 @@ public class InsertRailPlatformTest {
         }};
 
         InsertSqlBuilder builder = SqlLightRail.insertTable("user")
-            .columnNames("name")
-            .values(valueList);
-        Integer rowCount = railPlatform.executeUpdate(builder);
+                .columnNames("name")
+                .values(valueList);
+        Integer rowCount = repositoryManager.executeUpdate(builder.build());
 
         Assert.assertTrue(2 == rowCount);
     }
 
     @Test
     public void baseTest_insert2User_multi_ORM() throws Exception {
-        RailPlatform railPlatform = RailPlatformFactory.createLightRailPlatform(MyDataSource.getDefaultDataSource());
+        RepositoryManager repositoryManager = RepositoryManagerFactory.create(MyDataSource.getDefaultDataSource());
 
         List<UserWithEmail> valueList = new ArrayList<UserWithEmail>() {{
             add(UserWithEmail.builder().name("demo21").email("123@qq.com").build());
@@ -65,8 +65,8 @@ public class InsertRailPlatformTest {
         }};
 
         InsertSqlBuilder builder = SqlLightRail.insertTable("user")
-            .values(valueList);
-        Integer rowCount = railPlatform.executeUpdate(builder);
+                .values(valueList);
+        Integer rowCount = repositoryManager.executeUpdate(builder.build());
 
         Assert.assertTrue(2 == rowCount);
     }

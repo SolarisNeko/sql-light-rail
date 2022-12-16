@@ -1,8 +1,8 @@
 package com.neko233.sql.lightrail.dataSource;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
-import com.neko233.sql.lightrail.RailPlatform;
-import com.neko233.sql.lightrail.RailPlatformFactory;
+import com.neko233.sql.lightrail.RepositoryManager;
+import com.neko233.sql.lightrail.RepositoryManagerFactory;
 import com.neko233.sql.lightrail.SqlLightRail;
 import com.neko233.sql.lightrail.domain.SqlStatement;
 import com.neko233.sql.lightrail.pojo.User;
@@ -57,7 +57,7 @@ public class MultiDataSourceTest {
     @Test
     public void multiDataSourceTest() throws Exception {
         // 多个 dataSource
-        RailPlatform platform = RailPlatformFactory.createLightRailPlatform(ds);
+        RepositoryManager platform = RepositoryManagerFactory.create(ds);
         platform.addDataSource("ds1", ds1);
 
         System.out.println("--------- sql_light_rail 数据源 -------------- ");

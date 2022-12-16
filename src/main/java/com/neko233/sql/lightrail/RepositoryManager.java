@@ -1,13 +1,11 @@
 package com.neko233.sql.lightrail;
 
-import com.neko233.sql.lightrail.builder.SelectSqlBuilder;
-import com.neko233.sql.lightrail.builder.SqlBuilder;
 import com.neko233.sql.lightrail.domain.ExecuteSqlContext;
+import com.neko233.sql.lightrail.domain.SqlStatement;
 import com.neko233.sql.lightrail.exception.RailPlatformException;
 import com.neko233.sql.lightrail.exception.SqlLightRailException;
 import com.neko233.sql.lightrail.orm.OrmHandler;
 import com.neko233.sql.lightrail.plugin.Plugin;
-import com.neko233.sql.lightrail.domain.SqlStatement;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,16 +19,23 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * ShardingKey is not sorted and random. Need Developer to set your rule to keep it in rule.
- * ShardingKey 无规则, 需开发者自定义一套规则。
+ * Hold multi dataSource but not calculate shardingId.
+ * <p>
+ * ShardingKey is get from out-side, why it is String ? because ShardingKey = name + shardingId
+ * <p>
+ * shardingId you can calculate your self. you can rule it.
+ * <p>
+ * 管理 DataSource + CRUD
+ * 可以在上层实现复杂管理
+ * </p>
  *
  * @author SolarisNeko
  * Date on 2022-02-26
  */
 @Slf4j
-public class RailPlatform {
+public class RepositoryManager implements RepositoryApi {
 
-    private static final RailPlatform INSTANCE = new RailPlatform();
+    private static final RepositoryManager INSTANCE = new RepositoryManager();
 
     private static final String LOG_PREFIX = "[RailPlatform] ";
 
@@ -44,23 +49,19 @@ public class RailPlatform {
     public static final String NULL_STRING = "null";
 
 
-    private RailPlatform() {
+    private RepositoryManager() {
     }
 
-    public synchronized static RailPlatform createLightRailPlatform(DataSource dataSource) {
-        if (RailPlatform.MULTI_DATASOURCE_MAP.size() > 0) {
-            log.debug(LOG_PREFIX + "You can't create RailPlatform by DataSource again.");
-            return INSTANCE;
-        }
-        RailPlatform.MULTI_DATASOURCE_MAP.put("default", dataSource);
+    public static RepositoryManager getInstance() {
         return INSTANCE;
     }
 
-    public synchronized static RailPlatform getInstance() {
-        return INSTANCE;
+    public static int getDataSourceSize() {
+        return MULTI_DATASOURCE_MAP.size();
     }
 
-    public synchronized RailPlatform addDataSource(String shardingKey, DataSource newDataSource) {
+    @Override
+    public synchronized RepositoryManager addDataSource(String shardingKey, DataSource newDataSource) {
         if (StringUtils.isBlank(shardingKey) || NULL_STRING.equalsIgnoreCase(shardingKey)) {
             throw new RuntimeException("[RailPlatform] Sharding Key must not null / 'null' !");
         }
@@ -73,7 +74,8 @@ public class RailPlatform {
         return getInstance();
     }
 
-    public synchronized RailPlatform removeDataSource(String shardingKey) {
+    @Override
+    public synchronized RepositoryManager removeDataSource(String shardingKey) {
         DataSource remove = MULTI_DATASOURCE_MAP.remove(shardingKey);
         if (remove != null) {
             log.info(LOG_PREFIX + "You remove a DataSource From RailPlatform cacheJ! DataSource = {}", remove);
@@ -91,11 +93,12 @@ public class RailPlatform {
      * @param shardingKey 分库分表的 ID
      * @return DataSource | maybe null
      */
+    @Override
     public DataSource getDataSource(String shardingKey) {
         return MULTI_DATASOURCE_MAP.get(shardingKey);
     }
 
-    public RailPlatform addGlobalPlugin(Plugin plugin) {
+    public RepositoryManager addGlobalPlugin(Plugin plugin) {
         if (GLOBAL_PLUGINS.contains(plugin)) {
             return getInstance();
         }
@@ -104,13 +107,13 @@ public class RailPlatform {
         return getInstance();
     }
 
-    public RailPlatform removeGlobalPlugin(Plugin plugin) {
+    public RepositoryManager removeGlobalPlugin(Plugin plugin) {
         GLOBAL_PLUGINS.remove(plugin);
         plugin.initPlugin();
         return getInstance();
     }
 
-    public RailPlatform removeAllPlugins() {
+    public RepositoryManager removeAllPlugins() {
         GLOBAL_PLUGINS.clear();
         return getInstance();
     }
@@ -125,14 +128,12 @@ public class RailPlatform {
      * @return 列表
      * @throws SQLException 执行 SQL 异常
      */
-    public <T> List<T> executeQuery(SelectSqlBuilder sqlBuilder, Class<T> returnType) throws SQLException {
-        return executeQuery(sqlBuilder.build(), returnType);
-    }
-
+    @Override
     public <T> List<T> executeQuery(String sql, Class<T> returnType) throws SQLException {
         return executeQuery(DEFAULT_SHARDING_KEY, sql, returnType);
     }
 
+    @Override
     public <T> List<T> executeQuery(String shardingKey, String sql, Class<T> returnType) throws SQLException {
         if (StringUtils.isBlank(shardingKey)) {
             log.error(LOG_PREFIX + "Sharding Key must not null!");
@@ -148,6 +149,7 @@ public class RailPlatform {
                 .build());
     }
 
+    @Override
     public <T> List<T> executeQuery(SqlStatement statement) throws SQLException {
         checkDataSource();
         addSql2SqlListInSqlStatement(statement);
@@ -209,6 +211,7 @@ public class RailPlatform {
 
     /**
      * 将 .sql() -> 整合到 .sqlList
+     *
      * @param statement 封装的查询语句
      */
     private static void addSql2SqlListInSqlStatement(SqlStatement statement) {
@@ -228,22 +231,22 @@ public class RailPlatform {
      * @return update count
      * @throws SQLException SQL 有问题
      */
-    public Integer executeUpdate(SqlBuilder sqlBuilder) throws SQLException {
-        return executeUpdate(DEFAULT_SHARDING_KEY, sqlBuilder.build());
-    }
-
+    @Override
     public Integer executeUpdate(String sql) throws SQLException {
         return executeUpdate(DEFAULT_SHARDING_KEY, sql);
     }
 
+    @Override
     public Integer executeUpdate(List<String> sqlList) throws SQLException {
         return executeUpdate(DEFAULT_SHARDING_KEY, sqlList);
     }
 
+    @Override
     public Integer executeUpdate(String shardingKey, String sql) throws SQLException {
         return executeUpdate(shardingKey, Collections.singletonList(sql));
     }
 
+    @Override
     public Integer executeUpdate(String shardingKey, List<String> sqlList) throws SQLException {
         if (StringUtils.isBlank(shardingKey)) {
             log.error(LOG_PREFIX + "Sharding Key must not null!");
@@ -258,6 +261,7 @@ public class RailPlatform {
                 .build());
     }
 
+    @Override
     public Integer executeUpdate(SqlStatement statement) throws SQLException {
         checkDataSource();
         addSql2SqlListInSqlStatement(statement);
