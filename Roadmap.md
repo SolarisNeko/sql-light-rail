@@ -35,7 +35,7 @@ License 为 Apache2.0
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
 </dependency>
 
 ```
@@ -43,7 +43,7 @@ License 为 Apache2.0
 ### Gradle
 
 ```groovy
-implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.1'
+implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.2'
 ```
 
 ## 初衷 / 痛点
@@ -59,6 +59,11 @@ implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.1'
 
 # RoadMap
 
+## 0.2.2
+1. [Optimize] 优化了反射部分性能, 提升效率额 90%. 从 100ms -> 6~20 ms. 加入 lazy cache.
+2. [Add] Insert SQL 的 columnName 进行了 @Column 的命名支持. 
+3. [Add] 完善单元测试 for ORM.
+ 
 ## v0.2.1
 
 1. [Rename] RailPlatform -> RepositoryManager

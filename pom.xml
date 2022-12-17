@@ -5,7 +5,7 @@
 
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
 
     <name>sql_light_rail</name>
     <url>https://github.com/SolarisNeko/sql-light-rail/tree/main</url>
@@ -13,7 +13,7 @@
     <description>
         SQL Light Rail (SQL 轻轨)
 
-        v0.2.1
+        v0.2.2
         本框架 3 个独立部分组成:
         1. SQL Flux Builder ｜ SQL 流
         2. ORM ｜ 对象映射

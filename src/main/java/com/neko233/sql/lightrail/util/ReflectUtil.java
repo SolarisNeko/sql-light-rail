@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
-
 /**
  * @author SolarisNeko
  * Date on 2022-02-20
@@ -20,7 +18,14 @@ public class ReflectUtil {
     public static final String SUPER_CLASS_SIMPLE_NAME = "Object";
     public static final Class SUPER_CLASS = Object.class;
 
-    public static Object getFieldValueByNameShortly(Object object, String insertColumn) {
+    /**
+     * 获取字段值, 最短继承链的
+     *
+     * @param object    对象
+     * @param fieldName 字段名
+     * @return field value
+     */
+    public static Object getFieldValueByNameShortly(Object object, String fieldName) {
         Field field;
         Field parentField;
         Field childField;
@@ -29,12 +34,12 @@ public class ReflectUtil {
 
         // 1 get field by Recursive
         try {
-            parentField = getParentFieldByNameShortly(targetClass, insertColumn);
+            parentField = getParentFieldByNameShortly(targetClass, fieldName);
         } catch (NoSuchFieldException e) {
             parentField = null;
         }
         try {
-            childField = targetClass.getDeclaredField(insertColumn);
+            childField = targetClass.getDeclaredField(fieldName);
         } catch (NoSuchFieldException e) {
             childField = null;
         }
@@ -56,11 +61,11 @@ public class ReflectUtil {
     /**
      * 递归查找父类最近的同名 field .
      */
-    private static Field getParentFieldByNameShortly(Class<?> targetClass, String insertColumn) throws NoSuchFieldException {
+    private static Field getParentFieldByNameShortly(Class<?> targetClass, String fieldName) throws NoSuchFieldException {
         Field parentField = null;
         Class<?> superclass = targetClass.getSuperclass();
         while (parentField == null && !superclass.getSimpleName().equals(Object.class.getSimpleName())) {
-            parentField = superclass.getDeclaredField(insertColumn);
+            parentField = superclass.getDeclaredField(fieldName);
         }
         return parentField;
     }
@@ -69,8 +74,8 @@ public class ReflectUtil {
         List<String> columns = new ArrayList<>();
         while (!(aClass.getSimpleName().equals(SUPER_CLASS_SIMPLE_NAME))) {
             List<String> currentFields = Arrays.stream(aClass.getDeclaredFields())
-                .map(Field::getName)
-                .collect(Collectors.toList());
+                    .map(Field::getName)
+                    .collect(Collectors.toList());
             columns.addAll(currentFields);
             aClass = aClass.getSuperclass();
         }
@@ -81,7 +86,7 @@ public class ReflectUtil {
         List<Field> columns = new ArrayList<>();
         while (!(aClass.getSimpleName().equals(SUPER_CLASS_SIMPLE_NAME))) {
             List<Field> currentFields = Arrays.stream(aClass.getDeclaredFields())
-                .collect(Collectors.toList());
+                    .collect(Collectors.toList());
             columns.addAll(currentFields);
             aClass = aClass.getSuperclass();
         }
@@ -94,11 +99,24 @@ public class ReflectUtil {
         Class<?> aClass = object.getClass();
         while (!(aClass.getSimpleName().equals(SUPER_CLASS_SIMPLE_NAME))) {
             List<String> currentFields = Arrays.stream(aClass.getDeclaredFields())
-                .map(Field::getName)
-                .collect(Collectors.toList());
+                    .map(Field::getName)
+                    .collect(Collectors.toList());
             columns.addAll(currentFields);
             aClass = aClass.getSuperclass();
         }
         return new ArrayList<>(columns);
+    }
+
+    public static <T> Object getFieldValue(T object, Field field) {
+        if (object == null || field == null) {
+            return null;
+        }
+        try {
+            field.setAccessible(true);
+            return field.get(object);
+        } catch (IllegalAccessException e) {
+            log.error("get field value error. object class = {}, fieldName = {}", object.getClass(), field.getName());
+            return null;
+        }
     }
 }

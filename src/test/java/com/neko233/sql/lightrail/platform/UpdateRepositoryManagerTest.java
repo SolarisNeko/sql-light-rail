@@ -35,7 +35,7 @@ public class UpdateRepositoryManagerTest {
     public void baseTest_selectByAutoGenerate() throws SQLException {
         String sql = SqlLightRail.selectTable(User.class).build();
         List<User> users = repositoryManager.executeQuery(sql, User.class);
-        System.out.println(users);
+        Assert.assertTrue(users.size() > 0);
     }
 
     @Test

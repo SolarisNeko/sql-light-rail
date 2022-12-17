@@ -20,24 +20,24 @@ import java.util.Map;
 @Builder
 public class SqlContext {
 
-    List<String> select = new ArrayList<>();
-    List<String> tableList = new ArrayList<>();
+    private List<String> select = new ArrayList<>();
+    private List<String> tableList = new ArrayList<>();
 
     // select
-    String join = null;
-    Map<String, String> aliasMap = new HashMap<>();
+    private String join = null;
+    private Map<String, String> aliasMap = new HashMap<>();
 
     // Select, Update 使用
-    String where = null;
-    String orderBy = null;
-    String groupBy = null;
-    String limit = null;
+    private String where = null;
+    private String orderBy = null;
+    private String groupBy = null;
+    private String limit = null;
 
     // Update
-    String set = null;
+    private String set = null;
 
     // Insert
-    List<String> columns = new ArrayList<>();
-    List<String> rowValueList = new ArrayList<>();
+    private List<String> columnNameList = new ArrayList<>();
+    private List<String> columnValueList = new ArrayList<>();
 
 }

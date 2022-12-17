@@ -6,7 +6,7 @@ maven
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>sqlContext-light-rail</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
 </dependency>
 <!-- DataSource -->
 <dependency>

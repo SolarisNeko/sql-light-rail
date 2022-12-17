@@ -23,7 +23,7 @@ License 为 Apache2.0
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
 </dependency>
 
 ```
@@ -31,7 +31,7 @@ License 为 Apache2.0
 ### Gradle
 
 ```groovy
-implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.1'
+implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.2'
 ```
 
 ## 初衷 / 痛点
@@ -54,7 +54,7 @@ maven
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>sqlContext-light-rail</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
 </dependency>
 <!-- DataSource -->
 <dependency>
@@ -133,3 +133,5 @@ Java
         otherUsers.forEach(System.out::println);
     }
 ```
+
+
