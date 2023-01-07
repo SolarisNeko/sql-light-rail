@@ -1,4 +1,4 @@
-package com.neko233.sql.lightrail.condition;
+package com.neko233.sql.lightrail.condition.single;
 
 /**
  * @author SolarisNeko

@@ -1,3 +1,5 @@
+-- first init
+-- 首次初始化！
 create database if not exists sql_light_rail;
 use sql_light_rail;
 
@@ -39,9 +41,9 @@ create table if not exists neko233_db
     unique key (group_name, db_id)
 ) charset = utf8mb4;
 INSERT INTO sql_light_rail.neko233_db (group_name, db_id, tag)
-VALUES ('template', 1, 'template');
+VALUES ('template', 0, 'template|not_exists');
 INSERT INTO sql_light_rail.neko233_db (group_name, db_id, tag)
-VALUES ('template', 2, 'template');
+VALUES ('template', 1, 'template|not_exists');
 
 
 drop table if exists neko233_tag_config_kv;

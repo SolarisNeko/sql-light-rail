@@ -1,5 +1,7 @@
-package com.neko233.sql.lightrail.condition;
+package com.neko233.sql.lightrail.condition.single;
 
+
+import com.neko233.sql.lightrail.condition.Condition;
 
 import java.util.ArrayList;
 import java.util.List;

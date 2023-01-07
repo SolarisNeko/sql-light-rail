@@ -1,7 +1,7 @@
 package com.neko233.sql.lightrail.sqlString;
 
 import com.neko233.sql.lightrail.SqlLightRail;
-import com.neko233.sql.lightrail.condition.Conditions;
+import com.neko233.sql.lightrail.condition.single.Conditions;
 import org.junit.Assert;
 import org.junit.Test;
 

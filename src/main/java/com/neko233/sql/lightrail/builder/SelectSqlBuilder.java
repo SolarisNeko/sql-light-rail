@@ -1,10 +1,10 @@
 package com.neko233.sql.lightrail.builder;
 
 import com.neko233.sql.lightrail.condition.Condition;
-import com.neko233.sql.lightrail.condition.GroupByCondition;
-import com.neko233.sql.lightrail.condition.JoinCondition;
-import com.neko233.sql.lightrail.condition.OrderByCondition;
-import com.neko233.sql.lightrail.condition.WhereCondition;
+import com.neko233.sql.lightrail.condition.single.GroupByCondition;
+import com.neko233.sql.lightrail.condition.single.JoinCondition;
+import com.neko233.sql.lightrail.condition.single.OrderByCondition;
+import com.neko233.sql.lightrail.condition.single.WhereCondition;
 import com.neko233.sql.lightrail.exception.SqlLightRailException;
 import com.neko233.sql.lightrail.util.CamelCaseUtil;
 import com.neko233.sql.lightrail.util.ReflectUtil;

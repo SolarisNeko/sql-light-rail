@@ -1,7 +1,7 @@
 package com.neko233.sql.lightrail.builder;
 
 import com.neko233.sql.lightrail.SqlLightRail;
-import com.neko233.sql.lightrail.condition.OnDuplicateUpdateCondition;
+import com.neko233.sql.lightrail.condition.single.OnDuplicateUpdateCondition;
 import org.junit.Assert;
 import org.junit.Test;
 

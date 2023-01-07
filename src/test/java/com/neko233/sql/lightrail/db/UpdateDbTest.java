@@ -2,8 +2,8 @@ package com.neko233.sql.lightrail.db;
 
 import com.neko233.sql.lightrail.SqlLightRail;
 import com.neko233.sql.lightrail.builder.InsertSqlBuilder;
-import com.neko233.sql.lightrail.condition.SetCondition;
-import com.neko233.sql.lightrail.condition.WhereCondition;
+import com.neko233.sql.lightrail.condition.single.SetCondition;
+import com.neko233.sql.lightrail.condition.single.WhereCondition;
 import com.neko233.sql.lightrail.datasource.MyDataSource;
 import com.neko233.sql.lightrail.pojo.User;
 import org.junit.Assert;

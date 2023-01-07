@@ -2,12 +2,12 @@ package com.neko233.sql.lightrail.sqlString;
 
 import com.neko233.sql.lightrail.SqlLightRail;
 import com.neko233.sql.lightrail.builder.SelectSqlBuilder;
-import com.neko233.sql.lightrail.condition.Conditions;
-import com.neko233.sql.lightrail.condition.GroupByCondition;
-import com.neko233.sql.lightrail.condition.JoinCondition;
-import com.neko233.sql.lightrail.condition.OnCondition;
-import com.neko233.sql.lightrail.condition.SelectCondition;
-import com.neko233.sql.lightrail.condition.WhereCondition;
+import com.neko233.sql.lightrail.condition.single.Conditions;
+import com.neko233.sql.lightrail.condition.single.GroupByCondition;
+import com.neko233.sql.lightrail.condition.single.JoinCondition;
+import com.neko233.sql.lightrail.condition.single.OnCondition;
+import com.neko233.sql.lightrail.condition.single.SelectCondition;
+import com.neko233.sql.lightrail.condition.single.WhereCondition;
 import com.neko233.sql.lightrail.pojo.User;
 import com.neko233.sql.lightrail.pojo.UserExt;
 import org.junit.Assert;

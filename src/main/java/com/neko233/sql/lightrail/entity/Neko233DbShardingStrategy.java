@@ -25,7 +25,7 @@ public class Neko233DbShardingStrategy {
     @Column(value = "sharding_strategy_name", comment = "database 分库策略")
     public String shardingStrategyName;
     @Column(value = "is_use_default", comment = "是否使用默认的")
-    public boolean isUseDefault;
+    public Boolean isUseDefault;
     @Column("add_dt")
     public LocalDateTime addDt;
 

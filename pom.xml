@@ -5,7 +5,7 @@
 
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.3.0</version>
+    <version>0.3.1</version>
 
     <name>sql_light_rail</name>
     <url>https://github.com/SolarisNeko/sql-light-rail/tree/main</url>
@@ -13,15 +13,12 @@
     <description>
         SQL Light Rail (SQL 轻轨)
 
-        v0.2.2
         本框架 3 个独立部分组成:
-        1. SQL Flux Builder ｜ SQL 流
+        1. SqlBuilders ｜ SQL 链式拼接
         2. ORM ｜ 对象映射
-        3. RepositoryManager with Sharding | 多数据源管理
+        3. RepositoryManager with Sharding = 分库分表管理/多DataSource管理. 通过 RepositoryManagerInitializer 进行批量初始化
 
-        support JDK: oracle, openJDK
-        support version: jdk-1.8, jdk-11
-        高版本需要开启反射访问.
+        default: Druid DataSource
     </description>
 
     <developers>

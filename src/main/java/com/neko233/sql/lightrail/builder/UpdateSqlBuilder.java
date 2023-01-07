@@ -1,7 +1,7 @@
 package com.neko233.sql.lightrail.builder;
 
-import com.neko233.sql.lightrail.condition.SetCondition;
-import com.neko233.sql.lightrail.condition.WhereCondition;
+import com.neko233.sql.lightrail.condition.single.SetCondition;
+import com.neko233.sql.lightrail.condition.single.WhereCondition;
 import com.neko233.sql.lightrail.exception.SqlLightRailException;
 
 import java.util.Optional;

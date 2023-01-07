@@ -1,6 +1,8 @@
 package com.neko233.sql.lightrail.manager.initializer;
 
 import com.neko233.sql.lightrail.RepositoryManager;
+import com.neko233.sql.lightrail.condition.generator.ConditionGenerator;
+import com.neko233.sql.lightrail.condition.generator.SqlOperation;
 import com.neko233.sql.lightrail.db.Db;
 import com.neko233.sql.lightrail.db.DbConfig;
 import com.neko233.sql.lightrail.entity.Neko233ConfigTagKv;
@@ -14,6 +16,7 @@ import com.neko233.sql.lightrail.sharding.database.ShardingDbStrategyDefault;
 import com.neko233.sql.lightrail.sharding.database.ShardingDbStrategyFactory;
 import com.neko233.sql.lightrail.sharding.database.ShardingDbStrategyNotInitException;
 import com.neko233.sql.lightrail.strategy.createDataSource.DruidDataSourceCreateStrategy;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -22,7 +25,11 @@ import java.util.*;
  * @author SolarisNeko
  * Date on 2023-01-07
  */
+@Slf4j
 public class RepositoryManagerInitializerByMysql implements RepositoryManagerInitializer {
+
+    public static final String SPLIT_TAG = "|";
+    public static final String SPLIT_TAG_REGEX = "\\|";
 
     @Override
     public void initDbGroup(Db resourceDb, List<String> groupNames) throws Exception {
@@ -46,7 +53,7 @@ public class RepositoryManagerInitializerByMysql implements RepositoryManagerIni
 
             // sharding strategy
             ShardingDbStrategy shardingDbStrategy;
-            if (Optional.of(dbShardingStrategy.isUseDefault()).orElse(false)) {
+            if (Optional.of(dbShardingStrategy.isUseDefault).orElse(false)) {
                 shardingDbStrategy = ShardingDbStrategyFactory.get(dbShardingStrategy.groupName, ShardingDbStrategyDefault.instance);
             } else {
                 shardingDbStrategy = ShardingDbStrategyFactory.get(dbShardingStrategy.groupName);
@@ -68,13 +75,17 @@ public class RepositoryManagerInitializerByMysql implements RepositoryManagerIni
                         List<DbConfig> dbConfigs = new ArrayList<>();
                         for (Neko233Db queryDb : neko233Dbs) {
 
-                            List<Neko233ConfigTagKv> configTagKvs = resourceDb.executeQuery("select * From neko233_tag_config_kv where tag = ? ",
-                                    Neko233ConfigTagKv.class,
-                                    queryDb.tag
+                            String[] split = queryDb.tag.split(SPLIT_TAG_REGEX);
+
+                            String selectConfigKvByTag = "select * From neko233_tag_config_kv where " + ConditionGenerator.condition("tag", SqlOperation.IN, split, false);
+                            log.debug("find tag from neko233_tag_config_kv. SQL = {}", selectConfigKvByTag);
+
+                            List<Neko233ConfigTagKv> configTagKvs = resourceDb.executeQuery(
+                                    selectConfigKvByTag,
+                                    Neko233ConfigTagKv.class
                             );
 
                             Map<String, String> kvMap = Neko233ConfigTagKv.translateToKvMap(configTagKvs);
-
                             DbConfig dbConfig = DbConfig.builder()
                                     .dbId(queryDb.dbId)
                                     .dbGroup(null)

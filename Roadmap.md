@@ -59,6 +59,21 @@ implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.2'
 
 # RoadMap
 
+## v0.3.1
+1. [Add] add ConditionGenerator for SQL 'in'
+2. [BugFix] tag split by '|'
+3. [Update] DDL-for-manager.sql for Test
+
+## v0.3.0
+v0.2.2 -> v0.3.0
+1. [Refactor] refactor class RepositoryManager / manager layer.
+2. [Add] Layer = DbGroup / Db / DbShardingStrategy / ....
+3. [Add] add more sql original params use.
+4. [Add] Druid as default DataSource
+5. [Add] Add Type support LocalDateTime as Mysql:DateTime type
+6. [BugFix] base type in Orm will happen some error.
+7. [Add] not support Base Type in 'ObjectStrategy'
+
 ## 0.2.2
 1. [Optimize] 优化了反射部分性能, 提升效率额 90%. 从 100ms -> 6~20 ms. 加入 lazy cache.
 2. [Add] Insert SQL 的 columnName 进行了 @Column 的命名支持. 

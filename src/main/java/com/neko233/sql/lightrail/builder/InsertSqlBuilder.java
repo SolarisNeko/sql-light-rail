@@ -1,7 +1,7 @@
 package com.neko233.sql.lightrail.builder;
 
 import com.neko233.sql.lightrail.condition.Condition;
-import com.neko233.sql.lightrail.condition.OnDuplicateUpdateCondition;
+import com.neko233.sql.lightrail.condition.single.OnDuplicateUpdateCondition;
 import com.neko233.sql.lightrail.exception.SqlLightRailException;
 import com.neko233.sql.lightrail.util.CamelCaseUtil;
 import com.neko233.sql.lightrail.util.ReflectUtil;

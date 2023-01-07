@@ -68,7 +68,7 @@ public class ObjectStrategy implements ConvertStrategy {
 
         boolean notSupportType = ConvertStrategyFactory.isNotSupportBaseType(field.getType());
         if (notSupportType) {
-            throw new IllegalArgumentException("not support base type. field = " + field.getName());
+            throw new IllegalArgumentException("not support base type. please change to Wrapper type. Like bool -> Boolean. field = " + field.getName());
         }
 
         // set value

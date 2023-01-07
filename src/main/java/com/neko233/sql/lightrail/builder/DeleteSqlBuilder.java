@@ -1,6 +1,6 @@
 package com.neko233.sql.lightrail.builder;
 
-import com.neko233.sql.lightrail.condition.WhereCondition;
+import com.neko233.sql.lightrail.condition.single.WhereCondition;
 import org.apache.commons.lang3.StringUtils;
 
 /**
