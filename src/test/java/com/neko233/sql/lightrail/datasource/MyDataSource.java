@@ -1,4 +1,4 @@
-package com.neko233.sql.lightrail.dataSource;
+package com.neko233.sql.lightrail.datasource;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 
@@ -8,13 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_INITIALSIZE;
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_MAXACTIVE;
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_MAXWAIT;
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_MINIDLE;
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_PASSWORD;
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_URL;
-import static com.alibaba.druid.pool.DruidDataSourceFactory.PROP_USERNAME;
+import static com.alibaba.druid.pool.DruidDataSourceFactory.*;
 
 /**
  * 演示用
@@ -37,9 +31,9 @@ public class MyDataSource {
     }
 
     /**
-     * 获取数据库配置
+     * 配置信息
      *
-     * @return 配置信息
+     * @return datasource config properties
      */
     public static Properties getDefaultDbConfig() {
         Properties properties = new Properties();

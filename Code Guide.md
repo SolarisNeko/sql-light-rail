@@ -5,7 +5,7 @@ maven
 <!-- ORM -->
 <dependency>
     <groupId>com.neko233</groupId>
-    <artifactId>sqlContext-light-rail</artifactId>
+    <artifactId>sql-light-rail</artifactId>
     <version>0.2.2</version>
 </dependency>
 <!-- DataSource -->
@@ -33,10 +33,8 @@ maven
 ```
 ## Demo Code
 ```java
-    DataSource ds = DruidDataSourceFactory.createDataSource(getDefaultDbConfig());
-    DataSource ds1 = DruidDataSourceFactory.createDataSource(getMultiDataSource_1());
 
-    public static Properties getDefaultDbConfig() {
+public static DataSource configDbDataSource() throws Exception {
         Properties properties = new Properties();
         properties.put(PROP_URL, "jdbc:mysql://localhost:3306/sql_light_rail");
         properties.put(PROP_USERNAME, "root");
@@ -45,47 +43,32 @@ maven
         properties.put(PROP_MINIDLE, "5");
         properties.put(PROP_MAXACTIVE, "10");
         properties.put(PROP_MAXWAIT, "10000");
-        return properties;
-    }
-    
-    public static Properties getMultiDataSource_1() {
-        Properties properties = new Properties();
-        properties.put(PROP_URL, "jdbc:mysql://localhost:3306/sql_light_rail_1");
-        properties.put(PROP_USERNAME, "root");
-        properties.put(PROP_PASSWORD, "root");
-        properties.put(PROP_INITIALSIZE, "5");
-        properties.put(PROP_MINIDLE, "5");
-        properties.put(PROP_MAXACTIVE, "10");
-        properties.put(PROP_MAXWAIT, "10000");
-        return properties;
-    }
+        return createDataSource(properties);
+        }
 
-    public MultiDataSourceTest() throws Exception {
-    }
+/**
+ * How to use multi DataSource
+ *
+ * @throws Exception 异常
+ */
+@Test
+public void testInit() throws Exception {
 
-    @Test
-    public void multiDataSourceTest() throws Exception {
-        // 多个 dataSource
-        RailPlatform platform = RailPlatformFactory.createLightRailPlatform(ds);
-        platform.addDataSource("ds1", ds1);
+        // auto init config | see 'DDL-for-manager.sql'
+        Db configDb = new Db(configDbDataSource());
+        new RepositoryManagerInitializerByMysql().initDbGroup(configDb, "template");
 
-        System.out.println("--------- sql_light_rail 数据源 -------------- ");
-        List<User> users = platform.executeQuery(SqlStatement.builder()
-            .sqlContext(SqlLightRail.selectTable(User.class)
-                .limitByPage(1, 1)
-                .build())
-            .returnType(User.class)
-            .build());
-        users.forEach(System.out::println);
+        // use 
+        Db db = RepositoryManager.instance
+        .getDbGroup("template")
+        .getDb(0L);
 
-        System.out.println("--------- sql_light_rail_1 数据源 -------------- ");
-        List<User> otherUsers = platform.executeQuery(SqlStatement.builder()
-            .shardingKey("ds1")
-            .sqlContext(SqlLightRail.selectTable(User.class)
-                .limit(0, 1)
-                .build())
-            .returnType(User.class)
-            .build());
-        otherUsers.forEach(System.out::println);
-    }
+        System.out.println(db.getDbName());
+
+        // check
+        Integer number1 = db.executeQuerySingle("select 1 from dual", Integer.class);
+        System.out.println(number1);
+        }
+
+
 ```

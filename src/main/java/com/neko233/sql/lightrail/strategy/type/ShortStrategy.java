@@ -1,7 +1,5 @@
 package com.neko233.sql.lightrail.strategy.type;
 
-import com.neko233.sql.lightrail.strategy.TypeStrategy;
-
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;

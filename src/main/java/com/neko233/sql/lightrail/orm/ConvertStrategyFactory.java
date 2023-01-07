@@ -1,15 +1,17 @@
 package com.neko233.sql.lightrail.orm;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public interface ConvertStrategyFactory {
 
-    static ConvertStrategy chooseStrategyByReturnType(Class<?> returnType) {
+    static ConvertStrategy choose(Class<?> returnType) {
         if (returnType == null) {
             throw new RuntimeException("your return type is null!");
         }
-        // full path
+        // full path | can optimize
         String returnTypeName = returnType.getName();
         if (returnTypeName.equals("boolean") || returnTypeName.equals(Boolean.class.getName())) {
             return new BooleanStrategy();
@@ -41,8 +43,26 @@ public interface ConvertStrategyFactory {
         if (returnTypeName.equals(Date.class.getName())) {
             return new DateStrategy();
         }
+        if (returnTypeName.equals(LocalDateTimeStrategy.class.getName())) {
+            return new LocalDateTimeStrategy();
+        }
         return new ObjectStrategy();
     }
 
+    List<Class<?>> notSupportTypeList = new ArrayList<Class<?>>() {{
+        add(boolean.class);
+//        add(short.class);
+//        add(int.class);
+//        add(float.class);
+//        add(double.class);
+//        add(long.class);
+//        add(byte.class);
+//        add(char.class);
+    }};
+
+
+    static boolean isNotSupportBaseType(Class<?> fieldType) {
+        return notSupportTypeList.contains(fieldType);
+    }
 
 }

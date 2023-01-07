@@ -1,9 +1,9 @@
 package com.neko233.sql.lightrail.orm;
 
-import com.neko233.sql.lightrail.RepositoryManager;
-import com.neko233.sql.lightrail.RepositoryManagerFactory;
 import com.neko233.sql.lightrail.SqlLightRail;
-import com.neko233.sql.lightrail.dataSource.MyDataSource;
+import com.neko233.sql.lightrail.datasource.MyDataSource;
+import com.neko233.sql.lightrail.db.Db;
+import com.neko233.sql.lightrail.plugin.PluginRegistry;
 import com.neko233.sql.lightrail.plugin.SlowSqlPlugin;
 import com.neko233.sql.lightrail.pojo.UserLackFields;
 import com.neko233.sql.lightrail.pojo.UserWithEmail;
@@ -19,19 +19,21 @@ import java.util.List;
  */
 public class SelectOrmTest {
 
-    RepositoryManager repositoryManager;
+    Db db = new Db(MyDataSource.getDefaultDataSource());
+
+    public SelectOrmTest() throws Exception {
+    }
 
     @Before
     public void before() throws Exception {
-        repositoryManager = RepositoryManagerFactory.create(MyDataSource.getDefaultDataSource());
-        repositoryManager.removeAllPlugins();
-        repositoryManager.addGlobalPlugin(new SlowSqlPlugin());
+        PluginRegistry.removeAllPlugins();
+        PluginRegistry.addGlobalPlugin(new SlowSqlPlugin());
     }
 
     @Test
     public void selectOrmTest_original_SQL_String() throws Exception {
 
-        List<UserWithEmail> dataList = repositoryManager.executeQuery(
+        List<UserWithEmail> dataList = db.executeQuery(
                 "select id, name From user Limit 0, 1",
                 UserWithEmail.class
         );
@@ -46,7 +48,7 @@ public class SelectOrmTest {
         String selectSql = SqlLightRail.selectTable("user", UserWithEmail.class)
                 .limitByPage(1, 5)
                 .build();
-        List<UserWithEmail> dataList = repositoryManager.executeQuery(
+        List<UserWithEmail> dataList = db.executeQuery(
                 selectSql,
                 UserWithEmail.class
         );
@@ -61,7 +63,7 @@ public class SelectOrmTest {
         String selectSql = SqlLightRail.selectTable("user", UserLackFields.class)
                 .limitByPage(1, 10)
                 .build();
-        List<UserLackFields> dataList = repositoryManager.executeQuery(
+        List<UserLackFields> dataList = db.executeQuery(
                 selectSql,
                 UserLackFields.class
         );
@@ -83,7 +85,7 @@ public class SelectOrmTest {
         String build = SqlLightRail.selectTable("user").select("id", "name")
                 .limit(0, 5)
                 .build();
-        List<UserLackFields> dataList = repositoryManager.executeQuery(
+        List<UserLackFields> dataList = db.executeQuery(
                 build,
                 UserLackFields.class
         );

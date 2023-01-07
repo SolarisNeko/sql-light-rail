@@ -9,6 +9,7 @@ import java.sql.SQLException;
  * @date 4/23/2022
  */
 public class BigDecimalStrategy implements ConvertStrategy {
+
     @Override
     public Object singleColumn(ResultSet thisRowRs) throws IllegalAccessException, InstantiationException, SQLException {
         return thisRowRs.getBigDecimal(1);

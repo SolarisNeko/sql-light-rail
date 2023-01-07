@@ -1,6 +1,4 @@
-package com.neko233.sql.lightrail.strategy;
-
-import com.neko233.sql.lightrail.strategy.type.*;
+package com.neko233.sql.lightrail.strategy.type;
 
 import java.lang.reflect.Field;
 import java.sql.ResultSet;

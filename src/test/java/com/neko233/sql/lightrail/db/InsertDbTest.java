@@ -1,10 +1,8 @@
-package com.neko233.sql.lightrail.platform;
+package com.neko233.sql.lightrail.db;
 
-import com.neko233.sql.lightrail.RepositoryManager;
-import com.neko233.sql.lightrail.RepositoryManagerFactory;
 import com.neko233.sql.lightrail.SqlLightRail;
 import com.neko233.sql.lightrail.builder.InsertSqlBuilder;
-import com.neko233.sql.lightrail.dataSource.MyDataSource;
+import com.neko233.sql.lightrail.datasource.MyDataSource;
 import com.neko233.sql.lightrail.pojo.User;
 import com.neko233.sql.lightrail.pojo.UserWithEmail;
 import org.junit.Assert;
@@ -19,13 +17,20 @@ import java.util.List;
  * @author: SolarisNeko
  * Date on: 2/26/2022
  */
-public class InsertRepositoryManagerTest {
+public class InsertDbTest {
 
-    RepositoryManager repositoryManager = RepositoryManagerFactory.create(MyDataSource.getDefaultDataSource());
+    Db db = new Db(MyDataSource.getDefaultDataSource());
 
-    public InsertRepositoryManagerTest() throws Exception {
+    public InsertDbTest() throws Exception {
     }
 
+
+    @Test
+    public void generate_insert_template() {
+        String build = SqlLightRail.generateInsertTemplate(User.class, 1L).build();
+        String target = "INSERT INTO user(id, name) Values (?,?)";
+        Assert.assertEquals(target, build);
+    }
 
     @Test
     public void baseTest_insert2User() throws Exception {
@@ -33,14 +38,14 @@ public class InsertRepositoryManagerTest {
         InsertSqlBuilder builder = SqlLightRail.insertTable("user")
                 .columnNames("name")
                 .values("('demo10'), ('demo11') ");
-        Integer rowCount = repositoryManager.executeUpdate(builder.build());
+        Integer rowCount = db
+                .executeUpdate(builder.build());
 
         Assert.assertTrue(2 == rowCount);
     }
 
     @Test
     public void baseTest_insert2User_single_ORM() throws Exception {
-        RepositoryManager repositoryManager = RepositoryManagerFactory.create(MyDataSource.getDefaultDataSource());
 
         List<User> valueList = new ArrayList<User>() {{
             add(User.builder().name("demo21").build());
@@ -50,14 +55,14 @@ public class InsertRepositoryManagerTest {
         InsertSqlBuilder builder = SqlLightRail.insertTable("user")
                 .columnNames("name")
                 .values(valueList);
-        Integer rowCount = repositoryManager.executeUpdate(builder.build());
+        Integer rowCount = db
+                .executeUpdate(builder.build());
 
         Assert.assertTrue(2 == rowCount);
     }
 
     @Test
     public void baseTest_insert2User_multi_ORM() throws Exception {
-        RepositoryManager repositoryManager = RepositoryManagerFactory.create(MyDataSource.getDefaultDataSource());
 
         List<UserWithEmail> valueList = new ArrayList<UserWithEmail>() {{
             add(UserWithEmail.builder().name("demo21").email("123@qq.com").build());
@@ -66,17 +71,12 @@ public class InsertRepositoryManagerTest {
 
         InsertSqlBuilder builder = SqlLightRail.insertTable("user")
                 .values(valueList);
-        Integer rowCount = repositoryManager.executeUpdate(builder.build());
+        Integer rowCount = db
+                .executeUpdate(builder.build());
 
         Assert.assertTrue(2 == rowCount);
     }
 
-    @Test
-    public void generate_insert_template() {
-        String build = SqlLightRail.generateInsertTemplate(User.class, 1L).build();
-        String target = "INSERT INTO user(id, name) Values (?,?)";
-        Assert.assertEquals(target, build);
-    }
 
 
 }

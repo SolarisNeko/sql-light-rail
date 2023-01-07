@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author LuoHaoJun on 2022-12-07
+ * @author SolarisNeko on 2022-12-07
  **/
 @Slf4j
 public class OrmHandler {
@@ -19,7 +19,7 @@ public class OrmHandler {
     public static <T> List<T> ormBatch(ResultSet resultSet, Class<T> returnClass) throws SQLException {
         Map<String, Field> haveAnnoFields = SqlColumnUtil.getColumnName2FieldMap(returnClass);
 
-        ConvertStrategy convertStrategy = ConvertStrategyFactory.chooseStrategyByReturnType(returnClass);
+        ConvertStrategy convertStrategy = ConvertStrategyFactory.choose(returnClass);
 
         List<T> list = new ArrayList<>();
         while (resultSet.next()) {
@@ -36,7 +36,7 @@ public class OrmHandler {
     public static <T> T ormSingle(ResultSet resultSet, Class<T> returnClass) throws SQLException {
         Map<String, Field> haveAnnoFields = SqlColumnUtil.getColumnName2FieldMap(returnClass);
 
-        ConvertStrategy convertStrategy = ConvertStrategyFactory.chooseStrategyByReturnType(returnClass);
+        ConvertStrategy convertStrategy = ConvertStrategyFactory.choose(returnClass);
 
         if (resultSet.next()) {
             try {

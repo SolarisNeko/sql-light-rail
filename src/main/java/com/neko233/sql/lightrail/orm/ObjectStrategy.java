@@ -27,7 +27,7 @@ public class ObjectStrategy implements ConvertStrategy {
 
     @Override
     public Object objectConvert(ResultSet thisRowRs, String columnName,
-                                    Class<?> returnType, Map<String, Field> haveAnnoFields) throws SQLException, IllegalAccessException, InstantiationException {
+                                Class<?> returnType, Map<String, Field> haveAnnoFields) throws SQLException, IllegalAccessException, InstantiationException {
         Object newTargetObj = returnType.newInstance();
         for (Map.Entry<String, Field> columnName2Field : haveAnnoFields.entrySet()) {
             setFieldByType(
@@ -55,7 +55,7 @@ public class ObjectStrategy implements ConvertStrategy {
             throws IllegalAccessException {
         field.setAccessible(true);
 
-        ConvertStrategy convertStrategy = ConvertStrategyFactory.chooseStrategyByReturnType(field.getType());
+        ConvertStrategy convertStrategy = ConvertStrategyFactory.choose(field.getType());
 
         Object rsValue = null;
         try {
@@ -65,6 +65,13 @@ public class ObjectStrategy implements ConvertStrategy {
         } catch (InstantiationException e) {
             log.error("recursive instantiate error. instance type = {}", instance.getClass(), e);
         }
+
+        boolean notSupportType = ConvertStrategyFactory.isNotSupportBaseType(field.getType());
+        if (notSupportType) {
+            throw new IllegalArgumentException("not support base type. field = " + field.getName());
+        }
+
+        // set value
         field.set(instance, rsValue);
     }
 

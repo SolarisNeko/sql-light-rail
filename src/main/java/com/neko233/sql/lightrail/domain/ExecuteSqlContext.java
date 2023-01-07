@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ import static java.util.stream.Collectors.toList;
 @Builder
 public class ExecuteSqlContext<T> {
 
-    private String shardingKey;
+    private String dbName;
     private List<String> sqlList;
 
     // 对应 prepareStatement 的占位符值
@@ -42,11 +43,13 @@ public class ExecuteSqlContext<T> {
     private PreparedStatement preparedStatement;
 
     // 插件
-    private List<Plugin> plugins;
+    private Collection<Plugin> plugins;
     private List<Plugin> addPlugins;
     private List<String> excludePluginNames;
+
     // 是否使用默认执行的 JDBC, 如果为 false 需要提供 dataList 操作结果。
     private Boolean isDefaultProcess;
+
     // 处理结果
     private ResultSet resultSet;
     private Integer updateCount;

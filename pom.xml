@@ -5,7 +5,7 @@
 
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.2.2</version>
+    <version>0.3.0</version>
 
     <name>sql_light_rail</name>
     <url>https://github.com/SolarisNeko/sql-light-rail/tree/main</url>
@@ -64,13 +64,13 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
-            <version>1.2.8</version>
-            <scope>test</scope>
+            <version>1.2.15</version>
+<!--            <scope>test</scope>-->
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.28</version>
+            <version>8.0.31</version>
             <scope>test</scope>
         </dependency>
 

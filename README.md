@@ -23,7 +23,7 @@ License 为 Apache2.0
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.2.2</version>
+    <version>0.3.0</version>
 </dependency>
 
 ```
@@ -31,7 +31,7 @@ License 为 Apache2.0
 ### Gradle
 
 ```groovy
-implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.2'
+implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.3.0'
 ```
 
 ## 初衷 / 痛点
@@ -50,17 +50,11 @@ implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.2'
 Dependency
 maven
 ```xml
-<!-- ORM -->
+<!-- default use druid as DataSource -->
 <dependency>
     <groupId>com.neko233</groupId>
-    <artifactId>sqlContext-light-rail</artifactId>
-    <version>0.2.2</version>
-</dependency>
-<!-- DataSource -->
-<dependency>
-    <groupId>com.alibaba</groupId>
-    <artifactId>druid</artifactId>
-    <version>1.2.8</version>
+    <artifactId>sql-light-rail</artifactId>
+    <version>0.3.0</version>
 </dependency>
 <dependency>
     <groupId>mysql</groupId>
@@ -72,10 +66,7 @@ maven
 Java
 ```java
 
-    DataSource ds = DruidDataSourceFactory.createDataSource(getDefaultDbConfig());
-    DataSource ds1 = DruidDataSourceFactory.createDataSource(getMultiDataSource_1());
-
-    public static Properties getDefaultDbConfig() {
+public static DataSource configDbDataSource() throws Exception {
         Properties properties = new Properties();
         properties.put(PROP_URL, "jdbc:mysql://localhost:3306/sql_light_rail");
         properties.put(PROP_USERNAME, "root");
@@ -84,54 +75,33 @@ Java
         properties.put(PROP_MINIDLE, "5");
         properties.put(PROP_MAXACTIVE, "10");
         properties.put(PROP_MAXWAIT, "10000");
-        return properties;
-    }
+        return createDataSource(properties);
+}
 
-    public static Properties getMultiDataSource_1() {
-        Properties properties = new Properties();
-        properties.put(PROP_URL, "jdbc:mysql://localhost:3306/sql_light_rail_1");
-        properties.put(PROP_USERNAME, "root");
-        properties.put(PROP_PASSWORD, "root");
-        properties.put(PROP_INITIALSIZE, "5");
-        properties.put(PROP_MINIDLE, "5");
-        properties.put(PROP_MAXACTIVE, "10");
-        properties.put(PROP_MAXWAIT, "10000");
-        return properties;
-    }
+/**
+ * How to use multi DataSource
+ *
+ * @throws Exception 异常
+ */
+@Test
+public void testInit() throws Exception {
 
-    public MultiDataSourceTest() throws Exception {
-    }
+        // auto init config | see 'DDL-for-manager.sql'
+        Db configDb = new Db(configDbDataSource());
+        new RepositoryManagerInitializerByMysql().initDbGroup(configDb, "template");
 
-    /**
-     * How to use multi DataSource
-     * @throws Exception 异常
-     */
-    @Test
-    public void multiDataSourceTest() throws Exception {
-        // 多个 dataSource
-        RepositoryManager repositoryManager = RepositoryManagerFactory.create(ds);
-        repositoryManager.addDataSource("ds1", ds1);
+        // use 
+        Db db = RepositoryManager.instance
+        .getDbGroup("template")
+        .getDb(0L);
 
-        System.out.println("--------- sql_light_rail 数据源 -------------- ");
-        String sql = SqlLightRail.selectTable(User.class)
-                .limitByPage(1, 1)
-                .build();
-        List<User> users = repositoryManager.executeQuery(SqlStatement.builder()
-            .sql(sql)
-            .returnType(User.class)
-            .build());
-        users.forEach(System.out::println);
+        System.out.println(db.getDbName());
 
-        System.out.println("--------- sql_light_rail_1 数据源 -------------- ");
-        List<User> otherUsers = repositoryManager.executeQuery(SqlStatement.builder()
-            .shardingKey("ds1")
-            .sql(SqlLightRail.selectTable(User.class)
-                .limit(0, 1)
-                .build())
-            .returnType(User.class)
-            .build());
-        otherUsers.forEach(System.out::println);
-    }
+        // check
+        Integer number1 = db.executeQuerySingle("select 1 from dual", Integer.class);
+        System.out.println(number1);
+}
+
 ```
 
 
