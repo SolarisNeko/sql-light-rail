@@ -13,7 +13,7 @@ import java.util.Map;
 public class KvTemplate {
 
     private final String template;
-    private final Map<String, String> originalValueKv = new HashMap<>();
+    private final Map<String, String> originalValueKv = new HashMap<>(2, 0.9f);
 
     public KvTemplate(String template) {
         this.template = template;
@@ -52,16 +52,16 @@ public class KvTemplate {
 
     @Override
     public String toString() {
-        String tempSql = template;
+        String tempTemplate = template;
         // replace all ${key}
         for (Map.Entry<String, String> originalKv : originalValueKv.entrySet()) {
             String value = String.valueOf(originalKv.getValue());
 
-            tempSql = tempSql.replaceAll(
+            tempTemplate = tempTemplate.replaceAll(
                     "\\$\\{" + originalKv.getKey() + "\\}",
                     value
             );
         }
-        return tempSql;
+        return tempTemplate;
     }
 }

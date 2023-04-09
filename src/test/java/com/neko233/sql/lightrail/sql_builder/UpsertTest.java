@@ -19,7 +19,7 @@ import java.util.Date;
 public class UpsertTest {
 
     @Test
-    public void insertSqlTest() {
+    public void upsertTest_onDuplicateKeySet_base() {
         String insertSql = SqlLightRail.insertTable("user")
                 .columnNames("id", "name")
                 .values(Arrays.asList(
@@ -31,6 +31,22 @@ public class UpsertTest {
                 )
                 .build();
         String target = "INSERT INTO user(id, name) Values (10, 'demo1'), (20, 'demo2') On Duplicate Key Update name = 'demo3'";
+        Assert.assertEquals(target, insertSql);
+    }
+
+    @Test
+    public void upsertTest_onDuplicateKeySet_values() {
+        String insertSql = SqlLightRail.insertTable("user")
+                .columnNames("id", "name")
+                .values(Arrays.asList(
+                        new User(10, "demo1"),
+                        new User(20, "demo2")
+                ))
+                .onDuplicateUpdate(OnDuplicateUpdateCondition.builder()
+                        .updateValue("name")
+                )
+                .build();
+        String target = "INSERT INTO user(id, name) Values (10, 'demo1'), (20, 'demo2') On Duplicate Key Update `name` = values(`name`)";
         Assert.assertEquals(target, insertSql);
     }
 
