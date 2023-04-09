@@ -1,7 +1,7 @@
 package com.neko233.sql.lightrail.db;
 
 import com.neko233.sql.lightrail.SqlLightRail;
-import com.neko233.sql.lightrail.builder.InsertSqlBuilder;
+import com.neko233.sql.lightrail.sql_builder.InsertSqlBuilder;
 import com.neko233.sql.lightrail.condition.single.SetCondition;
 import com.neko233.sql.lightrail.condition.single.WhereCondition;
 import com.neko233.sql.lightrail.datasource.MyDataSource;

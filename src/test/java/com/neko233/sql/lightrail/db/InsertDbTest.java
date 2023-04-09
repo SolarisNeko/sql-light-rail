@@ -1,7 +1,7 @@
 package com.neko233.sql.lightrail.db;
 
 import com.neko233.sql.lightrail.SqlLightRail;
-import com.neko233.sql.lightrail.builder.InsertSqlBuilder;
+import com.neko233.sql.lightrail.sql_builder.InsertSqlBuilder;
 import com.neko233.sql.lightrail.datasource.MyDataSource;
 import com.neko233.sql.lightrail.pojo.User;
 import com.neko233.sql.lightrail.pojo.UserWithEmail;

@@ -1,4 +1,4 @@
-package com.neko233.sql.lightrail.builder;
+package com.neko233.sql.lightrail.sql_builder;
 
 import com.neko233.sql.lightrail.condition.Condition;
 import com.neko233.sql.lightrail.condition.single.OnDuplicateUpdateCondition;
@@ -6,6 +6,7 @@ import com.neko233.sql.lightrail.exception.SqlLightRailException;
 import com.neko233.sql.lightrail.util.CamelCaseUtil;
 import com.neko233.sql.lightrail.util.ReflectUtil;
 import com.neko233.sql.lightrail.util.SqlColumnUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,6 +21,7 @@ import static java.util.stream.Collectors.toList;
  * @author SolarisNeko
  * Date on 2022-02-20
  */
+@Slf4j
 public class InsertSqlBuilder extends SqlBuilder {
 
     private Boolean isOnDuplicateUpdate = false;
@@ -150,8 +152,24 @@ public class InsertSqlBuilder extends SqlBuilder {
     }
 
     public InsertSqlBuilder onDuplicateUpdate(OnDuplicateUpdateCondition condition) {
+        String onDupSetColumnSql = condition.build();
+        if (isOnDuplicateUpdate) {
+            log.error("[InsertSqlBuilder] You have set `on duplicate key on`. old value = {}, new value = {} ",
+                    sqlContext.getSet(), onDupSetColumnSql);
+            return this;
+        }
         isOnDuplicateUpdate = true;
-        sqlContext.setSet(condition.build());
+        sqlContext.setSet(onDupSetColumnSql);
+        return this;
+    }
+    public InsertSqlBuilder onDuplicateUpdate(String onDupSetColumnSql) {
+        if (isOnDuplicateUpdate) {
+            log.error("[InsertSqlBuilder] You have set `on duplicate key on`. old value = {}, new value = {} ",
+                    sqlContext.getSet(), onDupSetColumnSql);
+            return this;
+        }
+        isOnDuplicateUpdate = true;
+        sqlContext.setSet(onDupSetColumnSql);
         return this;
     }
 

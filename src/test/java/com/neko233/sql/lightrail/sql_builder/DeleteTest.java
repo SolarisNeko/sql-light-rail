@@ -1,4 +1,4 @@
-package com.neko233.sql.lightrail.sqlString;
+package com.neko233.sql.lightrail.sql_builder;
 
 import com.neko233.sql.lightrail.SqlLightRail;
 import com.neko233.sql.lightrail.condition.single.Conditions;

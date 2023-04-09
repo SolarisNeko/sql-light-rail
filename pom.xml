@@ -14,8 +14,8 @@
         SQL Light Rail (SQL 轻轨)
 
         本框架 3 个独立部分组成:
-        1. SqlBuilders ｜ SQL 链式拼接
-        2. ORM ｜ 对象映射
+        1. SqlBuilders ｜ SQL 链式风格写法. Like: mybatis-plus/mybatis-flux 之类的框架 API
+        2. ORM ｜ 查询结果, 自动对象映射
         3. RepositoryManager with Sharding = 分库分表管理/多DataSource管理. 通过 RepositoryManagerInitializer 进行批量初始化
 
         default: Druid DataSource

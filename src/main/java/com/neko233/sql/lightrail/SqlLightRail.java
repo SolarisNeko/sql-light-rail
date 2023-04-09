@@ -1,9 +1,9 @@
 package com.neko233.sql.lightrail;
 
-import com.neko233.sql.lightrail.builder.DeleteSqlBuilder;
-import com.neko233.sql.lightrail.builder.InsertSqlBuilder;
-import com.neko233.sql.lightrail.builder.SelectSqlBuilder;
-import com.neko233.sql.lightrail.builder.UpdateSqlBuilder;
+import com.neko233.sql.lightrail.sql_builder.DeleteSqlBuilder;
+import com.neko233.sql.lightrail.sql_builder.InsertSqlBuilder;
+import com.neko233.sql.lightrail.sql_builder.SelectSqlBuilder;
+import com.neko233.sql.lightrail.sql_builder.UpdateSqlBuilder;
 import com.neko233.sql.lightrail.util.CamelCaseUtil;
 
 /**

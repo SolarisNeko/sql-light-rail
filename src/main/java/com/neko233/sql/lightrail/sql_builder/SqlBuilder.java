@@ -1,4 +1,4 @@
-package com.neko233.sql.lightrail.builder;
+package com.neko233.sql.lightrail.sql_builder;
 
 import java.util.Collections;
 import java.util.List;
