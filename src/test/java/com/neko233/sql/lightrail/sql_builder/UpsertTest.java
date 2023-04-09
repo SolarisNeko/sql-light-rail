@@ -27,11 +27,10 @@ public class UpsertTest {
                         new User(20, "demo2")
                 ))
                 .onDuplicateUpdate(OnDuplicateUpdateCondition.builder()
-                        .equalsTo("name", 1)
-                        .equalsTo("name", "2")
+                        .equalsTo("name", "demo3")
                 )
                 .build();
-        String target = "INSERT INTO user(id, name) Values (10, 'demo1'), (20, 'demo2')";
+        String target = "INSERT INTO user(id, name) Values (10, 'demo1'), (20, 'demo2') On Duplicate Key Update name = 'demo3'";
         Assert.assertEquals(target, insertSql);
     }
 
