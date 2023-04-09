@@ -35,7 +35,7 @@ License 为 Apache2.0
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>0.2.2</version>
+    <version>1.0.1</version>
 </dependency>
 
 ```
