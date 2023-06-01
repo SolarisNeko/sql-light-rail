@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * @author SolarisNeko on 2022-12-07
@@ -39,11 +40,11 @@ public class Db implements DbApi {
     private final DbGroup dbGroup;
 
     public Db(DataSource dataSource) {
-        this(dataSource, DbConfig.builder()
-                .build());
+        this(dataSource, DbConfig.builder().build());
     }
 
-    public Db(DataSource dataSource, DbConfig dbConfig) {
+    public Db(DataSource dataSource,
+              DbConfig dbConfig) {
         this.dbId = dbConfig.getDbId();
         this.dbGroup = dbConfig.getDbGroup();
         if (this.dbGroup == null) {
@@ -55,11 +56,12 @@ public class Db implements DbApi {
     }
 
     @Override
-    public <T> List<T> executeQuery(String sql, Class<T> returnType, Collection<Object[]> multiRowParams) throws SQLException {
+    public <T> List<T> executeQuery(String sql,
+                                    Collection<Object[]> paramsArray,
+                                    Class<T> returnType) throws SQLException {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)
-        ) {
-            for (Object[] params : multiRowParams) {
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            for (Object[] params : paramsArray) {
                 if (SqlParamsUtil.setParams(ps, params)) {
                     ps.addBatch();
                 }
@@ -70,16 +72,18 @@ public class Db implements DbApi {
     }
 
     @Override
-    public int executeUpdate(String sql, Collection<Object[]> multiRowParams) throws SQLException {
+    public int executeOriginalUpdate(String sql,
+                                     Collection<Object[]> multiRowParams) throws SQLException {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)
-        ) {
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             for (Object[] params : multiRowParams) {
                 if (SqlParamsUtil.setParams(ps, params)) {
                     ps.addBatch();
                 }
             }
-            return Arrays.stream(ps.executeBatch()).sum();
+            int[] array = ps.executeBatch();
+            connection.commit();
+            return Arrays.stream(array).sum();
         }
     }
 
@@ -113,6 +117,7 @@ public class Db implements DbApi {
             if (context.getIsDefaultProcess()) {
                 context.executeQuery();
             }
+
             context.notifyPluginsPostExecuteSql();
             context.notifyPluginsEnd();
 
@@ -123,11 +128,12 @@ public class Db implements DbApi {
                 List<?> orm = OrmHandler.ormBatch(rs, statement.getReturnType());
                 context.setDataList(orm);
             }
-        } catch (SQLException e) {
+
+        } catch (Exception e) {
             log.error(LOG_PREFIX + "Execute query error will rollback. SQL = {}.", statement.getSqlList(), e);
             context.getConnection().rollback();
         } finally {
-            Objects.requireNonNull(context).getConnection().close();
+            context.close();
         }
 
         return Optional.ofNullable(context.getDataList()).orElse(new ArrayList<T>());
@@ -139,42 +145,54 @@ public class Db implements DbApi {
         if (statement.getIsQuery()) {
             return 0;
         }
-        ExecuteSqlContext execContext = ExecuteSqlContext.builder()
+        ExecuteSqlContext<?> context = ExecuteSqlContext.builder()
                 .isDefaultProcess(true)
                 .isAutoCommit(statement.getIsAutoCommit() == null || statement.getIsAutoCommit())
                 .sqlList(statement.getSqlList())
                 .plugins(PluginRegistry.getAll())
                 .build();
 
-
-        Connection conn = dataSource.getConnection();
-        conn.setAutoCommit(statement.getIsAutoCommit());
-        execContext.setConnection(conn);
-        // pre handle
-        execContext.notifyPluginsBegin();
-        List<String> sqlList = statement.getSqlList();
         // 执行实际的操作
-        try {
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(statement.getIsAutoCommit());
+            context.setConnection(conn);
+
+            // pre handle
+            context.notifyPluginsBegin();
+            List<String> sqlList = statement.getSqlList();
+
             for (String sql : sqlList) {
                 if (StringUtils.isBlank(sql)) {
                     continue;
                 }
-                execContext.notifyPluginsPreExecuteSql();
-                execContext.setPreparedStatement(conn.prepareStatement(sql));
-                if (execContext.getIsDefaultProcess()) {
-                    execContext.executeUpdate();
+                context.notifyPluginsPreExecuteSql();
+                context.setPreparedStatement(conn.prepareStatement(sql));
+                if (context.getIsDefaultProcess()) {
+                    context.executeUpdate();
                 }
                 // post handle
-                execContext.notifyPluginsPostExecuteSql();
+                context.notifyPluginsPostExecuteSql();
             }
 
-        } catch (SQLException e) {
-            log.error(LOG_PREFIX + "Execute error SQL = {} Will rollback.", execContext.getSqlList(), e);
-            execContext.getConnection().rollback();
+
+            context.commitTransaction();
+
+        } catch (Exception e) {
+            log.error(LOG_PREFIX + "Execute error SQL = {} Will rollback.", context.getSqlList(), e);
+            context.getConnection().rollback();
         } finally {
-            Objects.requireNonNull(execContext).getConnection().close();
+            context.close();
         }
-        execContext.notifyPluginsEnd();
-        return execContext.getUpdateCount();
+        context.notifyPluginsEnd();
+        return context.getUpdateCount();
+    }
+
+    @Override
+    public void executeOriginalUpdate(Consumer<Connection> doAnyThingConsumer) throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            doAnyThingConsumer.accept(conn);
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
     }
 }

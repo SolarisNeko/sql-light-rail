@@ -1,6 +1,8 @@
 package com.neko233.sql.lightrail.orm;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,8 +45,11 @@ public interface ConvertStrategyFactory {
         if (returnTypeName.equals(Date.class.getName())) {
             return new DateStrategy();
         }
-        if (returnTypeName.equals(LocalDateTimeStrategy.class.getName())) {
+        if (returnTypeName.equals(LocalDateTime.class.getName())) {
             return new LocalDateTimeStrategy();
+        }
+        if (returnTypeName.equals(Timestamp.class.getName())) {
+            return new TimestampStrategy();
         }
         return new ObjectStrategy();
     }

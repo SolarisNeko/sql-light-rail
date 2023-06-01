@@ -93,7 +93,7 @@ public class InsertSqlBuilder extends SqlBuilder {
         return this;
     }
 
-    public <T> InsertSqlBuilder values(List<T> insertValueList) {
+    public <T> InsertSqlBuilder ormForInsertValues(List<T> insertValueList) {
         if (CollectionUtils.isEmpty(insertValueList)) {
             throw new SqlLightRailException("Must set values! ");
         }
@@ -134,10 +134,11 @@ public class InsertSqlBuilder extends SqlBuilder {
     /**
      * @param columnNames 列名
      */
-    private void addColumnNameList(List<String> columnNames) {
+    private InsertSqlBuilder addColumnNameList(List<String> columnNames) {
         // db.column
         List<String> columnNameList = sqlContext.getColumnNameList();
         columnNameList.addAll(columnNames);
+        return this;
     }
 
     public InsertSqlBuilder columnNames(Class<?> clazz) {
@@ -162,6 +163,7 @@ public class InsertSqlBuilder extends SqlBuilder {
         sqlContext.setSet(onDupSetColumnSql);
         return this;
     }
+
     public InsertSqlBuilder onDuplicateUpdate(String onDupSetColumnSql) {
         if (isOnDuplicateUpdate) {
             log.error("[InsertSqlBuilder] You have set `on duplicate key on`. old value = {}, new value = {} ",

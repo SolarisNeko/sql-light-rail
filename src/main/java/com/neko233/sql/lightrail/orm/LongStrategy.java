@@ -9,6 +9,7 @@ import java.sql.SQLException;
  * @date 4/23/2022
  */
 public class LongStrategy implements ConvertStrategy {
+
     @Override
     public Object singleColumn(ResultSet thisRowRs) throws IllegalAccessException, InstantiationException, SQLException {
         return thisRowRs.getLong(1);

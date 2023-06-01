@@ -32,7 +32,8 @@ public class RepositoryManagerInitializerByMysql implements RepositoryManagerIni
     public static final String SPLIT_TAG_REGEX = "\\|";
 
     @Override
-    public void initDbGroup(Db resourceDb, List<String> groupNames) throws Exception {
+    public void initDbGroup(Db resourceDb,
+                            List<String> groupNames) throws Exception {
         List<DbGroup> dbGroups = fetchDbGroupByMysql(resourceDb, groupNames);
         // 只要随便一个出错, 直接中断
         for (DbGroup dbGroup : dbGroups) {
@@ -40,21 +41,31 @@ public class RepositoryManagerInitializerByMysql implements RepositoryManagerIni
         }
     }
 
-    private List<DbGroup> fetchDbGroupByMysql(Db resourceDb, List<String> groupNames) throws Exception {
+    private List<DbGroup> fetchDbGroupByMysql(Db resourceDb,
+                                              List<String> groupNames) throws Exception {
         checkNecessaryTables(resourceDb);
 
         List<DbGroup> outputDbGroupList = new ArrayList<>();
         for (String groupName : groupNames) {
-            List<Neko233GroupConfigTemplate> neko233GroupConfigTemplates = resourceDb.executeQuery("select * From neko233_db_group_config_template where group_name = ? ", Neko233GroupConfigTemplate.class, groupName);
-            Map<String, Properties> groupNamePropertiesMap = Neko233GroupConfigTemplate.getGroupName2Properties(neko233GroupConfigTemplates);
+            Object[] params = {groupName};
+            List<Neko233GroupConfigTemplate> neko233GroupConfigTemplates = resourceDb.executeQuery(
+                    "select * From neko233_db_group_config_template where group_name = ? ",
+                    params,
+                    Neko233GroupConfigTemplate.class);
+            Map<String, Properties> groupNamePropertiesMap = Neko233GroupConfigTemplate.getGroupName2Properties(
+                    neko233GroupConfigTemplates);
 
 
-            Neko233DbShardingStrategy dbShardingStrategy = resourceDb.executeQuerySingle("select * From neko233_db_sharding_strategy where group_name = ? ", Neko233DbShardingStrategy.class, groupName);
+            Neko233DbShardingStrategy dbShardingStrategy = resourceDb.executeQuerySingle(
+                    "select * From neko233_db_sharding_strategy where group_name = ? ",
+                    params,
+                    Neko233DbShardingStrategy.class);
 
             // sharding strategy
             ShardingDbStrategy shardingDbStrategy;
             if (Optional.of(dbShardingStrategy.isUseDefault).orElse(false)) {
-                shardingDbStrategy = ShardingDbStrategyFactory.get(dbShardingStrategy.groupName, ShardingDbStrategyDefault.instance);
+                shardingDbStrategy = ShardingDbStrategyFactory.get(dbShardingStrategy.groupName,
+                        ShardingDbStrategyDefault.instance);
             } else {
                 shardingDbStrategy = ShardingDbStrategyFactory.get(dbShardingStrategy.groupName);
             }
@@ -70,14 +81,21 @@ public class RepositoryManagerInitializerByMysql implements RepositoryManagerIni
                     .dataSourceCreateStrategy(DruidDataSourceCreateStrategy.instance)
                     .shardingDbStrategy(shardingDbStrategy)
                     .dbConfigFetcher((dbGroupName -> {
-                        List<Neko233Db> neko233Dbs = resourceDb.executeQuery("select * From neko233_db where group_name = ? ", Neko233Db.class, groupName);
+                        List<Neko233Db> neko233Dbs = resourceDb.executeQuery(
+                                "select * From neko233_db where group_name = ? ",
+                                params,
+                                Neko233Db.class);
 
                         List<DbConfig> dbConfigs = new ArrayList<>();
                         for (Neko233Db queryDb : neko233Dbs) {
 
                             String[] split = queryDb.tag.split(SPLIT_TAG_REGEX);
 
-                            String selectConfigKvByTag = "select * From neko233_tag_config_kv where " + ConditionGenerator.condition("tag", SqlOperation.IN, split, false);
+                            String selectConfigKvByTag = "select * From neko233_tag_config_kv where " + ConditionGenerator.condition(
+                                    "tag",
+                                    SqlOperation.IN,
+                                    split,
+                                    false);
                             log.debug("find tag from neko233_tag_config_kv. SQL = {}", selectConfigKvByTag);
 
                             List<Neko233ConfigTagKv> configTagKvs = resourceDb.executeQuery(

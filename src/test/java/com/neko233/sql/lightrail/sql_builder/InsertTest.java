@@ -24,7 +24,7 @@ public class InsertTest {
     public void insertSqlTest() {
         String insertSql = SqlLightRail.insertTable("user")
                 .columnNames("id", "name")
-                .values(Arrays.asList(
+                .ormForInsertValues(Arrays.asList(
                         new User(10, "demo1"),
                         new User(20, "demo2")
                 )).build();
@@ -38,7 +38,7 @@ public class InsertTest {
     @Test
     public void insertRecursiveSqlTest() {
         String insertSql = SqlLightRail.insertTable("user")
-                .values(Arrays.asList(
+                .ormForInsertValues(Arrays.asList(
                         new UserExt(10, "demo1", 18),
                         new UserExt(20, "demo2", 30)
                 )).build();
@@ -53,7 +53,7 @@ public class InsertTest {
     @Test
     public void insertTest_JavaDate() {
         String insertSql = SqlLightRail.insertTable("user")
-            .values(
+            .ormForInsertValues(
                 new ArrayList<UserWithEmail>() {{
                     Date createTime = new Date();
                     add(UserWithEmail.builder().name("test_date_3").createTime(createTime).build());
@@ -69,14 +69,14 @@ public class InsertTest {
      */
     @Test
     public void insertTest_placeHolderTemplate_1() {
-        String insertSql = SqlLightRail.generateInsertTemplate(User.class, 1L).build();
+        String insertSql = SqlLightRail.generateInsertTemplateAuto(User.class, 1L).build();
         String target = "INSERT INTO user(id, name) Values (?,?)";
         Assert.assertEquals(target, insertSql);
     }
 
     @Test
     public void insertTest_placeHolderTemplate_4() {
-        String insertSql = SqlLightRail.generateInsertTemplate("user", UserExt.class, 4L).build();
+        String insertSql = SqlLightRail.generateInsertTemplateAuto("user", UserExt.class, 4L).build();
         String target = "INSERT INTO user(age, id, name) Values (?,?,?), (?,?,?), (?,?,?), (?,?,?)";
         Assert.assertEquals(target, insertSql);
     }

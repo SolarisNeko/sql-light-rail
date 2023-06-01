@@ -3,14 +3,10 @@ package com.neko233.sql.lightrail.sql_builder;
 import com.neko233.sql.lightrail.SqlLightRail;
 import com.neko233.sql.lightrail.condition.single.OnDuplicateUpdateCondition;
 import com.neko233.sql.lightrail.pojo.User;
-import com.neko233.sql.lightrail.pojo.UserExt;
-import com.neko233.sql.lightrail.pojo.UserWithEmail;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 
 /**
  * @author SolarisNeko
@@ -22,7 +18,7 @@ public class UpsertTest {
     public void upsertTest_onDuplicateKeySet_base() {
         String insertSql = SqlLightRail.insertTable("user")
                 .columnNames("id", "name")
-                .values(Arrays.asList(
+                .ormForInsertValues(Arrays.asList(
                         new User(10, "demo1"),
                         new User(20, "demo2")
                 ))
@@ -38,7 +34,7 @@ public class UpsertTest {
     public void upsertTest_onDuplicateKeySet_values() {
         String insertSql = SqlLightRail.insertTable("user")
                 .columnNames("id", "name")
-                .values(Arrays.asList(
+                .ormForInsertValues(Arrays.asList(
                         new User(10, "demo1"),
                         new User(20, "demo2")
                 ))

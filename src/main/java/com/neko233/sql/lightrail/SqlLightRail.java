@@ -13,22 +13,6 @@ import com.neko233.sql.lightrail.util.CamelCaseUtil;
 public class SqlLightRail {
 
 
-    public static InsertSqlBuilder generateInsertTemplate(Class<?> clazz, Long insertTimes) {
-        return generateInsertTemplate(CamelCaseUtil.getBigCamelLowerName(clazz.getSimpleName()), clazz, insertTimes);
-    }
-
-    /**
-     * 生成 Insert 的占位符模板
-     *
-     * @param tableName   表名
-     * @param clazz       生成 select 模板
-     * @param insertTimes 次数
-     * @return InsertSqlBuilder
-     */
-    public static InsertSqlBuilder generateInsertTemplate(String tableName, Class<?> clazz, Long insertTimes) {
-        return new InsertSqlBuilder(tableName).columnNames(clazz).generateReplacement(insertTimes);
-    }
-
     public static InsertSqlBuilder insertTable(String tableName) {
         return new InsertSqlBuilder(tableName);
     }
@@ -75,4 +59,22 @@ public class SqlLightRail {
         return new SelectSqlBuilder("( " + innerSelectBuilder.build() + " ) " + subTableName + " ");
     }
 
+
+
+
+    public static InsertSqlBuilder generateInsertTemplateAuto(Class<?> clazz, Long insertTimes) {
+        return generateInsertTemplateAuto(CamelCaseUtil.getBigCamelLowerName(clazz.getSimpleName()), clazz, insertTimes);
+    }
+
+    /**
+     * 自动生成 Insert 的占位符模板
+     *
+     * @param tableName   表名
+     * @param clazz       生成 select 模板
+     * @param insertTimes 次数
+     * @return InsertSqlBuilder
+     */
+    public static InsertSqlBuilder generateInsertTemplateAuto(String tableName, Class<?> clazz, Long insertTimes) {
+        return new InsertSqlBuilder(tableName).columnNames(clazz).generateReplacement(insertTimes);
+    }
 }

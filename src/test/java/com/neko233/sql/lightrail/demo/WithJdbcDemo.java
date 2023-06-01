@@ -65,7 +65,7 @@ public class WithJdbcDemo {
         }};
 
         InsertSqlBuilder builder = SqlLightRail.insertTable("login_sum_daily")
-            .values(dataList);
+            .ormForInsertValues(dataList);
 
 
         String sql = builder.build();
@@ -88,7 +88,7 @@ public class WithJdbcDemo {
         }};
 
         InsertSqlBuilder builder = SqlLightRail.insertTable("user")
-            .values(users);
+            .ormForInsertValues(users);
 
 
         String sql = builder.build();

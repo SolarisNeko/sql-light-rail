@@ -1,6 +1,9 @@
 package com.neko233.sql.lightrail.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -10,9 +13,7 @@ import java.util.List;
  * @author SolarisNeko
  * Date on 2022-03-06
  */
-@ToString
-@EqualsAndHashCode
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -25,7 +26,6 @@ public class SqlStatement {
     private List<String> sqlList;
 
     private Class<?> returnType;
-
 
 
 }

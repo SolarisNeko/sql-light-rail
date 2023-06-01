@@ -1,6 +1,7 @@
 package com.neko233.sql.lightrail.entity;
 
 import com.neko233.sql.lightrail.annotation.Column;
+import com.neko233.sql.lightrail.annotation.IgnoreColumn;
 import com.neko233.sql.lightrail.annotation.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,9 @@ public class Neko233ConfigTagKv {
     private String config_value;
     @Column("add_dt")
     private LocalDateTime addDt;
+
+    @IgnoreColumn
+    private boolean testIgnoreUse;
 
     public static Map<String, String> translateToKvMap(Collection<Neko233ConfigTagKv> kvList) {
         Map<String, String> kvMap = new HashMap<>();

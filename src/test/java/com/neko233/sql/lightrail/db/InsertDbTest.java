@@ -27,7 +27,7 @@ public class InsertDbTest {
 
     @Test
     public void generate_insert_template() {
-        String build = SqlLightRail.generateInsertTemplate(User.class, 1L).build();
+        String build = SqlLightRail.generateInsertTemplateAuto(User.class, 1L).build();
         String target = "INSERT INTO user(id, name) Values (?,?)";
         Assert.assertEquals(target, build);
     }
@@ -54,7 +54,7 @@ public class InsertDbTest {
 
         InsertSqlBuilder builder = SqlLightRail.insertTable("user")
                 .columnNames("name")
-                .values(valueList);
+                .ormForInsertValues(valueList);
         Integer rowCount = db
                 .executeUpdate(builder.build());
 
@@ -70,7 +70,7 @@ public class InsertDbTest {
         }};
 
         InsertSqlBuilder builder = SqlLightRail.insertTable("user")
-                .values(valueList);
+                .ormForInsertValues(valueList);
         Integer rowCount = db
                 .executeUpdate(builder.build());
 

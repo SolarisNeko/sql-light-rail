@@ -38,8 +38,9 @@ public class SelectDbTest {
 
     @Test
     public void selectTest_paramsSet() throws Exception {
-
-        List<User> users = db.executeQuery("Select id, name From user Where id != ? Limit 0, 1 ", User.class, 1);
+        Object[] params = {1};
+        List<User> users = db
+                .executeQuery("Select id, name From user Where id != ? Limit 0, 1 ", params, User.class);
 
         Assert.assertTrue(users.size() > 0);
     }

@@ -1,5 +1,7 @@
 package com.neko233.sql.lightrail.domain;
 
+import com.neko233.skilltree.commons.core.base.CloseableUtils233;
+import com.neko233.skilltree.commons.core.base.ObjectUtils233;
 import com.neko233.sql.lightrail.plugin.Plugin;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,11 +10,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +18,8 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 
 /**
- * The Context about executing SQL CRUD.
+ * The Context about executing SQL CRUD. <br>
+ * 执行 SQL 上下文
  *
  * @author SolarisNeko
  * Date on 2022-02-26
@@ -82,8 +81,8 @@ public class ExecuteSqlContext<T> {
         // remove plugins
         if (CollectionUtils.isNotEmpty(excludePluginNames)) {
             List<Plugin> ratePlugins = plugins.stream()
-                .filter(plugin -> !excludePluginNames.contains(plugin.getPluginName()))
-                .collect(toList());
+                    .filter(plugin -> !excludePluginNames.contains(plugin.getPluginName()))
+                    .collect(toList());
             plugins = ratePlugins;
         }
         // template method
@@ -91,7 +90,6 @@ public class ExecuteSqlContext<T> {
             plugin.begin();
         }
     }
-
 
 
     public void notifyPluginsPostExecuteSql() throws SQLException {
@@ -115,7 +113,8 @@ public class ExecuteSqlContext<T> {
         updateCount = previousCount + preparedStatement.executeUpdate();
     }
 
-    private static void setValuesToPrepareStatement(PreparedStatement ps, List<Object[]> values) throws SQLException {
+    private static void setValuesToPrepareStatement(PreparedStatement ps,
+                                                    List<Object[]> values) throws SQLException {
         for (Object[] value : values) {
             int count = 1;
             for (Object o : value) {
@@ -175,5 +174,24 @@ public class ExecuteSqlContext<T> {
             }
 
         }
+    }
+
+    public void close() {
+        CloseableUtils233.close(preparedStatement, connection);
+    }
+
+    public boolean isAutoCommit() {
+        return ObjectUtils233.getOrDefault(this.isAutoCommit, false);
+    }
+
+    public boolean isNotAutoCommit() {
+        return !isAutoCommit();
+    }
+
+    public void commitTransaction() throws SQLException {
+        if (this.isAutoCommit()) {
+            return;
+        }
+        connection.commit();
     }
 }

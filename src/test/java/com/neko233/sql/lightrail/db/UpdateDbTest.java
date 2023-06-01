@@ -60,7 +60,7 @@ public class UpdateDbTest {
 
         String insertSql = SqlLightRail.insertTable("user")
                 .columnNames("name")
-                .values(valueList)
+                .ormForInsertValues(valueList)
                 .build();
         Integer rowCount = db
                 .executeUpdate(insertSql);

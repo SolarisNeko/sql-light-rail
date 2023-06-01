@@ -1,6 +1,7 @@
 package com.neko233.sql.lightrail.orm;
 
 
+import com.neko233.sql.lightrail.annotation.IgnoreColumn;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -29,6 +30,7 @@ public class ObjectStrategy implements ConvertStrategy {
     public Object objectConvert(ResultSet thisRowRs, String columnName,
                                 Class<?> returnType, Map<String, Field> haveAnnoFields) throws SQLException, IllegalAccessException, InstantiationException {
         Object newTargetObj = returnType.newInstance();
+
         for (Map.Entry<String, Field> columnName2Field : haveAnnoFields.entrySet()) {
             setFieldByType(
                     thisRowRs,
@@ -54,6 +56,12 @@ public class ObjectStrategy implements ConvertStrategy {
     private static <T> void setFieldByType(ResultSet rs, String columnName, Field field, T instance)
             throws IllegalAccessException {
         field.setAccessible(true);
+
+        // 忽略处理
+        if (field.getAnnotation(IgnoreColumn.class) != null) {
+            return;
+        }
+
 
         ConvertStrategy convertStrategy = ConvertStrategyFactory.choose(field.getType());
 

@@ -1,6 +1,7 @@
 package com.neko233.sql.lightrail.util;
 
 import com.neko233.sql.lightrail.annotation.Column;
+import com.neko233.sql.lightrail.annotation.IgnoreColumn;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
@@ -37,7 +38,6 @@ public class SqlColumnUtil {
     }};
 
 
-
     public static <T> Map<String, Field> getColumnName2FieldMap(Class<T> clazz) {
         Map<String, Field> haveAnnoFields = ORM_CACHE_MAP.get(clazz);
         if (haveAnnoFields == null) {
@@ -47,12 +47,23 @@ public class SqlColumnUtil {
     }
 
 
+    /**
+     * 获取 column -> field 的 Map, 先到先得匹配
+     *
+     * @param returnClazz 返回类型
+     * @return 字段
+     */
     public static Map<String, Field> getColumnName2FieldMapByFirst(Class<?> returnClazz) {
 
         List<Field> allReturnClass = ReflectUtil.getAllFields(returnClazz);
 
-        Map<String, Field> columnName2FieldMap = allReturnClass.stream()
-                .filter(field -> {
+        Map<String, Field> columnName2FieldMap = allReturnClass.stream().filter(field -> {
+                    // 忽略
+                    IgnoreColumn annotationForIgnoreColumn = field.getAnnotation(IgnoreColumn.class);
+                    if (annotationForIgnoreColumn != null) {
+                        return false;
+                    }
+
                     Column annotation = field.getAnnotation(Column.class);
                     if (annotation == null) {
                         return true;
@@ -61,21 +72,18 @@ public class SqlColumnUtil {
                     if (StringUtils.isBlank(annotation.value())) {
                         return false;
                     }
+                    // 不使用了, 也丢弃
                     return annotation.isUse();
                 })
                 // columnName : Field
-                .collect(Collectors.toConcurrentMap(
-                        field -> {
-                            Column annotation = field.getAnnotation(Column.class);
-                            // 无注释, 则为 userName -> user_name
-                            if (annotation == null) {
-                                return CamelCaseUtil.getBigCamelLowerName(field.getName());
-                            }
-                            return annotation.value();
-                        },
-                        field -> field,
-                        (v1, v2) -> v2
-                ));
+                .collect(Collectors.toConcurrentMap(field -> {
+                    Column annotation = field.getAnnotation(Column.class);
+                    // 无注释, 则为 userName -> user_name
+                    if (annotation == null) {
+                        return CamelCaseUtil.getBigCamelLowerName(field.getName());
+                    }
+                    return annotation.value();
+                }, field -> field, (v1, v2) -> v2));
         return columnName2FieldMap;
     }
 
