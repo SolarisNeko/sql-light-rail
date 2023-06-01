@@ -48,9 +48,9 @@ implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.2'
 
 ## 初衷 / 痛点
 
-因 mybatis-plus/flux 等好用的 ORM 框架, 都依赖于 mybatis. 
+因 mybatis-plus/flux 等好用的 ORM 框架, 都依赖于 mybatis.
 
-但一旦离开了 mybatis 生态圈, 很多好用的机制不能拿出来独立使用. 
+但一旦离开了 mybatis 生态圈, 很多好用的机制不能拿出来独立使用.
 
 1. 独立的 SQL stream 写法, 直接生成 sql 语句. 无需 mybatis-plus 重量级依赖.
 2. 独立的 ORM 机制.
@@ -59,13 +59,31 @@ implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.2'
 
 # RoadMap
 
+### v1.0.2
+
+1. [Add] 追加了 @IgnoreColumn 忽略字段
+2. [Add] 修复了 InsertBuilder 一些小问题
+3. [Add] Db 追加了原生自由控制的 connection Consumer
+4. [Add] 追加了 ORM 类型 Timestamp, LocalDateTime 等
+5. [Update] InsertBuilder 自动生成 insert sql 的方法重命名为 orm
+
+## v1.0.1
+1. [Delete] 删减了snakeYaml 的使用
+
+## v1.0.0
+
+1. [Add] 正式发布
+
 ## v0.3.1
+
 1. [Add] add ConditionGenerator for SQL 'in'
 2. [BugFix] tag split by '|'
 3. [Update] DDL-for-manager.sql for Test
 
 ## v0.3.0
+
 v0.2.2 -> v0.3.0
+
 1. [Refactor] refactor class RepositoryManager / manager layer.
 2. [Add] Layer = DbGroup / Db / DbShardingStrategy / ....
 3. [Add] add more sql original params use.
@@ -75,10 +93,11 @@ v0.2.2 -> v0.3.0
 7. [Add] not support Base Type in 'ObjectStrategy'
 
 ## 0.2.2
+
 1. [Optimize] 优化了反射部分性能, 提升效率额 90%. 从 100ms -> 6~20 ms. 加入 lazy cache.
-2. [Add] Insert SQL 的 columnName 进行了 @Column 的命名支持. 
+2. [Add] Insert SQL 的 columnName 进行了 @Column 的命名支持.
 3. [Add] 完善单元测试 for ORM.
- 
+
 ## v0.2.1
 
 1. [Rename] RailPlatform -> RepositoryManager
