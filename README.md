@@ -8,11 +8,11 @@
 
 SQL Light Rail (SQL 轻轨)
 
-1. class SqlLightRail
-2. class ShardingKey = sharding 计算
-3. class RepositoryManager. shardingDB 管理.
+1. class SqlLightRail = SQL 链式编写
+2. class ShardingKey = ShardingId 计算
+3. class RepositoryManager = 多数据源管理
 
-License 为 Apache2.0
+License 为 Apache-2.0
 
 ## Download
 
