@@ -40,10 +40,11 @@ implementation group: 'com.neko233', name: 'sql-light-rail', version: '1.0.2'
 
 但一旦离开了 mybatis 生态圈, 很多好用的机制不能拿出来独立使用. 
 
+所以, 该项目做了以下的模块化:
 1. 独立的 SQL stream 写法, 直接生成 sql 语句. 无需 mybatis-plus 重量级依赖.
 2. 独立的 ORM 机制.
 3. 独立的 Sharding DB 机制
-4. Plugin Chain 处理 SQL 执行过程.
+4. Plugin Chain (插件化) 处理 SQL 执行过程.
 
 
 # Use
