@@ -1,6 +1,6 @@
 package com.neko233.sql.lightrail.sql_builder;
 
-import com.neko233.sql.lightrail.SqlLightRail;
+import com.neko233.sql.lightrail.SqlBuilder233;
 import com.neko233.sql.lightrail.condition.single.Conditions;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,7 +13,7 @@ public class UpdateTest {
 
     @Test
     public void updateSqlTest() {
-        String updateSql = SqlLightRail.updateTable("user")
+        String updateSql = SqlBuilder233.updateTable("user")
                 .set(Conditions.set()
                         .equalsTo("name", "neko")
                 )

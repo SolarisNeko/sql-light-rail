@@ -1,10 +1,10 @@
 package com.neko233.sql.lightrail.demo;
 
-import com.neko233.sql.lightrail.SqlLightRail;
-import com.neko233.sql.lightrail.sql_builder.InsertSqlBuilder;
+import com.neko233.sql.lightrail.SqlBuilder233;
 import com.neko233.sql.lightrail.condition.single.WhereCondition;
 import com.neko233.sql.lightrail.pojo.LoginSumDaily;
 import com.neko233.sql.lightrail.pojo.User;
+import com.neko233.sql.lightrail.sql_builder.InsertSqlBuilder;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -34,7 +34,7 @@ public class WithJdbcDemo {
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sql_light_rail?", "root", "root");
         DatabaseMetaData metaData = connection.getMetaData();
 
-        String build = SqlLightRail.selectTable("information_schema", "COLUMNS")
+        String build = SqlBuilder233.selectTable("information_schema", "COLUMNS")
                 .select("column_name, ordinal_position, column_type")
                 .where(WhereCondition.builder()
                         .equalsTo("table_name", "user")
@@ -64,7 +64,7 @@ public class WithJdbcDemo {
             add(LoginSumDaily.builder().userSum(30).roleSum(30).deviceSum(30).build());
         }};
 
-        InsertSqlBuilder builder = SqlLightRail.insertTable("login_sum_daily")
+        InsertSqlBuilder builder = SqlBuilder233.insertTable("login_sum_daily")
             .ormForInsertValues(dataList);
 
 
@@ -87,7 +87,7 @@ public class WithJdbcDemo {
             add(User.builder().name("insert-3").build());
         }};
 
-        InsertSqlBuilder builder = SqlLightRail.insertTable("user")
+        InsertSqlBuilder builder = SqlBuilder233.insertTable("user")
             .ormForInsertValues(users);
 
 
@@ -104,7 +104,7 @@ public class WithJdbcDemo {
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sql_light_rail?", "root", "root");
         DatabaseMetaData metaData = connection.getMetaData();
 
-        String build = SqlLightRail.selectTable("user")
+        String build = SqlBuilder233.selectTable("user")
             .select("id", "name")
             .where(WhereCondition.builder()
                 .equalsTo("name", "neko")

@@ -5,7 +5,7 @@
 
     <groupId>com.neko233</groupId>
     <artifactId>sql-light-rail</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
 
     <name>sql_light_rail</name>
     <url>https://github.com/SolarisNeko/sql-light-rail/tree/main</url>
@@ -60,16 +60,16 @@
         <dependency>
             <groupId>com.neko233</groupId>
             <artifactId>skilltree-commons-core</artifactId>
-            <version>0.0.6</version>
+            <version>0.1.2</version>
         </dependency>
-
-        <!-- DAO Layer -->
+        <!-- Default DataSource -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>1.2.15</version>
-<!--            <scope>test</scope>-->
         </dependency>
+
+        <!-- Test by mysql -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>

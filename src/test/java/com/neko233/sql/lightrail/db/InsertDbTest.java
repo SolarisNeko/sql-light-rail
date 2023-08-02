@@ -1,10 +1,10 @@
 package com.neko233.sql.lightrail.db;
 
-import com.neko233.sql.lightrail.SqlLightRail;
-import com.neko233.sql.lightrail.sql_builder.InsertSqlBuilder;
+import com.neko233.sql.lightrail.SqlBuilder233;
 import com.neko233.sql.lightrail.datasource.MyDataSource;
 import com.neko233.sql.lightrail.pojo.User;
 import com.neko233.sql.lightrail.pojo.UserWithEmail;
+import com.neko233.sql.lightrail.sql_builder.InsertSqlBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class InsertDbTest {
 
     @Test
     public void generate_insert_template() {
-        String build = SqlLightRail.generateInsertTemplateAuto(User.class, 1L).build();
+        String build = SqlBuilder233.generateInsertTemplateAuto(User.class, 1L).build();
         String target = "INSERT INTO user(id, name) Values (?,?)";
         Assert.assertEquals(target, build);
     }
@@ -35,7 +35,7 @@ public class InsertDbTest {
     @Test
     public void baseTest_insert2User() throws Exception {
 
-        InsertSqlBuilder builder = SqlLightRail.insertTable("user")
+        InsertSqlBuilder builder = SqlBuilder233.insertTable("user")
                 .columnNames("name")
                 .values("('demo10'), ('demo11') ");
         Integer rowCount = db
@@ -52,7 +52,7 @@ public class InsertDbTest {
             add(User.builder().name("demo22").build());
         }};
 
-        InsertSqlBuilder builder = SqlLightRail.insertTable("user")
+        InsertSqlBuilder builder = SqlBuilder233.insertTable("user")
                 .columnNames("name")
                 .ormForInsertValues(valueList);
         Integer rowCount = db
@@ -69,7 +69,7 @@ public class InsertDbTest {
             add(UserWithEmail.builder().name("demo22").email("456@qq.com").build());
         }};
 
-        InsertSqlBuilder builder = SqlLightRail.insertTable("user")
+        InsertSqlBuilder builder = SqlBuilder233.insertTable("user")
                 .ormForInsertValues(valueList);
         Integer rowCount = db
                 .executeUpdate(builder.build());

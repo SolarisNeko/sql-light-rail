@@ -1,4 +1,4 @@
-package com.neko233.sql.lightrail.strategy.createDataSource;
+package com.neko233.sql.lightrail.shardingManager.createDataSource;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.neko233.sql.lightrail.common.KvTemplate;

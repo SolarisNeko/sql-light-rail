@@ -1,4 +1,4 @@
-package com.neko233.sql.lightrail.manager.initializer;
+package com.neko233.sql.lightrail.shardingManager.initializer;
 
 import com.neko233.sql.lightrail.db.Db;
 

@@ -1,6 +1,6 @@
 package com.neko233.sql.lightrail.sql_builder;
 
-import com.neko233.sql.lightrail.SqlLightRail;
+import com.neko233.sql.lightrail.SqlBuilder233;
 import com.neko233.sql.lightrail.condition.single.Conditions;
 import com.neko233.sql.lightrail.condition.single.GroupByCondition;
 import com.neko233.sql.lightrail.condition.single.JoinCondition;
@@ -53,7 +53,7 @@ public class SelectTest {
         }
 
         // 3 build SQL
-        String select = SqlLightRail.selectTable("traffic_statistics_report")
+        String select = SqlBuilder233.selectTable("traffic_statistics_report")
                 .select(selectCondition.build())
                 .where(whereCondition.build())
                 .groupBy(groupByCondition)
@@ -66,26 +66,26 @@ public class SelectTest {
 
     @Test
     public void selectByORM() {
-        String selectAllSql = SqlLightRail.selectTable(User.class).build();
+        String selectAllSql = SqlBuilder233.selectTable(User.class).build();
         String target = "SELECT id, name FROM user";
         Assert.assertEquals(target, selectAllSql);
     }
 
     @Test
     public void selectByORM_ExtentPojo() {
-        String selectAllSql = SqlLightRail.selectTable(UserExt.class).build();
+        String selectAllSql = SqlBuilder233.selectTable(UserExt.class).build();
         String target = "SELECT age, id, name FROM user_ext";
         Assert.assertEquals(target, selectAllSql);
     }
 
     @Test
     public void generatePlaceHolder() {
-        SelectSqlBuilder innerBuilder = SqlLightRail.selectTable("inner_demo")
+        SelectSqlBuilder innerBuilder = SqlBuilder233.selectTable("inner_demo")
                 .select("id", "name")
                 .where(WhereCondition.builder()
                         .equalsTo("id", PLACEHOLDER)
                 );
-        String select = SqlLightRail.selectSubTable(innerBuilder, "a")
+        String select = SqlBuilder233.selectSubTable(innerBuilder, "a")
                 .select("id", "name")
                 .build();
         String target = "SELECT id, name FROM ( SELECT id, name FROM inner_demo WHERE id = ? ) a ";
@@ -94,12 +94,12 @@ public class SelectTest {
 
     @Test
     public void innerSelectSqlTest() {
-        SelectSqlBuilder innerBuilder = SqlLightRail.selectTable("inner_demo")
+        SelectSqlBuilder innerBuilder = SqlBuilder233.selectTable("inner_demo")
                 .select("id", "name")
                 .where(WhereCondition.builder()
                         .equalsTo("id", 1)
                 );
-        String select = SqlLightRail.selectSubTable(innerBuilder, "a")
+        String select = SqlBuilder233.selectSubTable(innerBuilder, "a")
                 .select("id", "name")
                 .build();
         String target = "SELECT id, name FROM ( SELECT id, name FROM inner_demo WHERE id = 1 ) a ";
@@ -109,7 +109,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectTable("user")
+        String selectSql = SqlBuilder233.selectTable("user")
                 .select("id")
                 .where(Conditions.where()
                         .equalsTo("id", 1)
@@ -128,7 +128,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest_limitByPage() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectTable("user")
+        String selectSql = SqlBuilder233.selectTable("user")
                 .select("id", "name")
                 .where(Conditions.where()
                         .like("id", 1)
@@ -147,7 +147,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest_multiTables() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectTable("user a", "user_role b")
+        String selectSql = SqlBuilder233.selectTable("user a", "user_role b")
                 .select("b.id", "a.name")
                 .where(Conditions.where()
                         .equalsTo("b.id", 1)
@@ -161,7 +161,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest_joinOn_base() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectTable("user a")
+        String selectSql = SqlBuilder233.selectTable("user a")
                 .select("a.id", "a.name")
                 .join(JoinCondition.builder()
                         .join("user_role b")
@@ -175,7 +175,7 @@ public class SelectTest {
     @Test
     public void selectSqlTest_joinOn_advanced_1() {
         // Table <- columns, condition
-        String selectSql = SqlLightRail.selectTable("user a")
+        String selectSql = SqlBuilder233.selectTable("user a")
                 .select("a.id", "a.name")
                 .alias(new HashMap<String, String>() {{
                     put("a.id", "编号");
@@ -201,7 +201,7 @@ public class SelectTest {
         String name = "root";
 
         // 新手不要学, 某些公司会存在这种莫名其妙的判断逻辑, 分在不同的 SQL 里, 但是如果在 Java 里汇总起来, 也总比看 2 个莫名其妙的 SQL 方便
-        SelectSqlBuilder sqlBuilder = SqlLightRail.selectTable(User.class);
+        SelectSqlBuilder sqlBuilder = SqlBuilder233.selectTable(User.class);
         if ("root".equals(name)) {
             sqlBuilder.where(WhereCondition.builder()
                 .equalsTo("deleted", "0")
@@ -224,7 +224,7 @@ public class SelectTest {
 
     @Test
     public void orderBy() {
-        String build = SqlLightRail.selectTable("user")
+        String build = SqlBuilder233.selectTable("user")
             .select("id", "name")
             .orderBy("id")
             .build();

@@ -1,20 +1,21 @@
-package com.neko233.sql.lightrail.dataSource;
+package com.neko233.sql.lightrail.shardingManager;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.neko233.sql.lightrail.RepositoryManager;
-import com.neko233.sql.lightrail.SqlLightRail;
+import com.neko233.sql.lightrail.SqlBuilder233;
 import com.neko233.sql.lightrail.db.Db;
 import com.neko233.sql.lightrail.db.DbConfig;
-import com.neko233.sql.lightrail.manager.DbGroup;
-import com.neko233.sql.lightrail.manager.DbGroupConfig;
 import com.neko233.sql.lightrail.pojo.User;
-import com.neko233.sql.lightrail.sharding.database.ShardingDbStrategy100w;
-import com.neko233.sql.lightrail.strategy.createDataSource.DruidDataSourceCreateStrategy;
+import com.neko233.sql.lightrail.sharding.strategy.ShardingDbStrategy100w;
+import com.neko233.sql.lightrail.shardingManager.createDataSource.DruidDataSourceCreateStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
 import javax.sql.DataSource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 import static com.alibaba.druid.pool.DruidDataSourceFactory.*;
 
@@ -96,24 +97,20 @@ public class MultiDataSourceTest {
         RepositoryManager.instance.addDbGroup(dbGroup);
 
         // dataSource 1
-        String sql = SqlLightRail.selectTable(User.class)
+        String sql = SqlBuilder233.selectTable(User.class)
                 .limitByPage(1, 1)
                 .build();
         Db db1 = RepositoryManager.instance.getDbGroup("group1")
                 .getDb(1L);
         Assert.assertEquals(0, (int) db1.getDbId());
-        List<User> users = db1
-                .executeQuery(sql, User.class);
-//        users.forEach(System.out::println);
+        List<User> users = db1.executeQuery(sql, User.class);
         Assert.assertTrue(users.size() >= 1);
 
         // dataSource 2
         Db db2 = RepositoryManager.instance.getDbGroup("group1")
                 .getDb(100_0000L);
         Assert.assertEquals(1, (int) db2.getDbId());
-        List<User> users2 = db2
-                .executeQuery(sql, User.class);
-//        users2.forEach(System.out::println);
+        List<User> users2 = db2.executeQuery(sql, User.class);
         Assert.assertTrue(users2.size() >= 1);
     }
 

@@ -1,4 +1,4 @@
-package com.neko233.sql.lightrail.manager.initializer;
+package com.neko233.sql.lightrail.shardingManager.initializer;
 
 import com.neko233.sql.lightrail.RepositoryManager;
 import com.neko233.sql.lightrail.condition.generator.ConditionGenerator;
@@ -9,13 +9,13 @@ import com.neko233.sql.lightrail.entity.Neko233ConfigTagKv;
 import com.neko233.sql.lightrail.entity.Neko233Db;
 import com.neko233.sql.lightrail.entity.Neko233DbShardingStrategy;
 import com.neko233.sql.lightrail.entity.Neko233GroupConfigTemplate;
-import com.neko233.sql.lightrail.manager.DbGroup;
-import com.neko233.sql.lightrail.manager.DbGroupConfig;
-import com.neko233.sql.lightrail.sharding.database.ShardingDbStrategy;
-import com.neko233.sql.lightrail.sharding.database.ShardingDbStrategyDefault;
-import com.neko233.sql.lightrail.sharding.database.ShardingDbStrategyFactory;
-import com.neko233.sql.lightrail.sharding.database.ShardingDbStrategyNotInitException;
-import com.neko233.sql.lightrail.strategy.createDataSource.DruidDataSourceCreateStrategy;
+import com.neko233.sql.lightrail.shardingManager.DbGroup;
+import com.neko233.sql.lightrail.shardingManager.DbGroupConfig;
+import com.neko233.sql.lightrail.sharding.strategy.ShardingDbStrategy;
+import com.neko233.sql.lightrail.sharding.strategy.ShardingDbStrategyDefault;
+import com.neko233.sql.lightrail.sharding.strategy.ShardingDbStrategyFactory;
+import com.neko233.sql.lightrail.sharding.exception.ShardingDbStrategyNotInitException;
+import com.neko233.sql.lightrail.shardingManager.createDataSource.DruidDataSourceCreateStrategy;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
@@ -47,10 +47,10 @@ public class RepositoryManagerInitializerByMysql implements RepositoryManagerIni
 
         List<DbGroup> outputDbGroupList = new ArrayList<>();
         for (String groupName : groupNames) {
-            Object[] params = {groupName};
+            Object[] sqlParams = {groupName};
             List<Neko233GroupConfigTemplate> neko233GroupConfigTemplates = resourceDb.executeQuery(
                     "select * From neko233_db_group_config_template where group_name = ? ",
-                    params,
+                    sqlParams,
                     Neko233GroupConfigTemplate.class);
             Map<String, Properties> groupNamePropertiesMap = Neko233GroupConfigTemplate.getGroupName2Properties(
                     neko233GroupConfigTemplates);
@@ -58,8 +58,13 @@ public class RepositoryManagerInitializerByMysql implements RepositoryManagerIni
 
             Neko233DbShardingStrategy dbShardingStrategy = resourceDb.executeQuerySingle(
                     "select * From neko233_db_sharding_strategy where group_name = ? ",
-                    params,
+                    sqlParams,
                     Neko233DbShardingStrategy.class);
+
+            if (dbShardingStrategy == null) {
+                log.error("db 分片策略为空, 请检查配置. 故无法初始化 dbGroup 下的所有 db. groupName = {}", groupName);
+                return Collections.emptyList();
+            }
 
             // sharding strategy
             ShardingDbStrategy shardingDbStrategy;
@@ -83,7 +88,7 @@ public class RepositoryManagerInitializerByMysql implements RepositoryManagerIni
                     .dbConfigFetcher((dbGroupName -> {
                         List<Neko233Db> neko233Dbs = resourceDb.executeQuery(
                                 "select * From neko233_db where group_name = ? ",
-                                params,
+                                sqlParams,
                                 Neko233Db.class);
 
                         List<DbConfig> dbConfigs = new ArrayList<>();

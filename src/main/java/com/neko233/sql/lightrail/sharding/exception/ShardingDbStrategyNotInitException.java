@@ -1,4 +1,4 @@
-package com.neko233.sql.lightrail.sharding.database;
+package com.neko233.sql.lightrail.sharding.exception;
 
 /**
  * @author SolarisNeko

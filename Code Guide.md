@@ -54,7 +54,7 @@ public static DataSource configDbDataSource() throws Exception {
 @Test
 public void testInit() throws Exception {
 
-        // auto init config | see 'DDL-for-manager.sql'
+        // auto init config | see 'DDL-sharding-sql_light_rail_config.sql'
         Db configDb = new Db(configDbDataSource());
         new RepositoryManagerInitializerByMysql().initDbGroup(configDb, "template");
 

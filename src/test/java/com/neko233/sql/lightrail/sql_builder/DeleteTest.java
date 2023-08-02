@@ -1,6 +1,6 @@
 package com.neko233.sql.lightrail.sql_builder;
 
-import com.neko233.sql.lightrail.SqlLightRail;
+import com.neko233.sql.lightrail.SqlBuilder233;
 import com.neko233.sql.lightrail.condition.single.Conditions;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,7 +13,7 @@ public class DeleteTest {
 
     @Test
     public void deleteSqlTest() {
-        String deleteSql = SqlLightRail.deleteTable("user")
+        String deleteSql = SqlBuilder233.deleteTable("user")
                 .where(Conditions.where()
                         .equalsTo("id", 1)
                 )
@@ -24,7 +24,7 @@ public class DeleteTest {
 
     @Test
     public void deleteSqlByStringTest() {
-        String deleteSql = SqlLightRail.deleteTable("user")
+        String deleteSql = SqlBuilder233.deleteTable("user")
                 .where(Conditions.where()
                         .equalsTo("name", "neko")
                 )

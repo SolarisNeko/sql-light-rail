@@ -1,4 +1,4 @@
-package com.neko233.sql.lightrail.strategy.createDataSource;
+package com.neko233.sql.lightrail.shardingManager.createDataSource;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -19,10 +19,12 @@ public interface DataSourceCreateStrategy {
     /**
      * 创建 DataSource
      *
-     * @param dsConfigMap 配置
+     * @param dsConfigProperties 数据源配置
+     * @param kvMap              配置
      * @return DataSource
      */
-    DataSource create(Properties dsConfigProperties, Map<String, String> kvMap) throws Exception;
+    DataSource create(Properties dsConfigProperties,
+                      Map<String, String> kvMap) throws Exception;
 
 
 }

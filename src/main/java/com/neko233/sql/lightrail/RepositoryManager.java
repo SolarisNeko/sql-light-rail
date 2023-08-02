@@ -1,7 +1,7 @@
 package com.neko233.sql.lightrail;
 
-import com.neko233.sql.lightrail.manager.DbGroup;
-import com.neko233.sql.lightrail.manager.exception.NotFoundInDbManagerException;
+import com.neko233.sql.lightrail.shardingManager.DbGroup;
+import com.neko233.sql.lightrail.shardingManager.exception.NotFoundInDbManagerException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;

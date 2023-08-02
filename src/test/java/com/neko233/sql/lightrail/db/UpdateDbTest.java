@@ -1,11 +1,11 @@
 package com.neko233.sql.lightrail.db;
 
-import com.neko233.sql.lightrail.SqlLightRail;
-import com.neko233.sql.lightrail.sql_builder.InsertSqlBuilder;
+import com.neko233.sql.lightrail.SqlBuilder233;
 import com.neko233.sql.lightrail.condition.single.SetCondition;
 import com.neko233.sql.lightrail.condition.single.WhereCondition;
 import com.neko233.sql.lightrail.datasource.MyDataSource;
 import com.neko233.sql.lightrail.pojo.User;
+import com.neko233.sql.lightrail.sql_builder.InsertSqlBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class UpdateDbTest {
 
     @Test
     public void baseTest_selectByAutoGenerate() throws SQLException {
-        String sql = SqlLightRail.selectTable(User.class).build();
+        String sql = SqlBuilder233.selectTable(User.class).build();
         List<User> users = db
                 .executeQuery(sql, User.class);
         Assert.assertTrue(users.size() > 0);
@@ -40,7 +40,7 @@ public class UpdateDbTest {
     @Test
     public void baseTest_insert2User() throws Exception {
 
-        InsertSqlBuilder builder = SqlLightRail.insertTable("user")
+        InsertSqlBuilder builder = SqlBuilder233.insertTable("user")
                 .columnNames("name")
                 .values("('demo10'), ('demo11') ");
         String build = builder.build();
@@ -58,7 +58,7 @@ public class UpdateDbTest {
             add(User.builder().name("demo22").build());
         }};
 
-        String insertSql = SqlLightRail.insertTable("user")
+        String insertSql = SqlBuilder233.insertTable("user")
                 .columnNames("name")
                 .ormForInsertValues(valueList)
                 .build();
@@ -71,7 +71,7 @@ public class UpdateDbTest {
     @Test
     public void baseTest_update2User() throws Exception {
 
-        String updateSql = SqlLightRail.updateTable("user")
+        String updateSql = SqlBuilder233.updateTable("user")
                 .set("create_time = '2022-01-01 11:11:11'")
                 .where(WhereCondition.builder()
                         .equalsTo("id", 1)
@@ -85,7 +85,7 @@ public class UpdateDbTest {
     @Test
     public void baseTest_update2User_SetDate() throws Exception {
 
-        String updateSql = SqlLightRail.updateTable("user")
+        String updateSql = SqlBuilder233.updateTable("user")
                 .set(SetCondition.builder().equalsTo("create_time", new Date()))
                 .where(WhereCondition.builder()
                         .equalsTo("id", 1)
@@ -100,12 +100,12 @@ public class UpdateDbTest {
     @Test
     public void updateMultiSql_2_successfully() throws Exception {
 
-        String build = SqlLightRail.updateTable("user")
+        String build = SqlBuilder233.updateTable("user")
                 .set(SetCondition.builder().equalsTo("create_time", new Date()))
                 .where(WhereCondition.builder()
                         .equalsTo("id", 1)
                 ).build();
-        String build2 = SqlLightRail.updateTable("user")
+        String build2 = SqlBuilder233.updateTable("user")
                 .set(SetCondition.builder().equalsTo("create_time", new Date()))
                 .where(WhereCondition.builder()
                         .equalsTo("id", 1)

@@ -1,9 +1,9 @@
-package com.neko233.sql.lightrail.manager;
+package com.neko233.sql.lightrail.shardingManager;
 
 import com.neko233.sql.lightrail.db.DbConfig;
 import com.neko233.sql.lightrail.db.DbConfigFetcher;
-import com.neko233.sql.lightrail.sharding.database.ShardingDbStrategy;
-import com.neko233.sql.lightrail.strategy.createDataSource.DataSourceCreateStrategy;
+import com.neko233.sql.lightrail.sharding.strategy.ShardingDbStrategy;
+import com.neko233.sql.lightrail.shardingManager.createDataSource.DataSourceCreateStrategy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

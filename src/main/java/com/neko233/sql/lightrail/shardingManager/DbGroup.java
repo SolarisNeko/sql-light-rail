@@ -1,12 +1,12 @@
-package com.neko233.sql.lightrail.manager;
+package com.neko233.sql.lightrail.shardingManager;
 
 import com.neko233.sql.lightrail.common.LifeCycle;
 import com.neko233.sql.lightrail.db.Db;
 import com.neko233.sql.lightrail.db.DbConfig;
-import com.neko233.sql.lightrail.manager.exception.NotFoundInDbManagerException;
-import com.neko233.sql.lightrail.sharding.database.ShardingDbStrategyDefault;
-import com.neko233.sql.lightrail.sharding.database.ShardingDbStrategy;
-import com.neko233.sql.lightrail.strategy.createDataSource.DataSourceCreateStrategy;
+import com.neko233.sql.lightrail.shardingManager.exception.NotFoundInDbManagerException;
+import com.neko233.sql.lightrail.sharding.strategy.ShardingDbStrategyDefault;
+import com.neko233.sql.lightrail.sharding.strategy.ShardingDbStrategy;
+import com.neko233.sql.lightrail.shardingManager.createDataSource.DataSourceCreateStrategy;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

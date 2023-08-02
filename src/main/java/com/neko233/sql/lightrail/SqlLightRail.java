@@ -4,25 +4,30 @@ import com.neko233.sql.lightrail.sql_builder.DeleteSqlBuilder;
 import com.neko233.sql.lightrail.sql_builder.InsertSqlBuilder;
 import com.neko233.sql.lightrail.sql_builder.SelectSqlBuilder;
 import com.neko233.sql.lightrail.sql_builder.UpdateSqlBuilder;
-import com.neko233.sql.lightrail.util.CamelCaseUtil;
 
 /**
+ * 后面统一使用 {@link SqlBuilder233}, 预计 v1.2.0 废弃
+ *
  * @author SolarisNeko
  * Date on 2022-02-20
  */
+@Deprecated
 public class SqlLightRail {
 
 
+    @Deprecated
     public static InsertSqlBuilder insertTable(String tableName) {
-        return new InsertSqlBuilder(tableName);
+        return SqlBuilder233.insertTable(tableName);
     }
 
+    @Deprecated
     public static DeleteSqlBuilder deleteTable(String tableName) {
-        return new DeleteSqlBuilder(tableName.trim());
+        return SqlBuilder233.deleteTable(tableName);
     }
 
+    @Deprecated
     public static UpdateSqlBuilder updateTable(String tableName) {
-        return new UpdateSqlBuilder(tableName.trim());
+        return SqlBuilder233.updateTable(tableName);
     }
 
     /**
@@ -31,22 +36,27 @@ public class SqlLightRail {
      * @param entity 数据库实体对象, 遵守 CamelCase(驼峰命名法) 这个约定。
      * @return SelectSqlBuilder
      */
+    @Deprecated
     public static SelectSqlBuilder selectTable(Class<?> entity) {
-        return new SelectSqlBuilder(entity);
+        return SqlBuilder233.selectTable(entity);
     }
 
-    public static SelectSqlBuilder selectTable(String tableName, Class tablePojo) {
-        return new SelectSqlBuilder(tableName, tablePojo);
+    @Deprecated
+    public static SelectSqlBuilder selectTable(String tableName,
+                                               Class<?> tablePojo) {
+        return SqlBuilder233.selectTable(tableName, tablePojo);
     }
 
 
+    @Deprecated
     public static SelectSqlBuilder selectTable(String tableName) {
-        return new SelectSqlBuilder(tableName.trim());
+        return SqlBuilder233.selectTable(tableName);
     }
 
 
-    public static SelectSqlBuilder selectTable(String... tableName) {
-        return new SelectSqlBuilder(tableName);
+    @Deprecated
+    public static SelectSqlBuilder selectTable(String... tableNameArray) {
+        return SqlBuilder233.selectTable(tableNameArray);
     }
 
     /**
@@ -55,15 +65,24 @@ public class SqlLightRail {
      * @param innerSelectBuilder builder
      * @return SelectSqlBuilder
      */
-    public static SelectSqlBuilder selectSubTable(SelectSqlBuilder innerSelectBuilder, String subTableName) {
-        return new SelectSqlBuilder("( " + innerSelectBuilder.build() + " ) " + subTableName + " ");
+    @Deprecated
+    public static SelectSqlBuilder selectSubTable(SelectSqlBuilder innerSelectBuilder,
+                                                  String subTableName) {
+        return SqlBuilder233.selectSubTable(innerSelectBuilder, subTableName);
     }
 
 
-
-
-    public static InsertSqlBuilder generateInsertTemplateAuto(Class<?> clazz, Long insertTimes) {
-        return generateInsertTemplateAuto(CamelCaseUtil.getBigCamelLowerName(clazz.getSimpleName()), clazz, insertTimes);
+    /**
+     * 自动生成插入模板
+     *
+     * @param clazz       类结构
+     * @param insertCount 插入次数
+     * @return insert builder
+     */
+    @Deprecated
+    public static InsertSqlBuilder generateInsertTemplateAuto(Class<?> clazz,
+                                                              Long insertCount) {
+        return SqlBuilder233.generateInsertTemplateAuto(clazz, insertCount);
     }
 
     /**
@@ -74,7 +93,10 @@ public class SqlLightRail {
      * @param insertTimes 次数
      * @return InsertSqlBuilder
      */
-    public static InsertSqlBuilder generateInsertTemplateAuto(String tableName, Class<?> clazz, Long insertTimes) {
-        return new InsertSqlBuilder(tableName).columnNames(clazz).generateReplacement(insertTimes);
+    @Deprecated
+    public static InsertSqlBuilder generateInsertTemplateAuto(String tableName,
+                                                              Class<?> clazz,
+                                                              Long insertTimes) {
+        return SqlBuilder233.generateInsertTemplateAuto(tableName, clazz, insertTimes);
     }
 }

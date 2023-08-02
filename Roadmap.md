@@ -1,65 +1,15 @@
-# SQL Light Rail
+# RoadMap - SQL Light Rail
 
-## 简介
+## v1.1.0
 
-> 'sql-light-rail' is a DAO Layer Micro Framework to handle SQL by Java, use it like 'Chain Builder / Stream'.
->
-> '轻轨' 是一款 DAO 层操作的微框架, 处理 SQL 就如同写 Java Stream / Chain Builder 一样。
+1. [Update] 整理代码. 调整各个包名.
+2. [Deprecated] 将 class SqlLightRail 标记废弃 --> SqlBuilder233. 名字更好记一点
+3. [Update] 更新 ShardingIdStrategy 计算的策略签名. 基于 string 计算
+4. [Update] 依赖库更新 com.neko233:skilltree-commons-core -> 0.1.2
+5. [Delete] 删除冗余的代码, 减少代码量
+6. [Delete] 彻底移除 snake-yaml 老是有安全问题真的是无语了. 后续再考虑使用 yaml 配置.
 
-搭配 IDE 提示，你能几乎提速 200%+ 的编写 SQL 速度，并且能够借助 SQL Light Rail 避免大量的低级语法错误。
-
-同时，将 SQL 难以编写的复杂语法，转移到 Java 层面处理，实在是非常的爽！
-
-### 介绍
-
-SQL Light Rail (SQL 轻轨)
-
-轻轨: 有多节车厢, 如同本框架设计的 Chain Builder 思想。
-
-这是一款【约定大于配置】的 Java SQL Flux 框架, 用于快速构建大量 SQL.
-
-### 约定 > 配置:
-
-1. 如果你的 Pojo 遵循驼峰命名, SQL Table 命名遵循大驼峰命名, 如 class LoginSumDaily -> table login_sum_daily 。
-   那么我们会自动帮你将 field 转换为表结构。
-2. 采用 Flux/Stream 写法。
-
-License 为 Apache2.0
-
-## Download
-
-### Maven
-
-```xml
-
-<dependency>
-    <groupId>com.neko233</groupId>
-    <artifactId>sql-light-rail</artifactId>
-    <version>1.0.2</version>
-</dependency>
-
-```
-
-### Gradle
-
-```groovy
-implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.2'
-```
-
-## 初衷 / 痛点
-
-因 mybatis-plus/flux 等好用的 ORM 框架, 都依赖于 mybatis.
-
-但一旦离开了 mybatis 生态圈, 很多好用的机制不能拿出来独立使用.
-
-1. 独立的 SQL stream 写法, 直接生成 sql 语句. 无需 mybatis-plus 重量级依赖.
-2. 独立的 ORM 机制.
-3. 独立的 Sharding DB 机制
-4. Plugin Chain 处理 SQL 执行过程.
-
-# RoadMap
-
-### v1.0.2
+## v1.0.2
 
 1. [Add] 追加了 @IgnoreColumn 忽略字段
 2. [Add] 修复了 InsertBuilder 一些小问题
@@ -78,7 +28,7 @@ implementation group: 'com.neko233', name: 'sql-light-rail', version: '0.2.2'
 
 1. [Add] add ConditionGenerator for SQL 'in'
 2. [BugFix] tag split by '|'
-3. [Update] DDL-for-manager.sql for Test
+3. [Update] DDL-sharding-sql_light_rail_config.sql for Test
 
 ## v0.3.0
 
@@ -159,7 +109,7 @@ Select
 
 ```java
 // SELECT a.id, a.name FROM user a JOIN user_role b ON a.id = b.id 
-String selectSql=SqlLightRail.selectTable("user a")
+String selectSql=Sql233.selectTable("user a")
         .select("a.id","a.name")
         .join(JoinCondition.builder()
         .join("user_role b")
@@ -176,7 +126,7 @@ String selectSql=SqlLightRail.selectTable("user a")
 String name="root";
 
 // 新手不要学，纯粹演示用
-        SelectSqlBuilder sqlBuilder=SqlLightRail.selectTable(User.class);
+        SelectSqlBuilder sqlBuilder=Sql233.selectTable(User.class);
         if("root".equals(name)){
         sqlBuilder.where(WhereCondition.builder()
         .equalsTo("deleted","0")
@@ -204,7 +154,7 @@ String name="root";
 
 ## 2、细进度
 
-### 1、Insert
+## 1、Insert
 
 Base Function
 
@@ -220,7 +170,7 @@ Advanced Function
 2. [x] auto generate by pojo ORM to (?, ?) any times.
    | 自动生成占位符模板任意次。
 
-### 2. Select
+## 2. Select
 
 基本功能 :
 
@@ -245,19 +195,19 @@ Advanced Function
 
 ```java
 // User 对象只有 id, name 两个 fields
-String selectAllSql=SqlLightRail.selectTable(User.class).build();
+String selectAllSql=Sql233.selectTable(User.class).build();
         String target="SELECT id, name FROM user ";
 ```
 
 2.
 
-### 3、Update
+## 3、Update
 
 1. [x] Update table
 2. [x] set col1 = ?, col2 = ?
 3. [x] Where col3 = ? and col4 = ?
 
-### 4、Delete
+## 4、Delete
 
 1. [x] Delete From table
 2. [x] where ...
@@ -314,12 +264,12 @@ DataSource dataSource=DruidDataSourceFactory.createDataSource(getDbConfig());
 public void updateMultiSql_2_successfully()throws Exception{
         RailPlatform repositoryManager=RailPlatformFactory.createLightRailPlatform(MyDataSource.getDefaultDataSource());
 
-        String build=SqlLightRail.updateTable("user")
+        String build=Sql233.updateTable("user")
         .set(SetCondition.builder().equalsTo("create_time",new Date()))
         .where(WhereCondition.builder()
         .equalsTo("id",1)
         ).build();
-        String build2=SqlLightRail.updateTable("user")
+        String build2=Sql233.updateTable("user")
         .set(SetCondition.builder().equalsTo("create_time",new Date()))
         .where(WhereCondition.builder()
         .equalsTo("id",1)

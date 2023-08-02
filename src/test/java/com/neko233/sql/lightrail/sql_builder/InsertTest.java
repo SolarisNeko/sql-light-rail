@@ -1,6 +1,6 @@
 package com.neko233.sql.lightrail.sql_builder;
 
-import com.neko233.sql.lightrail.SqlLightRail;
+import com.neko233.sql.lightrail.SqlBuilder233;
 import com.neko233.sql.lightrail.pojo.User;
 import com.neko233.sql.lightrail.pojo.UserExt;
 import com.neko233.sql.lightrail.pojo.UserWithEmail;
@@ -22,7 +22,7 @@ public class InsertTest {
      */
     @Test
     public void insertSqlTest() {
-        String insertSql = SqlLightRail.insertTable("user")
+        String insertSql = SqlBuilder233.insertTable("user")
                 .columnNames("id", "name")
                 .ormForInsertValues(Arrays.asList(
                         new User(10, "demo1"),
@@ -37,7 +37,7 @@ public class InsertTest {
      */
     @Test
     public void insertRecursiveSqlTest() {
-        String insertSql = SqlLightRail.insertTable("user")
+        String insertSql = SqlBuilder233.insertTable("user")
                 .ormForInsertValues(Arrays.asList(
                         new UserExt(10, "demo1", 18),
                         new UserExt(20, "demo2", 30)
@@ -52,7 +52,7 @@ public class InsertTest {
      */
     @Test
     public void insertTest_JavaDate() {
-        String insertSql = SqlLightRail.insertTable("user")
+        String insertSql = SqlBuilder233.insertTable("user")
             .ormForInsertValues(
                 new ArrayList<UserWithEmail>() {{
                     Date createTime = new Date();
@@ -69,14 +69,14 @@ public class InsertTest {
      */
     @Test
     public void insertTest_placeHolderTemplate_1() {
-        String insertSql = SqlLightRail.generateInsertTemplateAuto(User.class, 1L).build();
+        String insertSql = SqlBuilder233.generateInsertTemplateAuto(User.class, 1L).build();
         String target = "INSERT INTO user(id, name) Values (?,?)";
         Assert.assertEquals(target, insertSql);
     }
 
     @Test
     public void insertTest_placeHolderTemplate_4() {
-        String insertSql = SqlLightRail.generateInsertTemplateAuto("user", UserExt.class, 4L).build();
+        String insertSql = SqlBuilder233.generateInsertTemplateAuto("user", UserExt.class, 4L).build();
         String target = "INSERT INTO user(age, id, name) Values (?,?,?), (?,?,?), (?,?,?), (?,?,?)";
         Assert.assertEquals(target, insertSql);
     }

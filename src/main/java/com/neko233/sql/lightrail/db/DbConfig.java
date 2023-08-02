@@ -1,6 +1,6 @@
 package com.neko233.sql.lightrail.db;
 
-import com.neko233.sql.lightrail.manager.DbGroup;
+import com.neko233.sql.lightrail.shardingManager.DbGroup;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

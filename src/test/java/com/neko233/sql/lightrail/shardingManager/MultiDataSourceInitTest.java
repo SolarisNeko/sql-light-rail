@@ -1,8 +1,8 @@
-package com.neko233.sql.lightrail.manager;
+package com.neko233.sql.lightrail.shardingManager;
 
 import com.neko233.sql.lightrail.RepositoryManager;
 import com.neko233.sql.lightrail.db.Db;
-import com.neko233.sql.lightrail.manager.initializer.RepositoryManagerInitializerByMysql;
+import com.neko233.sql.lightrail.shardingManager.initializer.RepositoryManagerInitializerByMysql;
 import org.junit.Test;
 
 import javax.sql.DataSource;
@@ -18,7 +18,7 @@ public class MultiDataSourceInitTest {
 
     public static DataSource configDbDataSource() throws Exception {
         Properties properties = new Properties();
-        properties.put(PROP_URL, "jdbc:mysql://localhost:3306/sql_light_rail");
+        properties.put(PROP_URL, "jdbc:mysql://localhost:3306/sql_light_rail_config");
         properties.put(PROP_USERNAME, "root");
         properties.put(PROP_PASSWORD, "root");
         properties.put(PROP_INITIALSIZE, "5");
@@ -36,7 +36,7 @@ public class MultiDataSourceInitTest {
     @Test
     public void testInit() throws Exception {
 
-        // auto init config | see 'DDL-for-manager.sql'
+        // auto init config | see 'DDL-sharding-sql_light_rail_config.sql'
         Db configDb = new Db(configDbDataSource());
         new RepositoryManagerInitializerByMysql().initDbGroup(configDb, "template");
 

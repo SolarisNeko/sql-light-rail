@@ -1,6 +1,6 @@
 package com.neko233.sql.lightrail.orm;
 
-import com.neko233.sql.lightrail.SqlLightRail;
+import com.neko233.sql.lightrail.SqlBuilder233;
 import com.neko233.sql.lightrail.datasource.MyDataSource;
 import com.neko233.sql.lightrail.db.Db;
 import com.neko233.sql.lightrail.plugin.PluginRegistry;
@@ -45,7 +45,7 @@ public class SelectOrmTest {
     @Test
     public void selectOrmTest() throws Exception {
 
-        String selectSql = SqlLightRail.selectTable("user", UserWithEmail.class)
+        String selectSql = SqlBuilder233.selectTable("user", UserWithEmail.class)
                 .limitByPage(1, 5)
                 .build();
         List<UserWithEmail> dataList = db.executeQuery(
@@ -60,7 +60,7 @@ public class SelectOrmTest {
     @Test
     public void selectOrmTest_lackSomeField_1() throws Exception {
 
-        String selectSql = SqlLightRail.selectTable("user", UserLackFields.class)
+        String selectSql = SqlBuilder233.selectTable("user", UserLackFields.class)
                 .limitByPage(1, 10)
                 .build();
         List<UserLackFields> dataList = db.executeQuery(
@@ -82,7 +82,7 @@ public class SelectOrmTest {
     @Test
     public void selectOrmTest_lackSomeField_2() throws Exception {
 
-        String build = SqlLightRail.selectTable("user").select("id", "name")
+        String build = SqlBuilder233.selectTable("user").select("id", "name")
                 .limit(0, 5)
                 .build();
         List<UserLackFields> dataList = db.executeQuery(

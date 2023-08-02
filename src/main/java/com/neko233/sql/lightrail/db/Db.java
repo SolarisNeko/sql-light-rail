@@ -4,7 +4,7 @@ import com.neko233.sql.lightrail.domain.ExecuteSqlContext;
 import com.neko233.sql.lightrail.domain.SqlStatement;
 import com.neko233.sql.lightrail.exception.RailPlatformException;
 import com.neko233.sql.lightrail.exception.SqlLightRailException;
-import com.neko233.sql.lightrail.manager.DbGroup;
+import com.neko233.sql.lightrail.shardingManager.DbGroup;
 import com.neko233.sql.lightrail.orm.OrmHandler;
 import com.neko233.sql.lightrail.plugin.PluginRegistry;
 import com.neko233.sql.lightrail.util.SqlParamsUtil;

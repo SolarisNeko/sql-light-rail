@@ -1,4 +1,4 @@
-package com.neko233.sql.lightrail.sharding.database;
+package com.neko233.sql.lightrail.sharding.strategy;
 
 /**
  * @author SolarisNeko on 2022-12-07
@@ -12,7 +12,7 @@ public class ShardingDbStrategyDefault implements ShardingDbStrategy {
      * default = 0
      */
     @Override
-    public int calculate(Number shardingId) {
+    public int calculate(String toShardingValue) {
         return 0;
     }
 
